@@ -26,9 +26,10 @@ import HomePage from './pages/HomePage';
 import ClassicCalculator from './calculators/ClassicCalculator';
 import EngineeringCalculator from './calculators/EngineeringCalculator';
 import MortgageCalculator from './calculators/MortgageCalculator';
+import FuelCalculator from './calculators/FuelCalculator';
 import DateCalculator from './calculators/DateCalculator';
 import PlaceholderCalculator from './calculators/PlaceholderCalculator';
-import { CarIcon, AppleIcon, PaintIcon } from './components/Icons';
+import { AppleIcon, PaintIcon } from './components/Icons';
 
 export default function App() {
   return (
@@ -50,9 +51,7 @@ export default function App() {
               <Route path="/classic" element={<ClassicCalculator />} />
               <Route path="/engineering" element={<EngineeringCalculator />} />
               <Route path="/mortgage" element={<MortgageCalculator />} />
-              <Route path="/fuel" element={
-                <PlaceholderCalculator titleKey="fuel.title" descKey="fuel.description" icon={<CarIcon size={64} />} />
-              } />
+              <Route path="/fuel" element={<FuelCalculator />} />
               <Route path="/bmi" element={
                 <PlaceholderCalculator titleKey="bmi.title" descKey="bmi.description" icon={<AppleIcon size={64} />} />
               } />
