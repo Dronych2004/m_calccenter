@@ -40,14 +40,14 @@ export default function HomePage() {
       {/* HERO */}
       <section className="text-center mb-14 animate-fade-in">
         <div className="relative inline-block mb-6">
-          <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-indigo-500/20 to-violet-500/20 blur-2xl" />
-          <div className="relative flex h-20 w-20 mx-auto items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/25">
+          <div className="absolute -inset-6 rounded-full bg-linear-to-r from-indigo-500/20 to-violet-500/20 blur-2xl" />
+          <div className="relative flex h-20 w-20 mx-auto items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/25">
             <CalcIcon size={36} className="text-white" />
           </div>
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">
-          <span className="bg-gradient-to-r from-slate-800 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-slate-800 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
             {t('header.title')}
           </span>
         </h1>
@@ -58,7 +58,7 @@ export default function HomePage() {
 
         <a
           href="#calculators"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3 text-[15px] font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all no-underline"
+          className="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-7 py-3 text-[15px] font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all no-underline"
         >
           {t('home.startButton')}
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10m0 0l4-4m-4 4l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -94,7 +94,7 @@ export default function HomePage() {
                 className="group bg-white rounded-2xl border border-slate-100 p-5 sm:p-6 no-underline shadow-sm hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Цветная иконка */}
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${calc.gradient} shadow-lg ${calc.shadow} mb-4`}>
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br ${calc.gradient} shadow-lg ${calc.shadow} mb-4`}>
                   <calc.Icon size={22} className="text-white" />
                 </div>
 

@@ -35,10 +35,10 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-[0_1px_20px_rgba(99,102,241,0.08)]">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-3">
         <Link to="/" className="flex items-center gap-2.5 no-underline group">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-md shadow-indigo-500/25 group-hover:shadow-lg group-hover:shadow-indigo-500/40 transition-shadow">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-violet-500 shadow-md shadow-indigo-500/25 group-hover:shadow-lg group-hover:shadow-indigo-500/40 transition-shadow">
             <CalcIcon size={18} className="text-white" />
             {/* Свечение вокруг логотипа */}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-400 opacity-0 group-hover:opacity-30 blur-md transition-opacity" />
+            <div className="absolute inset-0 rounded-xl bg-linear-to-br from-indigo-400 to-violet-400 opacity-0 group-hover:opacity-30 blur-md transition-opacity" />
           </div>
           <span className="text-base font-bold text-slate-800 hidden sm:inline tracking-tight">
             {t('header.title')}
@@ -70,7 +70,7 @@ export default function Header() {
           >
             <span className={`block h-[1.5px] w-5 bg-slate-600 transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-[4.5px]' : ''}`} />
             <span className={`block h-[1.5px] w-5 bg-slate-600 transition-all duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
-            <span className={`block h-[1.5px] w-5 bg-slate-600 transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-[4.5px]' : ''}`} />
+            <span className={`block h-[1.5px] w-5 bg-slate-600 transition-all duration-300 ${mobileOpen ? '-rotate-45 translate-y-[-4.5px]' : ''}`} />
           </button>
         </div>
       </div>

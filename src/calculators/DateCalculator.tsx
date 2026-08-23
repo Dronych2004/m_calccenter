@@ -194,7 +194,7 @@ export default function DateCalculator() {
       {result && (
         <div className="space-y-4">
           {/* Основной результат — календарные дни */}
-          <div className="bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg shadow-indigo-500/20">
+          <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg shadow-indigo-500/20">
             <div className="text-center">
               <p className="text-sm font-medium text-white/70 mb-1">
                 {direction === 'forward' ? t('days.calendarDays') : t('days.calendarDays')}

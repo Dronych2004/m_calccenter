@@ -22,7 +22,7 @@ export default function Footer() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">
           <div className="flex flex-col items-center gap-5 text-center">
             <div className="flex items-center gap-2">
-              <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 shadow-sm shadow-indigo-500/20">
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-violet-500 shadow-sm shadow-indigo-500/20">
                 <CalcIcon size={14} className="text-white" />
               </div>
               <span className="text-sm font-semibold text-slate-600">{t('header.title')}</span>

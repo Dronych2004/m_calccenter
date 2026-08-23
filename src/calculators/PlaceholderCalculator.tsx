@@ -22,7 +22,7 @@ export default function PlaceholderCalculator({ titleKey, descKey, icon }: Place
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:py-24 text-center animate-fade-in overflow-hidden">
       <div className="relative inline-block mb-8">
-        <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-indigo-500/15 to-violet-500/15 blur-2xl" />
+        <div className="absolute -inset-6 rounded-full bg-linear-to-r from-indigo-500/15 to-violet-500/15 blur-2xl" />
         <div className="relative text-indigo-400">{icon}</div>
       </div>
 

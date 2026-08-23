@@ -267,7 +267,7 @@ export default function MortgageCalculator() {
           {result ? (
             <div className="space-y-4">
               {/* Ежемесячный платёж */}
-              <div className="bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">
+              <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">
                 <p className="text-sm font-medium text-white/70 mb-1">{t('mortgage.monthlyPayment')}</p>
                 <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
                   {formatCurrency(
