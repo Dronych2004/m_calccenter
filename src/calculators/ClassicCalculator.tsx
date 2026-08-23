@@ -257,8 +257,8 @@ export default function ClassicCalculator() {
 
             {/* Кнопки */}
             <div className="grid grid-cols-4 gap-2.5 sm:gap-3">
-              <button className="calc-btn calc-btn-clear" onClick={handleClear}>{t('calc.clear')}</button>
-              <button className="calc-btn calc-btn-clear" onClick={handleBackspace}>
+              <button className="calc-btn calc-btn-clear" title="Очистить всё" onClick={handleClear}>{t('calc.clear')}</button>
+              <button className="calc-btn calc-btn-clear" title="Стереть последний символ" onClick={handleBackspace}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z" fill="currentColor" opacity="0.15" />
                   <path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z" />
@@ -266,28 +266,28 @@ export default function ClassicCalculator() {
                   <line x1="12" y1="9" x2="18" y2="15" />
                 </svg>
               </button>
-              <button className="calc-btn calc-btn-operator" onClick={handlePercent}>%</button>
-              <button className="calc-btn calc-btn-operator" onClick={() => handleOperator('÷')}>÷</button>
+              <button className="calc-btn calc-btn-operator" title="Процент — x%" onClick={handlePercent}>%</button>
+              <button className="calc-btn calc-btn-operator" title="Деление" onClick={() => handleOperator('÷')}>÷</button>
 
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('7')}>7</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('8')}>8</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('9')}>9</button>
-              <button className="calc-btn calc-btn-operator" onClick={() => handleOperator('×')}>×</button>
+              <button className="calc-btn calc-btn-operator" title="Умножение" onClick={() => handleOperator('×')}>×</button>
 
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('4')}>4</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('5')}>5</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('6')}>6</button>
-              <button className="calc-btn calc-btn-operator" onClick={() => handleOperator('-')}>-</button>
+              <button className="calc-btn calc-btn-operator" title="Вычитание" onClick={() => handleOperator('-')}>-</button>
 
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('1')}>1</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('2')}>2</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('3')}>3</button>
-              <button className="calc-btn calc-btn-operator" onClick={() => handleOperator('+')}>+</button>
+              <button className="calc-btn calc-btn-operator" title="Сложение" onClick={() => handleOperator('+')}>+</button>
 
-              <button className="calc-btn calc-btn-number" onClick={handlePlusMinus}>+/−</button>
+              <button className="calc-btn calc-btn-number" title="Сменить знак +/−" onClick={handlePlusMinus}>+/−</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('0')}>0</button>
               <button className="calc-btn calc-btn-number" onClick={() => handleNumber('.')}>.</button>
-              <button className="calc-btn calc-btn-equals" onClick={calculate}>{t('calc.equals')}</button>
+              <button className="calc-btn calc-btn-equals" title="Вычислить результат" onClick={calculate}>{t('calc.equals')}</button>
             </div>
           </div>
         </div>
