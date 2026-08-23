@@ -25,9 +25,10 @@ import AdBanner from './components/AdBanner';
 import HomePage from './pages/HomePage';
 import ClassicCalculator from './calculators/ClassicCalculator';
 import EngineeringCalculator from './calculators/EngineeringCalculator';
+import MortgageCalculator from './calculators/MortgageCalculator';
 import DateCalculator from './calculators/DateCalculator';
 import PlaceholderCalculator from './calculators/PlaceholderCalculator';
-import { HomeIcon, CarIcon, AppleIcon, PaintIcon } from './components/Icons';
+import { CarIcon, AppleIcon, PaintIcon } from './components/Icons';
 
 export default function App() {
   return (
@@ -48,9 +49,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/classic" element={<ClassicCalculator />} />
               <Route path="/engineering" element={<EngineeringCalculator />} />
-              <Route path="/mortgage" element={
-                <PlaceholderCalculator titleKey="mortgage.title" descKey="mortgage.description" icon={<HomeIcon size={64} />} />
-              } />
+              <Route path="/mortgage" element={<MortgageCalculator />} />
               <Route path="/fuel" element={
                 <PlaceholderCalculator titleKey="fuel.title" descKey="fuel.description" icon={<CarIcon size={64} />} />
               } />

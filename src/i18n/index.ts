@@ -63,7 +63,7 @@ const translations: Record<Language, TranslationKeys> = {
       home: 'Главная',
       classic: 'Классический',
       engineering: 'Инженерный',
-      mortgage: 'Ипотечный',
+      mortgage: 'Кредитный',
       fuel: 'Расход топлива',
       bmi: 'ИМТ и калории',
       wallpaper: 'Обои и краска',
@@ -111,10 +111,10 @@ const translations: Record<Language, TranslationKeys> = {
       secondFn: '2nd',
     },
 
-    /* Ипотечный калькулятор */
+    /* Калькулятор кредита/ипотеки */
     mortgage: {
-      title: 'Ипотечный калькулятор',
-      description: 'Рассчитайте ежемесячный платёж, переплату и график платежей',
+      title: 'Калькулятор кредита',
+      description: 'Рассчитайте ежемесячный платёж, переплату и график платежей по любому кредиту или ипотеке',
       loanAmount: 'Сумма кредита (₽)',
       interestRate: 'Процентная ставка (% годовых)',
       loanTerm: 'Срок кредита (лет)',
@@ -218,7 +218,7 @@ const translations: Record<Language, TranslationKeys> = {
 
     /* Футер */
     footer: {
-      copyright: '© 2025 Центр калькуляторов. Все права защищены.',
+      copyright: '© {year} Центр калькуляторов. Все права защищены.',
       privacy: 'Политика конфиденциальности',
       terms: 'Пользовательское соглашение',
     },
@@ -241,7 +241,7 @@ const translations: Record<Language, TranslationKeys> = {
       home: 'Home',
       classic: 'Classic',
       engineering: 'Engineering',
-      mortgage: 'Mortgage',
+      mortgage: 'Loan',
       fuel: 'Fuel Cost',
       bmi: 'BMI & Calories',
       wallpaper: 'Wallpaper & Paint',
@@ -281,8 +281,8 @@ const translations: Record<Language, TranslationKeys> = {
       secondFn: '2nd',
     },
     mortgage: {
-      title: 'Mortgage Calculator',
-      description: 'Calculate monthly payments, overpayment, and payment schedule',
+      title: 'Loan Calculator',
+      description: 'Calculate monthly payments, overpayment, and payment schedule for any loan or mortgage',
       loanAmount: 'Loan Amount (₽)',
       interestRate: 'Interest Rate (% per year)',
       loanTerm: 'Loan Term (years)',
@@ -376,7 +376,7 @@ const translations: Record<Language, TranslationKeys> = {
       weeks: 'Weeks',
     },
     footer: {
-      copyright: '© 2025 Calculator Center. All rights reserved.',
+      copyright: '© {year} Calculator Center. All rights reserved.',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
     },
