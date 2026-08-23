@@ -28,9 +28,8 @@ import EngineeringCalculator from './calculators/EngineeringCalculator';
 import MortgageCalculator from './calculators/MortgageCalculator';
 import FuelCalculator from './calculators/FuelCalculator';
 import BMICalculator from './calculators/BMICalculator';
+import WallpaperCalculator from './calculators/WallpaperCalculator';
 import DateCalculator from './calculators/DateCalculator';
-import PlaceholderCalculator from './calculators/PlaceholderCalculator';
-import { PaintIcon } from './components/Icons';
 
 export default function App() {
   return (
@@ -54,9 +53,7 @@ export default function App() {
               <Route path="/mortgage" element={<MortgageCalculator />} />
               <Route path="/fuel" element={<FuelCalculator />} />
               <Route path="/bmi" element={<BMICalculator />} />
-              <Route path="/wallpaper" element={
-                <PlaceholderCalculator titleKey="wallpaper.title" descKey="wallpaper.description" icon={<PaintIcon size={64} />} />
-              } />
+              <Route path="/wallpaper" element={<WallpaperCalculator />} />
               <Route path="/days" element={<DateCalculator />} />
             </Routes>
           </main>
