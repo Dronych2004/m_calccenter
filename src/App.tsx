@@ -30,6 +30,10 @@ import FuelCalculator from './calculators/FuelCalculator';
 import BMICalculator from './calculators/BMICalculator';
 import WallpaperCalculator from './calculators/WallpaperCalculator';
 import DateCalculator from './calculators/DateCalculator';
+import PhoneCodesRussia from './calculators/PhoneCodesRussia';
+import CountryCodes from './calculators/CountryCodes';
+import RegionCodes from './calculators/RegionCodes';
+import UnitConverter from './calculators/UnitConverter';
 
 export default function App() {
   return (
@@ -55,6 +59,10 @@ export default function App() {
               <Route path="/bmi" element={<BMICalculator />} />
               <Route path="/wallpaper" element={<WallpaperCalculator />} />
               <Route path="/days" element={<DateCalculator />} />
+              <Route path="/phone-codes" element={<PhoneCodesRussia />} />
+              <Route path="/country-codes" element={<CountryCodes />} />
+              <Route path="/region-codes" element={<RegionCodes />} />
+              <Route path="/unit-converter" element={<UnitConverter />} />
             </Routes>
           </main>
 

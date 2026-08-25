@@ -96,10 +96,10 @@ const categories: Category[] = [
     titleRu: 'Справочники',
     titleEn: 'Reference',
     calculators: [
-      { path: '/phone-codes', titleRu: 'Телефонные коды', titleEn: 'Phone Codes' },
-      { path: '/countries', titleRu: 'Страны мира', titleEn: 'Countries' },
-      { path: '/region-codes', titleRu: 'Коды регионов', titleEn: 'Region Codes' },
-      { path: '/unit-converter', titleRu: 'Конвертер единиц', titleEn: 'Unit Converter' },
+      { path: '/phone-codes', titleRu: 'Телефонные коды России', titleEn: 'Russia Phone Codes' },
+      { path: '/country-codes', titleRu: 'Телефонные коды стран мира', titleEn: 'World Country Codes' },
+      { path: '/region-codes', titleRu: 'Коды регионов России', titleEn: 'Russia Region Codes' },
+      { path: '/unit-converter', titleRu: 'Конвертер единиц измерений', titleEn: 'Unit Converter' },
     ],
   },
 ];
