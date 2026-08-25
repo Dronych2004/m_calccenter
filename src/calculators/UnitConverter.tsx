@@ -36,6 +36,7 @@ const categories: Record<Category, { nameRu: string; nameEn: string; units: Unit
       { id: 'ft', nameRu: 'Фут', nameEn: 'Foot', factor: 0.3048 },
       { id: 'yd', nameRu: 'Ярд', nameEn: 'Yard', factor: 0.9144 },
       { id: 'mi', nameRu: 'Миля', nameEn: 'Mile', factor: 1609.344 },
+      { id: 'nmi', nameRu: 'Морская миля', nameEn: 'Nautical mile', factor: 1852 },
     ],
   },
   weight: {
