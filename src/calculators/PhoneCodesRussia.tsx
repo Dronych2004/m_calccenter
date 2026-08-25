@@ -138,6 +138,37 @@ const phoneCodes: CityCode[] = [
   { city: 'Элиста', cityEn: 'Elista', code: '847', region: 'Республика Калмыкия', regionEn: 'Republic of Kalmykia', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
   { city: 'Черкесск', cityEn: 'Cherkessk', code: '878', region: 'Карачаево-Черкесская Республика', regionEn: 'Karachay-Cherkess Republic', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
 
+  /* ===== ЧУКОТСКИЙ АО ===== */
+  { city: 'Певек', cityEn: 'Pevek', code: '42737', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Билибино', cityEn: 'Bilibino', code: '42738', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Анадырь', cityEn: 'Anadyr', code: '427', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Провидения', cityEn: 'Provideniya', code: '42735', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Угольные Копи', cityEn: 'Ugolnye Kopi', code: '42732', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Эгвекинот', cityEn: 'Egvekinot', code: '42734', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Лаврентия', cityEn: 'Lavrentiya', code: '42736', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Мыс Шмидта', cityEn: 'Mys Shmidta', code: '42739', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+
+  /* ===== АМУРСКАЯ ОБЛАСТЬ ===== */
+  { city: 'Зея', cityEn: 'Zeya', code: '41658', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Белогорск', cityEn: 'Belogorsk', code: '41641', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Райчихинск', cityEn: 'Raychikhinsk', code: '41647', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Шимановск', cityEn: 'Shimanovsk', code: '41651', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Тында', cityEn: 'Tynda', code: '41656', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Свободный', cityEn: 'Svobodny', code: '41642', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Сковородино', cityEn: 'Skovorodino', code: '41636', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Завитинск', cityEn: 'Zavitinsk', code: '41632', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Магдагачи', cityEn: 'Magdagachi', code: '41637', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Ромны', cityEn: 'Romny', code: '41635', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Поярково', cityEn: 'Poyarkovo', code: '41633', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Ивановка', cityEn: 'Ivanovka', code: '41631', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Константиновка', cityEn: 'Konstantinovka', code: '41630', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Тамбовка', cityEn: 'Tambovka', code: '41638', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Архара', cityEn: 'Arkharа', code: '41639', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Новобурейск', cityEn: 'Novobureysk', code: '41634', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Серышево', cityEn: 'Seryshevo', code: '41644', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Февральск', cityEn: 'Fevralsk', code: '41645', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Экимчан', cityEn: 'Ekimchan', code: '41649', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+
   /* ===== АВТОНОМНЫЕ ОКРУГА И ОБЛАСТИ ===== */
   { city: 'Ханты-Мансийск', cityEn: 'Khanty-Mansiysk', code: '346', region: 'Ханты-Мансийский АО — Югра', regionEn: 'Khanty-Mansi AO — Yugra', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
   { city: 'Надым', cityEn: 'Nadym', code: '349', region: 'Ямало-Ненецкий АО', regionEn: 'Yamalo-Nenets AO', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
