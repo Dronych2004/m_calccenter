@@ -9,6 +9,7 @@ import {
   PaintIcon, WrenchIcon, BookIcon, CalendarIcon,
   SparkleIcon, BoltIcon, LockIcon, PhoneIcon,
 } from '../components/Icons';
+import CategoryCard from '../components/CategoryCard';
 
 /* Тип иконки — любая функция из Icons.tsx */
 type IconComponent = React.FC<{ size?: number; className?: string }>;
@@ -221,38 +222,15 @@ export default function HomePage() {
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-8 text-center tracking-tight">{t('home.hero')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {categories.map((cat) => (
-            <div
+            <CategoryCard
               key={cat.id}
-              className="group bg-white rounded-2xl border border-slate-100 p-5 sm:p-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-            >
-              {/* Цветная иконка */}
-              <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br ${cat.gradient} shadow-lg ${cat.shadow} mb-4`}>
-                <cat.Icon size={22} className="text-white" />
-              </div>
-
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1.5 group-hover:text-indigo-600 transition-colors">
-                {lang === 'ru' ? cat.titleRu : cat.titleEn}
-              </h3>
-              <p className="text-xs sm:text-[13px] text-slate-400 leading-relaxed mb-4">
-                {lang === 'ru' ? cat.descRu : cat.descEn}
-              </p>
-
-              {/* Список калькуляторов */}
-              <div className="space-y-1">
-                {cat.calculators.map((calc) => (
-                  <Link
-                    key={calc.path}
-                    to={calc.path}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 no-underline hover:bg-slate-50 hover:text-indigo-600 transition-colors"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-slate-300 shrink-0">
-                      <path d="M4.5 2.5l4 3.5-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    {lang === 'ru' ? calc.titleRu : calc.titleEn}
-                  </Link>
-                ))}
-              </div>
-            </div>
+              Icon={cat.Icon}
+              titleRu={cat.titleRu}
+              titleEn={cat.titleEn}
+              gradient={cat.gradient}
+              shadow={cat.shadow}
+              calculators={cat.calculators}
+            />
           ))}
         </div>
       </section>
