@@ -127,6 +127,185 @@ const phoneCodes: CityCode[] = [
   { city: 'Ханты-Мансийск', cityEn: 'Khanty-Mansiysk', code: '346', region: 'Ханты-Мансийский АО — Югра', regionEn: 'Khanty-Mansi AO — Yugra', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
   { city: 'Надым', cityEn: 'Nadym', code: '349', region: 'Ямало-Ненецкий АО', regionEn: 'Yamalo-Nenets AO', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
   { city: 'Нарьян-Мар', cityEn: 'Naryan-Mar', code: '818', region: 'Ненецкий АО', regionEn: 'Nenets AO', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+
+  /* ===== ГОРОДА С ВНУТРЕННИМИ КОДАМИ (проверено kody.su) ===== */
+  /* Тульская область */
+  { city: 'Донской', cityEn: 'Donskoy', code: '48746', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ефремов', cityEn: 'Efremov', code: '48741', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Новомосковск', cityEn: 'Novomoskovsk', code: '48762', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Узловая', cityEn: 'Uzlovaya', code: '48753', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Кимовск', cityEn: 'Kimovsk', code: '48756', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Суворов', cityEn: 'Suvorov', code: '48766', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Киреевск', cityEn: 'Kireyevsk', code: '48755', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Богородицк', cityEn: 'Bogoroditsk', code: '48754', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Дубна (Тульская обл.)', cityEn: 'Dubna (Tula)', code: '48752', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Плавск', cityEn: 'Plavsk', code: '48759', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Чернь', cityEn: 'Chern', code: '48758', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Щёкино', cityEn: 'Shchyokino', code: '48757', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ясногорск', cityEn: 'Yasnogorsk', code: '48759', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ленинский (Тульская обл.)', cityEn: 'Leninsky (Tula)', code: '48753', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Заокский', cityEn: 'Zaoksky', code: '48759', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Куркино', cityEn: 'Kurkino', code: '48758', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Теплое', cityEn: 'Teploye', code: '48758', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Одоев', cityEn: 'Odoev', code: '48757', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Венёв', cityEn: 'Venev', code: '48753', region: 'Тульская область', regionEn: 'Tula Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  /* Калужская область */
+  { city: 'Обнинск', cityEn: 'Obninsk', code: '48446', region: 'Калужская область', regionEn: 'Kaluga Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Людиново', cityEn: 'Lyudinovo', code: '48445', region: 'Калужская область', regionEn: 'Kaluga Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Козельск', cityEn: 'Kozelsk', code: '48456', region: 'Калужская область', regionEn: 'Kaluga Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Сухиничи', cityEn: 'Sukhinichi', code: '48448', region: 'Калужская область', regionEn: 'Kaluga Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Малоярославец', cityEn: 'Maloyaroslavets', code: '48447', region: 'Калужская область', regionEn: 'Kaluga Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  /* Московская область */
+  { city: 'Химки', cityEn: 'Khimki', code: '498', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Балашиха', cityEn: 'Balashikha', code: '49652', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Мытищи', cityEn: 'Mytishchi', code: '49648', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Люберцы', cityEn: 'Lyubertsy', code: '49656', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Подольск', cityEn: 'Podolsk', code: '49676', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Домодедово', cityEn: 'Domodedovo', code: '49679', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Одинцово', cityEn: 'Odintsovo', code: '49671', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Долгопрудный', cityEn: 'Dolgoprudny', code: '49597', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Красногорск', cityEn: 'Krasnogorsk', code: '49596', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Дмитров', cityEn: 'Dmitrov', code: '49622', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Коломна', cityEn: 'Kolomna', code: '49676', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Сергиев Посад', cityEn: 'Sergiyev Posad', code: '49654', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Серпухов', cityEn: 'Serpukhov', code: '49676', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ногинск', cityEn: 'Noginsk', code: '49652', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Орехово-Зуево', cityEn: 'Orekhovo-Zuyevo', code: '49672', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Электросталь', cityEn: 'Elektrostal', code: '49657', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Жуковский', cityEn: 'Zhukovsky', code: '49648', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Воскресенск', cityEn: 'Voskresensk', code: '49672', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Лобня', cityEn: 'Lobnya', code: '49671', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ступино', cityEn: 'Stupino', code: '49676', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Чехов', cityEn: 'Chekhov', code: '49676', region: 'Московская область', regionEn: 'Moscow Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  /* Ленинградская область */
+  { city: 'Выборг', cityEn: 'Vyborg', code: '81373', region: 'Ленинградская область', regionEn: 'Leningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Гатчина', cityEn: 'Gatchina', code: '81371', region: 'Ленинградская область', regionEn: 'Leningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Кингисепп', cityEn: 'Kingisepp', code: '81375', region: 'Ленинградская область', regionEn: 'Leningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Тосно', cityEn: 'Tosno', code: '81372', region: 'Ленинградская область', regionEn: 'Leningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Всеволожск', cityEn: 'Vsevolozhsk', code: '81370', region: 'Ленинградская область', regionEn: 'Leningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Калининградская область */
+  { city: 'Балтийск', cityEn: 'Baltiysk', code: '40145', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Черняховск', cityEn: 'Chernyakhovsk', code: '40141', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Советск', cityEn: 'Sovetsk', code: '40161', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Гурьевск', cityEn: 'Guryevsk', code: '40151', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Гусев', cityEn: 'Gusev', code: '40142', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Багратионовск', cityEn: 'Bagrationovsk', code: '40143', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Неман', cityEn: 'Neman', code: '40146', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Полесск', cityEn: 'Polessk', code: '40146', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Правдинск', cityEn: 'Pravdinsk', code: '40144', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Зеленоградск', cityEn: 'Zelenogradsk', code: '40150', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Светлогорск', cityEn: 'Svetlogorsk', code: '40150', region: 'Калининградская область', regionEn: 'Kaliningrad Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Ростовская область */
+  { city: 'Шахты', cityEn: 'Shakhty', code: '86362', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Батайск', cityEn: 'Bataysk', code: '86393', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Новочеркасск', cityEn: 'Novocherkassk', code: '86392', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Таганрог', cityEn: 'Taganrog', code: '86346', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Белая Калитва', cityEn: 'Belaya Kalitva', code: '86383', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Гуково', cityEn: 'Gukovo', code: '86362', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Красный Сулин', cityEn: 'Krasny Sulin', code: '86367', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Сальск', cityEn: 'Salsk', code: '86372', region: 'Ростовская область', regionEn: 'Rostov Oblast', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  /* Воронежская область */
+  { city: 'Борисоглебск', cityEn: 'Borisoglebsk', code: '47354', region: 'Воронежская область', regionEn: 'Voronezh Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Лиски', cityEn: 'Liski', code: '47391', region: 'Воронежская область', regionEn: 'Voronezh Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Богучар', cityEn: 'Boguchar', code: '47346', region: 'Воронежская область', regionEn: 'Voronezh Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Россошь', cityEn: 'Rossosh', code: '47374', region: 'Воронежская область', regionEn: 'Voronezh Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Нововоронеж', cityEn: 'Novovoronezh', code: '47370', region: 'Воронежская область', regionEn: 'Voronezh Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  /* Краснодарский край */
+  { city: 'Сочи', cityEn: 'Sochi', code: '86224', region: 'Краснодарский край', regionEn: 'Krasnodar Krai', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Геленджик', cityEn: 'Gelendzhik', code: '86141', region: 'Краснодарский край', regionEn: 'Krasnodar Krai', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Анапа', cityEn: 'Anapa', code: '86133', region: 'Краснодарский край', regionEn: 'Krasnodar Krai', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  { city: 'Армавир', cityEn: 'Armavir', code: '86131', region: 'Краснодарский край', regionEn: 'Krasnodar Krai', federalDistrict: 'Южный', federalDistrictEn: 'Southern' },
+  /* Челябинская область */
+  { city: 'Миасс', cityEn: 'Miass', code: '35137', region: 'Челябинская область', regionEn: 'Chelyabinsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Златоуст', cityEn: 'Zlatoust', code: '35136', region: 'Челябинская область', regionEn: 'Chelyabinsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Магнитогорск', cityEn: 'Magnitogorsk', code: '35191', region: 'Челябинская область', regionEn: 'Chelyabinsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  /* Свердловская область */
+  { city: 'Нижний Тагил', cityEn: 'Nizhny Tagil', code: '34353', region: 'Свердловская область', regionEn: 'Sverdlovsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Каменск-Уральский', cityEn: 'Kamensk-Uralsky', code: '34393', region: 'Свердловская область', regionEn: 'Sverdlovsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Первоуральск', cityEn: 'Pervouralsk', code: '34375', region: 'Свердловская область', regionEn: 'Sverdlovsk Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  /* Кемеровская область */
+  { city: 'Новокузнецк', cityEn: 'Novokuznetsk', code: '38432', region: 'Кемеровская область', regionEn: 'Kemerovo Oblast', federalDistrict: 'Сибирский', federalDistrictEn: 'Siberian' },
+  { city: 'Прокопьевск', cityEn: 'Prokopyevsk', code: '38463', region: 'Кемеровская область', regionEn: 'Kemerovo Oblast', federalDistrict: 'Сибирский', federalDistrictEn: 'Siberian' },
+  { city: 'Юрга', cityEn: 'Yurga', code: '38451', region: 'Кемеровская область', regionEn: 'Kemerovo Oblast', federalDistrict: 'Сибирский', federalDistrictEn: 'Siberian' },
+  { city: 'Белово', cityEn: 'Belovo', code: '38452', region: 'Кемеровская область', regionEn: 'Kemerovo Oblast', federalDistrict: 'Сибирский', federalDistrictEn: 'Siberian' },
+  { city: 'Киселёвск', cityEn: 'Kiselevsk', code: '38464', region: 'Кемеровская область', regionEn: 'Kemerovo Oblast', federalDistrict: 'Сибирский', federalDistrictEn: 'Siberian' },
+  /* Приморский край */
+  { city: 'Находка', cityEn: 'Nakhodka', code: '42366', region: 'Приморский край', regionEn: 'Primorsky Krai', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Уссурийск', cityEn: 'Ussuriysk', code: '42341', region: 'Приморский край', regionEn: 'Primorsky Krai', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Артём', cityEn: 'Artyom', code: '42337', region: 'Приморский край', regionEn: 'Primorsky Krai', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  /* Хабаровский край */
+  { city: 'Комсомольск-на-Амуре', cityEn: 'Komsomolsk-on-Amur', code: '42175', region: 'Хабаровский край', regionEn: 'Khabarovsk Krai', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Амурск', cityEn: 'Amursk', code: '42149', region: 'Хабаровский край', regionEn: 'Khabarovsk Krai', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  /* Сахалинская область */
+  { city: 'Корсаков', cityEn: 'Korsakov', code: '42435', region: 'Сахалинская область', regionEn: 'Sakhalin Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Холмск', cityEn: 'Kholmsk', code: '42433', region: 'Сахалинская область', regionEn: 'Sakhalin Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  { city: 'Оха', cityEn: 'Okha', code: '42439', region: 'Сахалинская область', regionEn: 'Sakhalin Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
+  /* Чеченская Республика */
+  { city: 'Гудермес', cityEn: 'Gudermes', code: '87152', region: 'Чеченская Республика', regionEn: 'Chechen Republic', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  /* Республика Дагестан */
+  { city: 'Каспийск', cityEn: 'Kaspiysk', code: '87231', region: 'Республика Дагестан', regionEn: 'Republic of Dagestan', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  { city: 'Дербент', cityEn: 'Derbent', code: '87232', region: 'Республика Дагестан', regionEn: 'Republic of Dagestan', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  { city: 'Хасавюрт', cityEn: 'Khasavyurt', code: '87235', region: 'Республика Дагестан', regionEn: 'Republic of Dagestan', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  /* Ставропольский край */
+  { city: 'Пятигорск', cityEn: 'Pyatigorsk', code: '87931', region: 'Ставропольский край', regionEn: 'Stavropol Krai', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  { city: 'Кисловодск', cityEn: 'Kislovodsk', code: '87937', region: 'Ставропольский край', regionEn: 'Stavropol Krai', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  { city: 'Ессентуки', cityEn: 'Yessentuki', code: '87934', region: 'Ставропольский край', regionEn: 'Stavropol Krai', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  { city: 'Минеральные Воды', cityEn: 'Mineralnye Vody', code: '87933', region: 'Ставропольский край', regionEn: 'Stavropol Krai', federalDistrict: 'Северо-Кавказский', federalDistrictEn: 'North Caucasian' },
+  /* Пермский край */
+  { city: 'Березники', cityEn: 'Berezniki', code: '34242', region: 'Пермский край', regionEn: 'Perm Krai', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Соликамск', cityEn: 'Solikamsk', code: '34253', region: 'Пермский край', regionEn: 'Perm Krai', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Чайковский', cityEn: 'Chaikovsky', code: '34241', region: 'Пермский край', regionEn: 'Perm Krai', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Кунгур', cityEn: 'Kungur', code: '34262', region: 'Пермский край', regionEn: 'Perm Krai', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  /* Удмуртская Республика */
+  { city: 'Можга', cityEn: 'Mozhga', code: '34139', region: 'Удмуртская Республика', regionEn: 'Udmurt Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Воткинск', cityEn: 'Votkinsk', code: '34145', region: 'Удмуртская Республика', regionEn: 'Udmurt Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Сарапул', cityEn: 'Sarapul', code: '34147', region: 'Удмуртская Республика', regionEn: 'Udmurt Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Глазов', cityEn: 'Glazov', code: '34141', region: 'Удмуртская Республика', regionEn: 'Udmurt Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  /* Республика Коми */
+  { city: 'Воркута', cityEn: 'Vorkuta', code: '82151', region: 'Республика Коми', regionEn: 'Komi Republic', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Ухта', cityEn: 'Ukhta', code: '82131', region: 'Республика Коми', regionEn: 'Komi Republic', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Печора', cityEn: 'Pechora', code: '82141', region: 'Республика Коми', regionEn: 'Komi Republic', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Инта', cityEn: 'Inta', code: '82145', region: 'Республика Коми', regionEn: 'Komi Republic', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Архангельская область */
+  { city: 'Котлас', cityEn: 'Kotlas', code: '81837', region: 'Архангельская область', regionEn: 'Arkhangelsk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Северодвинск', cityEn: 'Severodvinsk', code: '81845', region: 'Архангельская область', regionEn: 'Arkhangelsk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Вологодская область */
+  { city: 'Белозерск', cityEn: 'Belozersk', code: '81756', region: 'Вологодская область', regionEn: 'Vologda Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Великий Устюг', cityEn: 'Veliky Ustyug', code: '81739', region: 'Вологодская область', regionEn: 'Vologda Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Сокол', cityEn: 'Sokol', code: '81733', region: 'Вологодская область', regionEn: 'Vologda Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Республика Карелия */
+  { city: 'Кондопога', cityEn: 'Kondopoga', code: '81451', region: 'Республика Карелия', regionEn: 'Republic of Karelia', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Сортавала', cityEn: 'Sortavala', code: '81430', region: 'Республика Карелия', regionEn: 'Republic of Karelia', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Кемь', cityEn: 'Kem', code: '81859', region: 'Республика Карелия', regionEn: 'Republic of Karelia', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Кировская область */
+  { city: 'Кирово-Чепецк', cityEn: 'Kirovo-Chepetsk', code: '83361', region: 'Кировская область', regionEn: 'Kirov Oblast', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Слободской', cityEn: 'Slobodskoy', code: '83362', region: 'Кировская область', regionEn: 'Kirov Oblast', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  /* Чувашская Республика */
+  { city: 'Алатырь', cityEn: 'Alatyr', code: '83531', region: 'Чувашская Республика', regionEn: 'Chuvash Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Канаш', cityEn: 'Kanash', code: '83532', region: 'Чувашская Республика', regionEn: 'Chuvash Republic', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  /* Оренбургская область */
+  { city: 'Орск', cityEn: 'Orsk', code: '35371', region: 'Оренбургская область', regionEn: 'Orenburg Oblast', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  { city: 'Новотроицк', cityEn: 'Novotroitsk', code: '35376', region: 'Оренбургская область', regionEn: 'Orenburg Oblast', federalDistrict: 'Приволжский', federalDistrictEn: 'Volga' },
+  /* Курганская область */
+  { city: 'Шадринск', cityEn: 'Shadrinsk', code: '35253', region: 'Курганская область', regionEn: 'Kurgan Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  /* Тюменская область */
+  { city: 'Тобольск', cityEn: 'Tobolsk', code: '34521', region: 'Тюменская область', regionEn: 'Tyumen Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Ишим', cityEn: 'Ishim', code: '34551', region: 'Тюменская область', regionEn: 'Tyumen Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  { city: 'Ялуторовск', cityEn: 'Yalutorovsk', code: '34541', region: 'Тюменская область', regionEn: 'Tyumen Oblast', federalDistrict: 'Уральский', federalDistrictEn: 'Urals' },
+  /* Мурманская область */
+  { city: 'Апатиты', cityEn: 'Apatity', code: '81531', region: 'Мурманская область', regionEn: 'Murmansk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Мончегорск', cityEn: 'Monchegorsk', code: '81536', region: 'Мурманская область', regionEn: 'Murmansk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Кандалакша', cityEn: 'Kandalaksha', code: '81533', region: 'Мурманская область', regionEn: 'Murmansk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  { city: 'Североморск', cityEn: 'Severomorsk', code: '81537', region: 'Мурманская область', regionEn: 'Murmansk Oblast', federalDistrict: 'Северо-Западный', federalDistrictEn: 'Northwestern' },
+  /* Костромская область */
+  { city: 'Буй', cityEn: 'Buy', code: '49438', region: 'Костромская область', regionEn: 'Kostroma Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Шарья', cityEn: 'Sharya', code: '49458', region: 'Костромская область', regionEn: 'Kostroma Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Галич', cityEn: 'Galich', code: '49441', region: 'Костромская область', regionEn: 'Kostroma Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  /* Ивановская область */
+  { city: 'Кинешма', cityEn: 'Kineshma', code: '49343', region: 'Ивановская область', regionEn: 'Ivanovo Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Шуя', cityEn: 'Shuya', code: '49352', region: 'Ивановская область', regionEn: 'Ivanovo Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Вичуга', cityEn: 'Vichuga', code: '49341', region: 'Ивановская область', regionEn: 'Ivanovo Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Кохма', cityEn: 'Kokhma', code: '49353', region: 'Ивановская область', regionEn: 'Ivanovo Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
 ];
 
 export default function PhoneCodesRussia() {
