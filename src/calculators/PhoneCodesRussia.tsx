@@ -148,6 +148,26 @@ const phoneCodes: CityCode[] = [
   { city: 'Лаврентия', cityEn: 'Lavrentiya', code: '42736', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
   { city: 'Мыс Шмидта', cityEn: 'Mys Shmidta', code: '42739', region: 'Чукотский АО', regionEn: 'Chukotka AO', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
 
+  /* ===== ВЛАДИМИРСКАЯ ОБЛАСТЬ ===== */
+  { city: 'Петушки', cityEn: 'Petushki', code: '49243', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Муром', cityEn: 'Murom', code: '49234', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Ковров', cityEn: 'Kovrov', code: '49232', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Александров', cityEn: 'Aleksandrov', code: '49244', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Гусь-Хрустальный', cityEn: 'Gus-Khrustalny', code: '49241', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Вязники', cityEn: 'Vyazniki', code: '49233', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Киржач', cityEn: 'Kirzhach', code: '49237', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Собинка', cityEn: 'Sobinka', code: '49242', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Лакинск', cityEn: 'Lakinsk', code: '49246', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Гороховец', cityEn: 'Gorokhovets', code: '49238', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Камешково', cityEn: 'Kameshkovo', code: '49249', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Меленки', cityEn: 'Melenki', code: '49247', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Покров', cityEn: 'Pokrov', code: '49248', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Радужный', cityEn: 'Raduzhny', code: '49254', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Судогда', cityEn: 'Sudogda', code: '49235', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Суздаль', cityEn: 'Suzdal', code: '49231', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Юрьев-Польский', cityEn: 'Yuryev-Polsky', code: '49246', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+  { city: 'Кольчугино', cityEn: 'Kolchugino', code: '49245', region: 'Владимирская область', regionEn: 'Vladimir Oblast', federalDistrict: 'Центральный', federalDistrictEn: 'Central' },
+
   /* ===== АМУРСКАЯ ОБЛАСТЬ ===== */
   { city: 'Зея', cityEn: 'Zeya', code: '41658', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
   { city: 'Белогорск', cityEn: 'Belogorsk', code: '41641', region: 'Амурская область', regionEn: 'Amur Oblast', federalDistrict: 'Дальневосточный', federalDistrictEn: 'Far Eastern' },
