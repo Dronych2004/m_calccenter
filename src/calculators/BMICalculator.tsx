@@ -16,7 +16,7 @@
  *   25–29.9 — Избыточный вес
  *   ≥ 30 — Ожирение
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 /* Тип пола */
@@ -74,6 +74,8 @@ export default function BMICalculator() {
   const [age, setAge] = useState('');
   const [activityIndex, setActivityIndex] = useState(0);
   const [targetWeight, setTargetWeight] = useState('');
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -84,7 +86,89 @@ export default function BMICalculator() {
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
-  const result = useMemo(() => {
+  const calculate = useCallback(() => {
+    const h = parseFloat(height);
+    const w = parseFloat(weight);
+    const a = parseInt(age);
+
+    if (!h || !w || !a || h <= 0 || w <= 0 || a <= 0) return null;
+
+    /* ИМТ */
+    const heightM = h / 100;
+    const bmi = w / (heightM * heightM);
+
+    const activity = activityLevels[activityIndex];
+
+    /* Формула 1: Миффлин-Сан Жеор (2005 г.) */
+    let bmrMifflin: number;
+    if (gender === 'male') {
+      bmrMifflin = 10 * w + 6.25 * h - 5 * a + 5;
+    } else {
+      bmrMifflin = 10 * w + 6.25 * h - 5 * a - 161;
+    }
+    const dailyMifflin = bmrMifflin * activity.factor;
+
+    /* Формула 2: Харрис-Бенедикт (пересмотренная 1984 г.) */
+    let bmrHarris: number;
+    if (gender === 'male') {
+      bmrHarris = 88.362 + 13.397 * w + 4.799 * h - 5.677 * a;
+    } else {
+      bmrHarris = 447.593 + 9.247 * w + 3.098 * h - 4.330 * a;
+    }
+    const dailyHarris = bmrHarris * activity.factor;
+
+    /* Категория ИМТ */
+    const category = getBMICategory(bmi, getLanguage());
+
+    /* Анализ целевого веса */
+    let targetAnalysis: {
+      goal: string;
+      diffKg: number;
+      currentCalories: number;
+      recommendedCalories: number;
+      deficit: number;
+      weeksToGoal: number;
+    } | null = null;
+    const tw = parseFloat(targetWeight);
+    if (tw && tw > 0 && tw !== w) {
+      const diffKg = tw - w;
+
+      /* Формула простая: дефицит 500 ккал/день от текущей нормы */
+      const deficit = 500;
+      const recommendedCalories = Math.round(dailyMifflin - deficit);
+
+      /* Срок: кг × 7700 / дефицит / 7 */
+      const totalDeficitCal = Math.abs(diffKg) * 7700;
+      const weeksToGoal = Math.ceil(totalDeficitCal / (deficit * 7));
+
+      targetAnalysis = {
+        goal: diffKg < 0 ? (getLanguage() === 'ru' ? 'Снизить вес' : 'Lose weight') : (getLanguage() === 'ru' ? 'Набрать вес' : 'Gain weight'),
+        diffKg: Math.abs(diffKg),
+        currentCalories: Math.round(dailyMifflin),
+        recommendedCalories: Math.max(1200, recommendedCalories),
+        deficit,
+        weeksToGoal,
+      };
+    }
+
+    return { bmi, bmrMifflin, bmrHarris, dailyMifflin, dailyHarris, category, targetAnalysis };
+  }, [gender, height, weight, age, activityIndex, targetWeight]);
+
+  const handleCalculate = () => {
+    setResult(calculate());
+    setCalculated(true);
+  };
+
+  const handleReset = () => {
+    setGender('male');
+    setHeight('');
+    setWeight('');
+    setAge('');
+    setActivityIndex(0);
+    setTargetWeight('');
+    setCalculated(false);
+    setResult(null);
+  };
     const h = parseFloat(height);
     const w = parseFloat(weight);
     const a = parseInt(age);
@@ -267,26 +351,27 @@ export default function BMICalculator() {
               </div>
             </div>
 
-            {/* Сброс */}
-            <button
-              onClick={() => {
-                setGender('male');
-                setHeight('');
-                setWeight('');
-                setAge('');
-                setActivityIndex(0);
-                setTargetWeight('');
-              }}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+              >
+                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {result ? (
+          {calculated && result ? (
             <div className="space-y-4">
               {/* ИМТ — главная карточка */}
               <div className="bg-linear-to-br from-rose-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg shadow-rose-500/20">
@@ -443,8 +528,8 @@ export default function BMICalculator() {
               </div>
               <p className="text-sm text-slate-300">
                 {getLanguage() === 'ru'
-                  ? 'Заполните данные для расчёта ИМТ и калорий'
-                  : 'Fill in your data to calculate BMI and calories'}
+                  ? 'Заполните данные и нажмите «Рассчитать»'
+                  : 'Fill in your data and press «Calculate»'}
               </p>
             </div>
           )}
