@@ -34,6 +34,7 @@ import PhoneCodesRussia from './calculators/PhoneCodesRussia';
 import CountryCodes from './calculators/CountryCodes';
 import RegionCodes from './calculators/RegionCodes';
 import UnitConverter from './calculators/UnitConverter';
+import DiscountCalculator from './calculators/DiscountCalculator';
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="/country-codes" element={<CountryCodes />} />
               <Route path="/region-codes" element={<RegionCodes />} />
               <Route path="/unit-converter" element={<UnitConverter />} />
+              <Route path="/discount" element={<DiscountCalculator />} />
             </Routes>
           </main>
 
