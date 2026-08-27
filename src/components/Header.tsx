@@ -165,15 +165,6 @@ export default function Header() {
                 }`}
               >
                 {lang === 'ru' ? cat.titleRu : cat.titleEn}
-                <svg
-                  className={`inline-block ml-1 transition-transform ${openCategory === cat.id ? 'rotate-180' : ''}`}
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                >
-                  <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
               </button>
 
               {/* Выпадающий список */}
