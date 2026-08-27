@@ -2,11 +2,10 @@
  * Главная страница — карточки категорий со списками калькуляторов
  */
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { t, getLanguage } from '../i18n';
+import { t } from '../i18n';
 import {
-  CalcIcon, GearIcon, MoneyIcon, FileTextIcon, CarIcon, AppleIcon,
-  PaintIcon, WrenchIcon, BookIcon, CalendarIcon,
+  CalcIcon, MoneyIcon, FileTextIcon, CarIcon, AppleIcon,
+  PaintIcon, WrenchIcon, BookIcon,
   SparkleIcon, BoltIcon, LockIcon, PhoneIcon,
 } from '../components/Icons';
 import CategoryCard from '../components/CategoryCard';
@@ -165,7 +164,6 @@ const features = [
 
 export default function HomePage() {
   const [, setLangTick] = useState(0);
-  const lang = getLanguage();
 
   useEffect(() => {
     const handler = () => setLangTick((v) => v + 1);

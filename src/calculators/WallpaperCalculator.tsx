@@ -47,6 +47,9 @@ export default function WallpaperCalculator() {
   const [paintVolume, setPaintVolume] = useState('2.5');
 
   const [calculated, setCalculated] = useState(false);
+  const [wallArea, setWallArea] = useState<{ perimeter: number; grossArea: number; doorArea: number; windowArea: number; netArea: number } | null>(null);
+  const [wallpaperResult, setWallpaperResult] = useState<{ stripLength: number; totalStrips: number; totalLength: number; rolls: number } | null>(null);
+  const [paintResult, setPaintResult] = useState<{ litersNeeded: number; cans: number } | null>(null);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function WallpaperCalculator() {
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
-  const calculateWallArea = useCallback(() => {
+  const handleCalculate = useCallback(() => {
     const w = parseFloat(roomWidth);
     const l = parseFloat(roomLength);
     const h = parseFloat(roomHeight);
@@ -66,65 +69,49 @@ export default function WallpaperCalculator() {
     const ww = parseFloat(windowWidth) || 0;
     const wh = parseFloat(windowHeight) || 0;
     const wc = parseInt(windowCount) || 0;
+    const rw = parseFloat(rollWidth);
+    const rl = parseFloat(rollLength);
+    const coverage = parseFloat(paintCoverage);
+    const volume = parseFloat(paintVolume);
 
-    if (!w || !l || !h || w <= 0 || l <= 0 || h <= 0) return null;
+    if (!w || !l || !h || w <= 0 || l <= 0 || h <= 0) {
+      setCalculated(true);
+      return;
+    }
 
     /* Периметр и площадь стен */
     const perimeter = 2 * (w + l);
     const grossArea = perimeter * h;
-
-    /* Площадь дверей и окон */
     const doorArea = dw * dh;
     const windowArea = ww * wh * wc;
-    const netArea = grossArea - doorArea - windowArea;
+    const netArea = Math.max(0, grossArea - doorArea - windowArea);
 
-    return { perimeter, grossArea, doorArea, windowArea, netArea: Math.max(0, netArea) };
-  }, [roomWidth, roomLength, roomHeight, doorWidth, doorHeight, windowWidth, windowHeight, windowCount]);
+    setWallArea({ perimeter, grossArea, doorArea, windowArea, netArea });
 
-  const wallpaperResult = useMemo(() => {
-    if (!wallArea) return null;
+    /* Обои */
+    if (rw && rl && rw > 0 && rl > 0) {
+      const stripLength = h + 0.05;
+      const wall1Strips = Math.ceil(w / rw);
+      const wall2Strips = Math.ceil(l / rw);
+      const totalStrips = wall1Strips * 2 + wall2Strips * 2;
+      const totalLength = totalStrips * stripLength;
+      const rolls = Math.ceil(totalLength / rl);
+      setWallpaperResult({ stripLength, totalStrips, totalLength, rolls });
+    } else {
+      setWallpaperResult(null);
+    }
 
-    const w = parseFloat(roomWidth);
-    const l = parseFloat(roomLength);
-    const h = parseFloat(roomHeight);
-    const rw = parseFloat(rollWidth);
-    const rl = parseFloat(rollLength);
+    /* Краска */
+    if (coverage && volume && coverage > 0 && volume > 0) {
+      const litersNeeded = netArea / coverage;
+      const cans = Math.ceil(litersNeeded / volume);
+      setPaintResult({ litersNeeded, cans });
+    } else {
+      setPaintResult(null);
+    }
 
-    if (!w || !l || !h || !rw || !rl || rw <= 0 || rl <= 0) return null;
-
-    /* Длина одной полосы = высота + 5 см запас на подрезку */
-    const stripLength = h + 0.05;
-
-    /* Количество полос на каждую стену */
-    const wall1Strips = Math.ceil(w / rw); /* Стена длиной w */
-    const wall2Strips = Math.ceil(l / rw); /* Стена длиной l */
-    const totalStrips = wall1Strips * 2 + wall2Strips * 2; /* 4 стены */
-
-    /* Общая длина обоев */
-    const totalLength = totalStrips * stripLength;
-
-    /* Количество рулонов */
-    const rolls = Math.ceil(totalLength / rl);
-
-    return { stripLength, totalStrips, totalLength, rolls };
-  }, [roomWidth, roomLength, roomHeight, rollWidth, rollLength, wallArea]);
-
-  const paintResult = useMemo(() => {
-    if (!wallArea) return null;
-
-    const coverage = parseFloat(paintCoverage);
-    const volume = parseFloat(paintVolume);
-
-    if (!coverage || !volume || coverage <= 0 || volume <= 0) return null;
-
-    /* Сколько литров краски нужно */
-    const litersNeeded = wallArea.netArea / coverage;
-
-    /* Сколько банок */
-    const cans = Math.ceil(litersNeeded / volume);
-
-    return { litersNeeded, cans };
-  }, [wallArea, paintCoverage, paintVolume]);
+    setCalculated(true);
+  }, [roomWidth, roomLength, roomHeight, doorWidth, doorHeight, windowWidth, windowHeight, windowCount, rollWidth, rollLength, paintCoverage, paintVolume]);
 
   /* ==================== ФОРМАТИРОВАНИЕ ==================== */
 
@@ -250,23 +237,32 @@ export default function WallpaperCalculator() {
               </div>
             )}
 
-            {/* Сброс */}
-            <button onClick={() => {
-              setRoomWidth(''); setRoomLength(''); setRoomHeight('');
-              setDoorWidth('0.9'); setDoorHeight('2.0');
-              setWindowWidth('1.2'); setWindowHeight('1.4'); setWindowCount('1');
-              setRollWidth('0.53'); setRollLength('10.05');
-              setPaintCoverage('10'); setPaintVolume('2.5');
-            }}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all">
-              {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button onClick={() => {
+                setRoomWidth(''); setRoomLength(''); setRoomHeight('');
+                setDoorWidth('0.9'); setDoorHeight('2.0');
+                setWindowWidth('1.2'); setWindowHeight('1.4'); setWindowCount('1');
+                setRollWidth('0.53'); setRollLength('10.05');
+                setPaintCoverage('10'); setPaintVolume('2.5');
+                setCalculated(false); setWallArea(null); setWallpaperResult(null); setPaintResult(null);
+              }}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all">
+                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {wallArea ? (
+          {calculated && wallArea ? (
             <div className="space-y-4">
               {/* Площадь стен */}
               <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">

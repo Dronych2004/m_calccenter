@@ -14,11 +14,11 @@
  * - КБМ (класс)
  * - Кнопка «Рассчитать»
  */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 type OwnerType = 'individual' | 'legal';
-type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer';
+type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer' | 'B_legal' | 'C_legal' | 'D_legal';
 
 interface VehicleTypeInfo {
   code: VehicleType;

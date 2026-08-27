@@ -12,7 +12,7 @@
  * - Поддержка аннуитетного и дифференцированного платежа
  */
 import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { getLanguage } from '../i18n';
 
 type PaymentType = 'annuity' | 'differentiated';
 type DownPaymentMode = 'percent' | 'fixed';

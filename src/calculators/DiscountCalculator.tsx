@@ -8,7 +8,7 @@
  * - Поддержка нескольких последовательных скидок (10% + 5%)
  */
 import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { getLanguage } from '../i18n';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');

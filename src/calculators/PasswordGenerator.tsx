@@ -124,7 +124,7 @@ export default function PasswordGenerator() {
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const [, setLangTick] = useState(0);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const lang = getLanguage();
 
