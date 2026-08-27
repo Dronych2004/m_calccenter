@@ -11,7 +11,7 @@
  * - Короче сроки (до 10 лет)
  * - Дополнительные опции: страхование, комиссии
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 type PaymentType = 'annuity' | 'differentiated';
@@ -34,6 +34,8 @@ export default function CreditCalculator() {
   const [insurance, setInsurance] = useState('');
   const [commission, setCommission] = useState('');
   const [showSchedule, setShowSchedule] = useState(false);
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
   const [, setLangTick] = useState(0);
 
   const lang = getLanguage();
@@ -52,9 +54,11 @@ export default function CreditCalculator() {
     setInsurance('');
     setCommission('');
     setShowSchedule(false);
+    setCalculated(false);
+    setResult(null);
   };
 
-  const result = useMemo(() => {
+  const calculate = useCallback(() => {
     const S = parseFloat(loanAmount);
     const annualRate = parseFloat(interestRate);
     const years = parseInt(loanTerm);
@@ -129,6 +133,11 @@ export default function CreditCalculator() {
       monthSchedule,
     };
   }, [loanAmount, interestRate, loanTerm, insurance, commission]);
+
+  const handleCalculate = () => {
+    setResult(calculate());
+    setCalculated(true);
+  };
 
   const formatCurrency = (value: number): string => {
     return Math.round(value).toLocaleString('ru-RU') + ' ₽';
@@ -268,19 +277,27 @@ export default function CreditCalculator() {
               </div>
             </details>
 
-            {/* Кнопка сброса */}
-            <button
-              onClick={handleReset}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {lang === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+              >
+                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {result ? (
+          {calculated && result ? (
             <div className="space-y-4">
               {/* Ежемесячный платёж — главная карточка */}
               <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
@@ -422,8 +439,8 @@ export default function CreditCalculator() {
               </div>
               <p className="text-sm text-slate-300">
                 {lang === 'ru'
-                  ? 'Заполните параметры кредита для расчёта'
-                  : 'Fill in loan parameters to calculate'}
+                  ? 'Заполните параметры и нажмите «Рассчитать»'
+                  : 'Fill in parameters and press «Calculate»'}
               </p>
             </div>
           )}
