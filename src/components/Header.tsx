@@ -143,8 +143,8 @@ export default function Header() {
             <CalcIcon size={18} className="text-white" />
             <div className="absolute inset-0 rounded-xl bg-linear-to-br from-indigo-400 to-violet-400 opacity-0 group-hover:opacity-30 blur-md transition-opacity" />
           </div>
-          <span className="text-base font-bold text-slate-800 hidden sm:inline tracking-tight">
-            {t('header.title')}
+          <span className="text-base font-bold text-slate-800 hidden sm:inline tracking-tight leading-tight">
+            {lang === 'ru' ? 'Центр\nкалькуляторов' : 'Calculator\nCenter'}
           </span>
         </Link>
 
@@ -158,7 +158,7 @@ export default function Header() {
               onMouseLeave={handleMouseLeave}
             >
               <button
-                className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-all ${
+                className={`rounded-lg px-3 py-1.5 text-[19px] font-medium transition-all ${
                   openCategory === cat.id
                     ? 'bg-indigo-50 text-indigo-600'
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'

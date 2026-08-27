@@ -25,17 +25,17 @@ export default function Footer() {
               <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-violet-500 shadow-sm shadow-indigo-500/20">
                 <CalcIcon size={14} className="text-white" />
               </div>
-              <span className="text-sm font-semibold text-slate-600">{t('header.title')}</span>
+              <span className="text-sm font-semibold text-slate-700">{t('header.title')}</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6">
-              <button onClick={() => setShowPrivacy(true)} className="text-xs text-slate-400 hover:text-indigo-500 transition-colors cursor-pointer bg-transparent border-none">
+              <button onClick={() => setShowPrivacy(true)} className="text-xs text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer bg-transparent border-none font-medium">
                 {t('footer.privacy')}
               </button>
-              <button onClick={() => setShowTerms(true)} className="text-xs text-slate-400 hover:text-indigo-500 transition-colors cursor-pointer bg-transparent border-none">
+              <button onClick={() => setShowTerms(true)} className="text-xs text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer bg-transparent border-none font-medium">
                 {t('footer.terms')}
               </button>
             </div>
-            <p className="text-[11px] text-slate-300">{t('footer.copyright').replace('{year}', String(new Date().getFullYear()))}</p>
+            <p className="text-[11px] text-slate-400 font-medium">{t('footer.copyright').replace('{year}', String(new Date().getFullYear()))}</p>
           </div>
         </div>
       </footer>
