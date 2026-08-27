@@ -37,6 +37,7 @@ import UnitConverter from './calculators/UnitConverter';
 import DiscountCalculator from './calculators/DiscountCalculator';
 import PasswordGenerator from './calculators/PasswordGenerator';
 import CreditCalculator from './calculators/CreditCalculator';
+import AutoCreditCalculator from './calculators/AutoCreditCalculator';
 
 export default function App() {
   return (
@@ -69,6 +70,7 @@ export default function App() {
               <Route path="/discount" element={<DiscountCalculator />} />
               <Route path="/password" element={<PasswordGenerator />} />
               <Route path="/credit" element={<CreditCalculator />} />
+              <Route path="/auto-credit" element={<AutoCreditCalculator />} />
             </Routes>
           </main>
 
