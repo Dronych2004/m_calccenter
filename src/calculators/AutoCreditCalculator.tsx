@@ -191,23 +191,24 @@ export default function AutoCreditCalculator() {
                   placeholder="0"
                   className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
                 />
-                <div className="flex rounded-xl border border-slate-200 overflow-hidden">
+                <div className="flex rounded-xl border-2 border-slate-200 overflow-hidden shadow-sm">
                   <button
                     onClick={() => setDownPaymentMode('percent')}
-                    className={`px-3 py-3 text-sm font-semibold transition-all ${
+                    className={`px-4 py-3 text-base font-bold transition-all min-w-[56px] ${
                       downPaymentMode === 'percent'
-                        ? 'bg-indigo-500 text-white'
-                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                        ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
                     }`}
                   >
                     %
                   </button>
+                  <div className="w-px bg-slate-200" />
                   <button
                     onClick={() => setDownPaymentMode('fixed')}
-                    className={`px-3 py-3 text-sm font-semibold transition-all ${
+                    className={`px-4 py-3 text-base font-bold transition-all min-w-[56px] ${
                       downPaymentMode === 'fixed'
-                        ? 'bg-indigo-500 text-white'
-                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                        ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
                     }`}
                   >
                     ₽
