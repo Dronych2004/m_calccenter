@@ -12,7 +12,7 @@
  * - Дополнительные опции: страхование, комиссии
  */
 import { useState, useEffect, useMemo } from 'react';
-import { getLanguage } from '../i18n';
+import { t, getLanguage } from '../i18n';
 
 type PaymentType = 'annuity' | 'differentiated';
 
@@ -143,12 +143,10 @@ export default function CreditCalculator() {
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-          {lang === 'ru' ? 'Кредитный калькулятор' : 'Credit Calculator'}
+          {t('credit.title')}
         </h1>
         <p className="text-sm text-slate-400">
-          {lang === 'ru'
-            ? 'Рассчитайте ежемесячный платёж, переплату и график погашения кредита'
-            : 'Calculate monthly payment, overpayment and loan repayment schedule'}
+          {t('credit.description')}
         </p>
       </div>
 

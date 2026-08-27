@@ -113,8 +113,8 @@ const translations: Record<Language, TranslationKeys> = {
 
     /* Калькулятор кредита/ипотеки */
     mortgage: {
-      title: 'Калькулятор кредита',
-      description: 'Рассчитайте ежемесячный платёж, переплату и график платежей по любому кредиту или ипотеке',
+      title: 'Ипотечный калькулятор',
+      description: 'Рассчитайте ежемесячный платёж, переплату и график платежей по ипотеке',
       loanAmount: 'Сумма кредита (₽)',
       interestRate: 'Процентная ставка (% годовых)',
       loanTerm: 'Срок кредита (лет)',
@@ -129,6 +129,12 @@ const translations: Record<Language, TranslationKeys> = {
       principal: 'Основной долг',
       interest: 'Проценты',
       remaining: 'Остаток',
+    },
+
+    /* Кредитный калькулятор */
+    credit: {
+      title: 'Кредитный калькулятор',
+      description: 'Рассчитайте ежемесячный платёж, переплату и график погашения кредита',
     },
 
     /* Расход топлива */
@@ -281,8 +287,8 @@ const translations: Record<Language, TranslationKeys> = {
       secondFn: '2nd',
     },
     mortgage: {
-      title: 'Loan Calculator',
-      description: 'Calculate monthly payments, overpayment, and payment schedule for any loan or mortgage',
+      title: 'Mortgage Calculator',
+      description: 'Calculate monthly payments, overpayment, and payment schedule for your mortgage',
       loanAmount: 'Loan Amount (₽)',
       interestRate: 'Interest Rate (% per year)',
       loanTerm: 'Loan Term (years)',
@@ -297,6 +303,12 @@ const translations: Record<Language, TranslationKeys> = {
       principal: 'Principal',
       interest: 'Interest',
       remaining: 'Remaining',
+    },
+
+    /* Credit Calculator */
+    credit: {
+      title: 'Credit Calculator',
+      description: 'Calculate monthly payment, overpayment and loan repayment schedule',
     },
     fuel: {
       title: 'Fuel Cost Calculator',
