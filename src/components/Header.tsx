@@ -87,7 +87,6 @@ const categories: Category[] = [
     calculators: [
       { path: '/days', titleRu: 'Калькулятор дней', titleEn: 'Date Calculator' },
       { path: '/password', titleRu: 'Генератор паролей', titleEn: 'Password Generator' },
-      { path: '/number-systems', titleRu: 'Перевод систем счисления', titleEn: 'Number Systems' },
       { path: '/discount', titleRu: 'Калькулятор скидок', titleEn: 'Discount Calculator' },
     ],
   },
