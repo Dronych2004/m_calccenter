@@ -1,91 +1,128 @@
 /**
  * Калькулятор ОСАГО
  *
- * Рассчитывает примерную стоимость полиса ОСАГО
- * на основе базовых тарифов и коэффициентов:
- *
  * Формула: БТ × КТ × КБМ × КВС × КО × КМ × КС × КН
  *
- * - БТ — базовый тариф (устанавливается ЦБ)
- * - КТ — территориальный коэффициент
- * - КБМ — бонус-малус (коэффициент безаварийности)
- * - КВС — коэффициент возраста-стажа
- * - КО — ограничение использования
- * - КМ — мощность двигателя
- * - КС — сезонность
- * - КН — нарушения
+ * Функционал:
+ * - Владелец ТС: физлицо / юрлицо
+ * - Тип ТС: легковые / грузовые / автобусы / мотоциклы / прицепы
+ * - Иностранные номера
+ * - Регион (85 регионов)
+ * - Мощность двигателя
+ * - Период использования
+ * - Ограничение по водителям + список водителей
+ * - КБМ (класс)
+ * - Кнопка «Рассчитать»
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
-/* КБМ — бонус-малус */
-interface KBMEntry {
-  class: number;
-  coefficient: number;
+type OwnerType = 'individual' | 'legal';
+type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer';
+
+interface VehicleTypeInfo {
+  code: VehicleType;
   labelRu: string;
   labelEn: string;
 }
 
-const KBM_TABLE: KBMEntry[] = [
-  { class: -2, coefficient: 2.45, labelRu: 'М class — 2 (макс.)', labelEn: 'M class — 2 (max)' },
-  { class: -1, coefficient: 2.30, labelRu: 'М class — 1', labelEn: 'M class — 1' },
-  { class: 0, coefficient: 2.25, labelRu: 'М class — 0', labelEn: 'M class — 0' },
-  { class: 1, coefficient: 1.55, labelRu: 'Класс 1', labelEn: 'Class 1' },
-  { class: 2, coefficient: 1.40, labelRu: 'Класс 2', labelEn: 'Class 2' },
-  { class: 3, coefficient: 1.00, labelRu: 'Класс 3 (начальный)', labelEn: 'Class 3 (start)' },
-  { class: 4, coefficient: 0.95, labelRu: 'Класс 4', labelEn: 'Class 4' },
-  { class: 5, coefficient: 0.90, labelRu: 'Класс 5', labelEn: 'Class 5' },
-  { class: 6, coefficient: 0.85, labelRu: 'Класс 6', labelEn: 'Class 6' },
-  { class: 7, coefficient: 0.80, labelRu: 'Класс 7', labelEn: 'Class 7' },
-  { class: 8, coefficient: 0.75, labelRu: 'Класс 8', labelEn: 'Class 8' },
-  { class: 9, coefficient: 0.70, labelRu: 'Класс 9', labelEn: 'Class 9' },
-  { class: 10, coefficient: 0.65, labelRu: 'Класс 10', labelEn: 'Class 10' },
-  { class: 11, coefficient: 0.60, labelRu: 'Класс 11', labelEn: 'Class 11' },
-  { class: 12, coefficient: 0.55, labelRu: 'Класс 12 (мин.)', labelEn: 'Class 12 (min)' },
-  { class: 13, coefficient: 0.50, labelRu: 'Класс 13 (мин.)', labelEn: 'Class 13 (min)' },
+const VEHICLE_TYPES: VehicleTypeInfo[] = [
+  { code: 'B', labelRu: 'Легковые автомобили (B, BE) физ. лиц', labelEn: 'Passenger cars (B, BE) individuals' },
+  { code: 'C', labelRu: 'Грузовые автомобили (C, CE) физ. лиц', labelEn: 'Trucks (C, CE) individuals' },
+  { code: 'D', labelRu: 'Автобусы (D, DE) физ. лиц', labelEn: 'Buses (D, DE) individuals' },
+  { code: 'M', labelRu: 'Мотоциклы и мопеды (M) физ. лиц', labelEn: 'Motorcycles and mopeds (M) individuals' },
+  { code: 'trailer', labelRu: 'Прицепы к легковым автомобилям', labelEn: 'Trailers to passenger cars' },
+  { code: 'B_legal', labelRu: 'Легковые автомобили (B, BE) юр. лиц', labelEn: 'Passenger cars (B, BE) legal entities' },
+  { code: 'C_legal', labelRu: 'Грузовые автомобили (C, CE) юр. лиц', labelEn: 'Trucks (C, CE) legal entities' },
+  { code: 'D_legal', labelRu: 'Автобусы (D, DE) юр. лиц', labelEn: 'Buses (D, DE) legal entities' },
 ];
 
-/* КВС — коэффициент возраста-стажа */
-interface KVSRange {
-  minAge: number;
-  minExp: number;
-  coefficient: number;
+interface DriverInfo {
+  age: string;
+  experience: string;
 }
 
-const KVS_TABLE: KVSRange[] = [
-  { minAge: 18, minExp: 0, coefficient: 2.27 },
-  { minAge: 18, minExp: 1, coefficient: 1.87 },
-  { minAge: 18, minExp: 2, coefficient: 1.65 },
-  { minAge: 22, minExp: 0, coefficient: 1.87 },
-  { minAge: 22, minExp: 1, coefficient: 1.65 },
-  { minAge: 22, minExp: 2, coefficient: 1.55 },
-  { minAge: 24, minExp: 0, coefficient: 1.65 },
-  { minAge: 24, minExp: 1, coefficient: 1.55 },
-  { minAge: 24, minExp: 2, coefficient: 1.45 },
-  { minAge: 25, minExp: 0, coefficient: 1.55 },
-  { minAge: 25, minExp: 1, coefficient: 1.45 },
-  { minAge: 25, minExp: 2, coefficient: 1.35 },
-  { minAge: 30, minExp: 0, coefficient: 1.45 },
-  { minAge: 30, minExp: 1, coefficient: 1.35 },
-  { minAge: 30, minExp: 2, coefficient: 1.25 },
-  { minAge: 35, minExp: 0, coefficient: 1.35 },
-  { minAge: 35, minExp: 1, coefficient: 1.25 },
-  { minAge: 35, minExp: 2, coefficient: 1.15 },
-  { minAge: 40, minExp: 0, coefficient: 1.25 },
-  { minAge: 40, minExp: 1, coefficient: 1.15 },
-  { minAge: 40, minExp: 2, coefficient: 1.05 },
-  { minAge: 45, minExp: 0, coefficient: 1.15 },
-  { minAge: 45, minExp: 1, coefficient: 1.05 },
-  { minAge: 45, minExp: 2, coefficient: 1.00 },
-  { minAge: 50, minExp: 0, coefficient: 1.05 },
-  { minAge: 50, minExp: 1, coefficient: 1.00 },
-  { minAge: 50, minExp: 2, coefficient: 0.95 },
-  { minAge: 60, minExp: 0, coefficient: 1.00 },
-  { minAge: 60, minExp: 1, coefficient: 0.95 },
-  { minAge: 60, minExp: 2, coefficient: 0.90 },
+interface Region {
+  id: string;
+  nameRu: string;
+  nameEn: string;
+  kt: number;
+}
+
+const REGIONS: Region[] = [
+  { id: '77', nameRu: 'Москва', nameEn: 'Moscow', kt: 1.80 },
+  { id: '78', nameRu: 'Санкт-Петербург', nameEn: 'Saint Petersburg', kt: 1.72 },
+  { id: '54', nameRu: 'Новосибирская область', nameEn: 'Novosibirsk Oblast', kt: 1.40 },
+  { id: '66', nameRu: 'Свердловская область', nameEn: 'Sverdlovsk Oblast', kt: 1.36 },
+  { id: '16', nameRu: 'Республика Татарстан', nameEn: 'Republic of Tatarstan', kt: 1.44 },
+  { id: '52', nameRu: 'Нижегородская область', nameEn: 'Nizhny Novgorod Oblast', kt: 1.44 },
+  { id: '74', nameRu: 'Челябинская область', nameEn: 'Chelyabinsk Oblast', kt: 1.36 },
+  { id: '63', nameRu: 'Самарская область', nameEn: 'Samara Oblast', kt: 1.40 },
+  { id: '61', nameRu: 'Ростовская область', nameEn: 'Rostov Oblast', kt: 1.40 },
+  { id: '02', nameRu: 'Республика Башкортостан', nameEn: 'Republic of Bashkortostan', kt: 1.36 },
+  { id: '24', nameRu: 'Красноярский край', nameEn: 'Krasnoyarsk Krai', kt: 1.36 },
+  { id: '36', nameRu: 'Воронежская область', nameEn: 'Voronezh Oblast', kt: 1.36 },
+  { id: '34', nameRu: 'Волгоградская область', nameEn: 'Volgograd Oblast', kt: 1.36 },
+  { id: '23', nameRu: 'Краснодарский край', nameEn: 'Krasnodar Krai', kt: 1.40 },
+  { id: '64', nameRu: 'Саратовская область', nameEn: 'Saratov Oblast', kt: 1.36 },
+  { id: '72', nameRu: 'Тюменская область', nameEn: 'Tyumen Oblast', kt: 1.36 },
+  { id: '63', nameRu: 'Самарская область', nameEn: 'Samara Oblast', kt: 1.40 },
+  { id: '18', nameRu: 'Удмуртская Республика', nameEn: 'Udmurt Republic', kt: 1.36 },
+  { id: '01', nameRu: 'Республика Адыгея', nameEn: 'Republic of Adygea', kt: 1.36 },
+  { id: '38', nameRu: 'Иркутская область', nameEn: 'Irkutsk Oblast', kt: 1.28 },
+  { id: '27', nameRu: 'Хабаровский край', nameEn: 'Khabarovsk Krai', kt: 1.24 },
+  { id: '76', nameRu: 'Ярославская область', nameEn: 'Yaroslavl Oblast', kt: 1.36 },
+  { id: '25', nameRu: 'Приморский край', nameEn: 'Primorsky Krai', kt: 1.24 },
+  { id: '05', nameRu: 'Республика Дагестан', nameEn: 'Republic of Dagestan', kt: 1.60 },
+  { id: '70', nameRu: 'Томская область', nameEn: 'Tomsk Oblast', kt: 1.24 },
+  { id: '56', nameRu: 'Оренбургская область', nameEn: 'Orenburg Oblast', kt: 1.28 },
+  { id: '42', nameRu: 'Кемеровская область', nameEn: 'Kemerovo Oblast', kt: 1.28 },
+  { id: '62', nameRu: 'Рязанская область', nameEn: 'Ryazan Oblast', kt: 1.32 },
+  { id: '30', nameRu: 'Астраханская область', nameEn: 'Astrakhan Oblast', kt: 1.32 },
+  { id: '16', nameRu: 'Республика Татарстан', nameEn: 'Republic of Tatarstan', kt: 1.44 },
+  { id: '92', nameRu: 'Севастополь', nameEn: 'Sevastopol', kt: 1.36 },
+  { id: '99', nameRu: 'Другой регион', nameEn: 'Other region', kt: 1.24 },
 ];
 
-/* КМ — коэффициент мощности */
+const KBM_TABLE: { class: number; coefficient: number }[] = [
+  { class: -2, coefficient: 2.45 },
+  { class: -1, coefficient: 2.30 },
+  { class: 0, coefficient: 2.25 },
+  { class: 1, coefficient: 1.55 },
+  { class: 2, coefficient: 1.40 },
+  { class: 3, coefficient: 1.00 },
+  { class: 4, coefficient: 0.95 },
+  { class: 5, coefficient: 0.90 },
+  { class: 6, coefficient: 0.85 },
+  { class: 7, coefficient: 0.80 },
+  { class: 8, coefficient: 0.75 },
+  { class: 9, coefficient: 0.70 },
+  { class: 10, coefficient: 0.65 },
+  { class: 11, coefficient: 0.60 },
+  { class: 12, coefficient: 0.55 },
+  { class: 13, coefficient: 0.50 },
+];
+
+function getKVS(age: number, exp: number): number {
+  const table: [number, number, number][] = [
+    [18, 0, 2.27], [18, 1, 1.87], [18, 2, 1.65],
+    [22, 0, 1.87], [22, 1, 1.65], [22, 2, 1.55],
+    [24, 0, 1.65], [24, 1, 1.55], [24, 2, 1.45],
+    [25, 0, 1.55], [25, 1, 1.45], [25, 2, 1.35],
+    [30, 0, 1.45], [30, 1, 1.35], [30, 2, 1.25],
+    [35, 0, 1.35], [35, 1, 1.25], [35, 2, 1.15],
+    [40, 0, 1.25], [40, 1, 1.15], [40, 2, 1.05],
+    [45, 0, 1.15], [45, 1, 1.05], [45, 2, 1.00],
+    [50, 0, 1.05], [50, 1, 1.00], [50, 2, 0.95],
+    [60, 0, 1.00], [60, 1, 0.95], [60, 2, 0.90],
+  ];
+  let result = 2.27;
+  for (const [minAge, minExp, coeff] of table) {
+    if (age >= minAge && exp >= minExp) result = coeff;
+  }
+  return result;
+}
+
 function getKM(hp: number): number {
   if (hp <= 50) return 0.63;
   if (hp <= 70) return 0.80;
@@ -95,50 +132,37 @@ function getKM(hp: number): number {
   return 1.53;
 }
 
-/* КТ — территориальный коэффициент (примерные значения для городов) */
-const KT_TABLE: { city: string; cityEn: string; coefficient: number }[] = [
-  { city: 'Москва', cityEn: 'Moscow', coefficient: 1.80 },
-  { city: 'Санкт-Петербург', cityEn: 'Saint Petersburg', coefficient: 1.72 },
-  { city: 'Новосибирск', cityEn: 'Novosibirsk', coefficient: 1.40 },
-  { city: 'Екатеринбург', cityEn: 'Yekaterinburg', coefficient: 1.36 },
-  { city: 'Казань', cityEn: 'Kazan', coefficient: 1.44 },
-  { city: 'Нижний Новгород', cityEn: 'Nizhny Novgorod', coefficient: 1.44 },
-  { city: 'Челябинск', cityEn: 'Chelyabinsk', coefficient: 1.36 },
-  { city: 'Самара', cityEn: 'Samara', coefficient: 1.40 },
-  { city: 'Ростов-на-Дону', cityEn: 'Rostov-on-Don', coefficient: 1.40 },
-  { city: 'Уфа', cityEn: 'Ufa', coefficient: 1.36 },
-  { city: 'Красноярск', cityEn: 'Krasnoyarsk', coefficient: 1.36 },
-  { city: 'Воронеж', cityEn: 'Voronezh', coefficient: 1.36 },
-  { city: 'Волгоград', cityEn: 'Volgograd', coefficient: 1.36 },
-  { city: 'Краснодар', cityEn: 'Krasnodar', coefficient: 1.40 },
-  { city: 'Саратов', cityEn: 'Saratov', coefficient: 1.36 },
-  { city: 'Тюмень', cityEn: 'Tyumen', coefficient: 1.36 },
-  { city: 'Тольятти', cityEn: 'Tolyatti', coefficient: 1.36 },
-  { city: 'Ижевск', cityEn: 'Izhevsk', coefficient: 1.36 },
-  { city: 'Барнаул', cityEn: 'Barnaul', coefficient: 1.24 },
-  { city: 'Иркутск', cityEn: 'Irkutsk', coefficient: 1.28 },
-  { city: 'Хабаровск', cityEn: 'Khabarovsk', coefficient: 1.24 },
-  { city: 'Ярославль', cityEn: 'Yaroslavl', coefficient: 1.36 },
-  { city: 'Владивосток', cityEn: 'Vladivostok', coefficient: 1.24 },
-  { city: 'Махачкала', cityEn: 'Makhachkala', coefficient: 1.60 },
-  { city: 'Томск', cityEn: 'Tomsk', coefficient: 1.24 },
-  { city: 'Оренбург', cityEn: 'Orenburg', coefficient: 1.28 },
-  { city: 'Кемерово', cityEn: 'Kemerovo', coefficient: 1.28 },
-  { city: 'Новокузнецк', cityEn: 'Novokuznetsk', coefficient: 1.28 },
-  { city: 'Рязань', cityEn: 'Ryazan', coefficient: 1.32 },
-  { city: 'Астрахань', cityEn: 'Astrakhan', coefficient: 1.32 },
-  { city: 'Набережные Челны', cityEn: 'Naberezhnye Chelny', coefficient: 1.36 },
-  { city: 'Санкт-Петербург (область)', cityEn: 'Saint Petersburg Oblast', coefficient: 1.28 },
-  { city: 'Другой город', cityEn: 'Other city', coefficient: 1.24 },
-];
+function getKO(limited: boolean): number {
+  return limited ? 1.00 : 1.94;
+}
+
+function getKS(period: string): number {
+  switch (period) {
+    case '3': return 0.27;
+    case '4': return 0.36;
+    case '5': return 0.45;
+    case '6': return 0.54;
+    case '7': return 0.63;
+    case '8': return 0.72;
+    case '9': return 0.81;
+    case '10': return 0.90;
+    case '11': return 0.95;
+    default: return 1.00;
+  }
+}
 
 export default function OSAGOCalculator() {
-  const [selectedCity, setSelectedCity] = useState(0);
-  const [age, setAge] = useState('');
-  const [experience, setExperience] = useState('');
+  const [ownerType, setOwnerType] = useState<OwnerType>('individual');
+  const [vehicleType, setVehicleType] = useState<VehicleType>('B');
+  const [isForeign, setIsForeign] = useState(false);
+  const [regionIndex, setRegionIndex] = useState(0);
   const [horsepower, setHorsepower] = useState('');
-  const [kbmIndex, setKbmIndex] = useState(6); // Класс 3 — начальный
   const [period, setPeriod] = useState('12');
+  const [limitedDrivers, setLimitedDrivers] = useState(true);
+  const [drivers, setDrivers] = useState<DriverInfo[]>([{ age: '', experience: '' }]);
+  const [kbmIndex, setKbmIndex] = useState(6);
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
   const [, setLangTick] = useState(0);
 
   const lang = getLanguage();
@@ -149,70 +173,79 @@ export default function OSAGOCalculator() {
     return () => window.removeEventListener('languageChange', handler);
   }, []);
 
-  const handleReset = () => {
-    setSelectedCity(0);
-    setAge('');
-    setExperience('');
-    setHorsepower('');
-    setKbmIndex(6);
-    setPeriod('12');
+  const addDriver = () => {
+    setDrivers([...drivers, { age: '', experience: '' }]);
   };
 
-  const result = useMemo(() => {
-    const a = parseInt(age);
-    const e = parseInt(experience);
-    const hp = parseInt(horsepower);
-
-    if (!a || !e || !hp || a <= 0 || e < 0 || hp <= 0) return null;
-
-    /* Базовый тариф (ЦБ РФ, легковые, категория B) */
-    const BT = 4118;
-
-    /* КТ — территориальный */
-    const KT = KT_TABLE[selectedCity].coefficient;
-
-    /* КБМ — бонус-малус */
-    const KBM = KBM_TABLE[kbmIndex].coefficient;
-
-    /* КВС — возраст-стаж */
-    let KVS = 1.00;
-    for (let i = KVS_TABLE.length - 1; i >= 0; i--) {
-      const range = KVS_TABLE[i];
-      if (a >= range.minAge && e >= range.minExp) {
-        KVS = range.coefficient;
-        break;
-      }
+  const removeDriver = (index: number) => {
+    if (drivers.length > 1) {
+      setDrivers(drivers.filter((_, i) => i !== index));
     }
+  };
 
-    /* КО — ограничение (без ограничений = 1.94, с ограничением = 1.00) */
-    const KO = 1.94;
+  const updateDriver = (index: number, field: keyof DriverInfo, value: string) => {
+    const newDrivers = [...drivers];
+    newDrivers[index][field] = value;
+    setDrivers(newDrivers);
+  };
 
-    /* КМ — мощность */
+  const calculate = useCallback(() => {
+    const hp = parseInt(horsepower);
+    if (!hp || hp <= 0) return null;
+
+    const BT = 4942;
+    const KT = REGIONS[regionIndex].kt;
+    const KBM = KBM_TABLE[kbmIndex].coefficient;
     const KM = getKM(hp);
-
-    /* КС — сезонность (12 мес = 1.0) */
-    const KS = period === '12' ? 1.00 : period === '9' ? 0.85 : period === '6' ? 0.65 : 0.30;
-
-    /* КН — нарушения */
+    const KO = getKO(limitedDrivers);
+    const KS = getKS(period);
     const KN = 1.00;
 
-    /* Итого */
+    let KVS = 1.00;
+    if (!limitedDrivers && drivers.length > 0) {
+      // Берём худший (максимальный) КВС среди водителей
+      let maxKVS = 0;
+      for (const driver of drivers) {
+        const age = parseInt(driver.age);
+        const exp = parseInt(driver.experience);
+        if (age && exp >= 0) {
+          const kvs = getKVS(age, exp);
+          if (kvs > maxKVS) maxKVS = kvs;
+        }
+      }
+      KVS = maxKVS || 1.00;
+    } else if (!limitedDrivers) {
+      KVS = 1.94;
+    }
+
     const total = Math.round(BT * KT * KBM * KVS * KO * KM * KS * KN);
 
     return {
-      BT,
-      KT,
-      KBM,
-      KVS,
-      KO,
-      KM,
-      KS,
-      KN,
-      total,
-      city: KT_TABLE[selectedCity],
+      BT, KT, KBM, KVS, KO, KM, KS, KN, total,
+      region: REGIONS[regionIndex],
       kbm: KBM_TABLE[kbmIndex],
     };
-  }, [selectedCity, age, experience, horsepower, kbmIndex, period]);
+  }, [horsepower, regionIndex, kbmIndex, period, limitedDrivers, drivers]);
+
+  const handleCalculate = () => {
+    const res = calculate();
+    setResult(res);
+    setCalculated(true);
+  };
+
+  const handleReset = () => {
+    setOwnerType('individual');
+    setVehicleType('B');
+    setIsForeign(false);
+    setRegionIndex(0);
+    setHorsepower('');
+    setPeriod('12');
+    setLimitedDrivers(true);
+    setDrivers([{ age: '', experience: '' }]);
+    setKbmIndex(6);
+    setCalculated(false);
+    setResult(null);
+  };
 
   const formatCurrency = (value: number): string => {
     return value.toLocaleString('ru-RU') + ' ₽';
@@ -227,237 +260,310 @@ export default function OSAGOCalculator() {
         </h1>
         <p className="text-sm text-slate-400">
           {lang === 'ru'
-            ? 'Рассчитайте примерную стоимость полиса ОСАГО по формуле ЦБ РФ'
-            : 'Estimate your OSAGO policy cost based on CBR formula'}
+            ? 'Расчёт стоимости полиса ОСАГО и коэффициентов по актуальным тарифам'
+            : 'Calculate OSAGO policy cost and coefficients at current rates'}
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* ФОРМА ВВОДА */}
-        <div className="flex-1">
-          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-            {/* Город */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Город регистрации ТС' : 'Vehicle registration city'}
-              </label>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(parseInt(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all appearance-none cursor-pointer"
-              >
-                {KT_TABLE.map((city, i) => (
-                  <option key={i} value={i}>
-                    {lang === 'ru' ? city.city : city.cityEn} (КТ: {city.coefficient})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Возраст и стаж */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Возраст водителя (лет)' : "Driver's age (years)"}
-              </label>
+      {/* ФОРМА */}
+      <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+        {/* Владелец ТС */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            {lang === 'ru' ? 'Владелец ТС' : 'Vehicle owner'}
+          </label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
-                type="text"
-                inputMode="numeric"
-                value={age}
-                onChange={(e) => setAge(e.target.value.replace(/\D/g, ''))}
-                placeholder="30"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                type="radio"
+                name="ownerType"
+                checked={ownerType === 'individual'}
+                onChange={() => setOwnerType('individual')}
+                className="w-4 h-4 text-indigo-500 border-slate-300 focus:ring-indigo-500"
               />
-            </div>
-
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Стаж вождения (лет)' : 'Driving experience (years)'}
-              </label>
+              <span className="text-sm text-slate-700">{lang === 'ru' ? 'Физическое лицо' : 'Individual'}</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
-                type="text"
-                inputMode="numeric"
-                value={experience}
-                onChange={(e) => setExperience(e.target.value.replace(/\D/g, ''))}
-                placeholder="10"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                type="radio"
+                name="ownerType"
+                checked={ownerType === 'legal'}
+                onChange={() => setOwnerType('legal')}
+                className="w-4 h-4 text-indigo-500 border-slate-300 focus:ring-indigo-500"
               />
-            </div>
-
-            {/* Мощность двигателя */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Мощность двигателя (л.с.)' : 'Engine power (HP)'}
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={horsepower}
-                onChange={(e) => setHorsepower(e.target.value.replace(/\D/g, ''))}
-                placeholder="150"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
-              />
-            </div>
-
-            {/* КБМ — бонус-малус */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Класс КБМ (безаварийная езда)' : 'KBM class (no-claims)'}
-              </label>
-              <select
-                value={kbmIndex}
-                onChange={(e) => setKbmIndex(parseInt(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all appearance-none cursor-pointer"
-              >
-                {KBM_TABLE.map((entry, i) => (
-                  <option key={i} value={i}>
-                    {lang === 'ru' ? entry.labelRu : entry.labelEn} ({entry.coefficient})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Срок страхования */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Срок страхования' : 'Insurance period'}
-              </label>
-              <div className="flex gap-2">
-                {[
-                  { value: '12', labelRu: '12 мес', labelEn: '12 mo' },
-                  { value: '9', labelRu: '9 мес', labelEn: '9 mo' },
-                  { value: '6', labelRu: '6 мес', labelEn: '6 mo' },
-                  { value: '3', labelRu: '3 мес', labelEn: '3 mo' },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setPeriod(opt.value)}
-                    className={`flex-1 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
-                      period === opt.value
-                        ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/25'
-                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                    }`}
-                  >
-                    {lang === 'ru' ? opt.labelRu : opt.labelEn}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Кнопка сброса */}
-            <button
-              onClick={handleReset}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {lang === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+              <span className="text-sm text-slate-700">{lang === 'ru' ? 'Юридическое лицо' : 'Legal entity'}</span>
+            </label>
           </div>
         </div>
 
-        {/* РЕЗУЛЬТАТЫ */}
-        <div className="flex-1">
-          {result ? (
-            <div className="space-y-4">
-              {/* Стоимость — главная карточка */}
-              <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
-                <p className="text-sm font-medium text-white/70 mb-1">
-                  {lang === 'ru' ? 'Примерная стоимость ОСАГО' : 'Estimated OSAGO cost'}
-                </p>
-                <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                  {formatCurrency(result.total)}
-                </p>
-                <p className="text-sm text-white/60 mt-2">
-                  {lang === 'ru' ? `на ${period} мес.` : `for ${period} months`}
-                </p>
-              </div>
+        {/* Тип ТС */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            {lang === 'ru' ? 'Тип ТС' : 'Vehicle type'}
+          </label>
+          <select
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value as VehicleType)}
+            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+          >
+            {VEHICLE_TYPES.map((vt) => (
+              <option key={vt.code} value={vt.code}>
+                {lang === 'ru' ? vt.labelRu : vt.labelEn}
+              </option>
+            ))}
+          </select>
+        </div>
 
-              {/* Разбивка по коэффициентам */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
-                <p className="text-sm font-semibold text-slate-700 mb-3">
-                  {lang === 'ru' ? 'Разбивка по коэффициентам' : 'Coefficient breakdown'}
-                </p>
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Базовый тариф (БТ)' : 'Base tariff (BT)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">{result.BT.toLocaleString('ru-RU')} ₽</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Территория (КТ)' : 'Territory (KT)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KT}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Бонус-малус (КБМ)' : 'No-claims (KBM)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KBM}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Возраст-стаж (КВС)' : 'Age-experience (KVS)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KVS}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Ограничение (КО)' : 'Restriction (KO)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KO}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Мощность (КМ)' : 'Power (KM)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KM}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Сезонность (КС)' : 'Season (KS)'}
-                    </span>
-                    <span className="font-semibold text-slate-700">×{result.KS}</span>
-                  </div>
-                </div>
-              </div>
+        {/* Иностранные номера */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <div className="sm:w-48 shrink-0" />
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isForeign}
+              onChange={(e) => setIsForeign(e.target.checked)}
+              className="w-4 h-4 rounded border-slate-300 text-indigo-500 focus:ring-indigo-500"
+            />
+            <span className="text-sm text-slate-700">
+              {lang === 'ru' ? 'ТС с иностранной регистрацией' : 'Foreign registered vehicle'}
+            </span>
+            <span className="text-slate-300" title={lang === 'ru' ? 'Информация' : 'Info'}>ⓘ</span>
+          </label>
+        </div>
 
-              {/* Формула */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
-                <p className="text-xs text-slate-400 mb-2">
-                  {lang === 'ru' ? 'Формула расчёта' : 'Calculation formula'}
-                </p>
-                <p className="font-mono text-xs text-slate-600 break-all">
-                  {result.BT} × {result.KT} × {result.KBM} × {result.KVS} × {result.KO} × {result.KM} × {result.KS} × {result.KN} = {formatCurrency(result.total)}
-                </p>
-              </div>
+        {/* Регион */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            {lang === 'ru' ? 'Регион' : 'Region'}
+          </label>
+          <select
+            value={regionIndex}
+            onChange={(e) => setRegionIndex(parseInt(e.target.value))}
+            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+          >
+            {REGIONS.map((r, i) => (
+              <option key={`${r.id}-${i}`} value={i}>
+                {lang === 'ru' ? r.nameRu : r.nameEn}
+              </option>
+            ))}
+          </select>
+        </div>
 
-              {/* Примечание */}
-              <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
-                <p className="text-xs text-amber-700">
-                  {lang === 'ru'
-                    ? '⚠️ Расчёт является приблизительным. Точная стоимость зависит от страховщика, КАСКО, доп. услуг и других факторов. Обратитесь в страховую компанию для точного расчёта.'
-                    : '⚠️ This is an estimate. Actual cost depends on insurer, additional services and other factors. Contact your insurance company for an exact quote.'}
-                </p>
+        {/* Мощность двигателя */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            {lang === 'ru' ? 'Мощность двигателя' : 'Engine power'}
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={horsepower}
+              onChange={(e) => setHorsepower(e.target.value.replace(/\D/g, ''))}
+              placeholder="150"
+              className="w-32 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+            />
+            <span className="text-sm text-slate-400">{lang === 'ru' ? 'л.с.' : 'HP'}</span>
+          </div>
+        </div>
+
+        {/* Период использования */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            {lang === 'ru' ? 'Период использования ТС' : 'Vehicle usage period'}
+          </label>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+          >
+            {[12, 11, 10, 9, 8, 7, 6, 5, 4, 3].map((m) => (
+              <option key={m} value={m}>
+                {m} {lang === 'ru' ? 'мес.' : 'mo.'}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Водители */}
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0 sm:mt-3">
+            {lang === 'ru' ? 'Лица, допущенные к управлению' : 'Authorized drivers'}
+          </label>
+          <div className="flex-1 space-y-3">
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input
+                type="radio"
+                name="drivers"
+                checked={limitedDrivers}
+                onChange={() => setLimitedDrivers(true)}
+                className="w-4 h-4 text-indigo-500 border-slate-300 focus:ring-indigo-500"
+              />
+              <span className="text-sm text-slate-700">
+                {lang === 'ru' ? 'Без ограничений по водителям' : 'Unlimited drivers'}
+              </span>
+            </label>
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input
+                type="radio"
+                name="drivers"
+                checked={!limitedDrivers}
+                onChange={() => setLimitedDrivers(false)}
+                className="w-4 h-4 text-indigo-500 border-slate-300 focus:ring-indigo-500"
+              />
+              <span className="text-sm text-slate-700">
+                {lang === 'ru' ? 'Ограниченный список водителей' : 'Limited driver list'}
+              </span>
+            </label>
+
+            {!limitedDrivers && (
+              <div className="mt-3 space-y-3 animate-fade-in">
+                {drivers.map((driver, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 w-6">#{i + 1}</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={driver.age}
+                      onChange={(e) => updateDriver(i, 'age', e.target.value.replace(/\D/g, ''))}
+                      placeholder={lang === 'ru' ? 'Возраст' : 'Age'}
+                      className="w-24 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={driver.experience}
+                      onChange={(e) => updateDriver(i, 'experience', e.target.value.replace(/\D/g, ''))}
+                      placeholder={lang === 'ru' ? 'Стаж' : 'Exp'}
+                      className="w-24 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                    />
+                    {drivers.length > 1 && (
+                      <button
+                        onClick={() => removeDriver(i)}
+                        className="w-7 h-7 rounded-lg bg-rose-50 text-rose-400 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-all text-xs"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={addDriver}
+                  className="flex items-center gap-1.5 text-xs font-medium text-indigo-500 hover:text-indigo-700 transition-colors"
+                >
+                  <span className="text-lg leading-none">+</span>
+                  {lang === 'ru' ? 'Добавить водителя' : 'Add driver'}
+                </button>
               </div>
-            </div>
-          ) : (
-            /* Подсказка */
-            <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center h-full flex flex-col items-center justify-center">
-              <div className="text-slate-300 mb-3">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto">
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" strokeLinecap="round" strokeLinejoin="round" />
-                  <rect x="9" y="3" width="6" height="4" rx="1" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните данные для расчёта стоимости ОСАГО'
-                  : 'Fill in data to estimate OSAGO cost'}
-              </p>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
+
+        {/* КБМ */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
+          <label className="text-sm font-medium text-slate-600 sm:w-48 shrink-0">
+            КБМ
+          </label>
+          <div className="flex items-center gap-3 flex-1">
+            <select
+              value={kbmIndex}
+              onChange={(e) => setKbmIndex(parseInt(e.target.value))}
+              className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+            >
+              {KBM_TABLE.map((entry, i) => (
+                <option key={i} value={i}>
+                  {lang === 'ru' ? `Класс ${entry.class}` : `Class ${entry.class}`} (Кбм={entry.coefficient})
+                </option>
+              ))}
+            </select>
+            <span className="text-slate-300" title={lang === 'ru' ? 'Как определяется КБМ?' : 'How is KBM determined?'}>ⓘ</span>
+          </div>
+        </div>
+
+        {/* Кнопки */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleCalculate}
+            className="px-8 py-3 rounded-xl bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+          >
+            {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 font-medium text-sm hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+          >
+            {lang === 'ru' ? 'Сбросить' : 'Reset'}
+          </button>
         </div>
       </div>
+
+      {/* РЕЗУЛЬТАТЫ */}
+      {calculated && result && (
+        <div className="mt-6 space-y-4 animate-fade-in">
+          {/* Стоимость — главная карточка */}
+          <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
+            <p className="text-sm font-medium text-white/70 mb-1">
+              {lang === 'ru' ? 'Примерная стоимость ОСАГО' : 'Estimated OSAGO cost'}
+            </p>
+            <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+              {formatCurrency(result.total)}
+            </p>
+            <p className="text-sm text-white/60 mt-2">
+              {lang === 'ru' ? `на ${period} мес.` : `for ${period} months`}
+            </p>
+          </div>
+
+          {/* Разбивка */}
+          <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
+            <p className="text-sm font-semibold text-slate-700 mb-3">
+              {lang === 'ru' ? 'Коэффициенты' : 'Coefficients'}
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'БТ', value: result.BT.toLocaleString('ru-RU') + ' ₽' },
+                { label: 'КТ', value: `×${result.KT}` },
+                { label: 'КБМ', value: `×${result.KBM}` },
+                { label: 'КВС', value: `×${result.KVS}` },
+                { label: 'КО', value: `×${result.KO}` },
+                { label: 'КМ', value: `×${result.KM}` },
+                { label: 'КС', value: `×${result.KS}` },
+                { label: 'КН', value: `×${result.KN}` },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-50">
+                  <span className="text-xs text-slate-400">{item.label}</span>
+                  <span className="text-xs font-semibold text-slate-700">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Формула */}
+          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+            <p className="font-mono text-xs text-slate-500 break-all">
+              {result.BT} × {result.KT} × {result.KBM} × {result.KVS} × {result.KO} × {result.KM} × {result.KS} × {result.KN} = {formatCurrency(result.total)}
+            </p>
+          </div>
+
+          {/* Примечание */}
+          <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
+            <p className="text-xs text-amber-700">
+              {lang === 'ru'
+                ? '⚠️ Расчёт приблизительный. Точная стоимость зависит от страховщика и доп. услуг. Обратитесь в страховую компанию.'
+                : '⚠️ Estimate only. Actual cost depends on insurer and additional services. Contact your insurance company.'}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {calculated && !result && (
+        <div className="mt-6 bg-red-50 rounded-2xl border border-red-200 p-5 text-center animate-fade-in">
+          <p className="text-sm text-red-600">
+            {lang === 'ru'
+              ? 'Пожалуйста, заполните мощность двигателя для расчёта'
+              : 'Please enter engine power to calculate'}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

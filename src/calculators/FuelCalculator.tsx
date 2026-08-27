@@ -13,14 +13,23 @@
  * - Расход на километр (₽/км)
  * - Расход на 100 км в деньгах (₽/100 км)
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
+
+interface FuelResult {
+  liters: number;
+  totalCost: number;
+  costPerKm: number;
+  costPer100km: number;
+}
 
 export default function FuelCalculator() {
   const [distance, setDistance] = useState('');
   const [consumption, setConsumption] = useState('');
   const [fuelPrice, setFuelPrice] = useState('');
   const [showDetails, setShowDetails] = useState(false);
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<FuelResult | null>(null);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -29,9 +38,7 @@ export default function FuelCalculator() {
     return () => window.removeEventListener('languageChange', handler);
   }, []);
 
-  /* ==================== ВЫЧИСЛЕНИЯ ==================== */
-
-  const result = useMemo(() => {
+  const calculate = useCallback((): FuelResult | null => {
     const d = parseFloat(distance);
     const c = parseFloat(consumption);
     const p = parseFloat(fuelPrice);
@@ -46,7 +53,19 @@ export default function FuelCalculator() {
     return { liters, totalCost, costPerKm, costPer100km };
   }, [distance, consumption, fuelPrice]);
 
-  /* ==================== ФОРМАТИРОВАНИЕ ==================== */
+  const handleCalculate = () => {
+    setResult(calculate());
+    setCalculated(true);
+  };
+
+  const handleReset = () => {
+    setDistance('');
+    setConsumption('');
+    setFuelPrice('');
+    setShowDetails(false);
+    setCalculated(false);
+    setResult(null);
+  };
 
   const formatNumber = (value: number, decimals = 1): string => {
     return value.toLocaleString('ru-RU', {
@@ -58,8 +77,6 @@ export default function FuelCalculator() {
   const formatCurrency = (value: number): string => {
     return Math.round(value).toLocaleString('ru-RU') + ' ₽';
   };
-
-  /* ==================== РЕНДЕР ==================== */
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
@@ -118,25 +135,28 @@ export default function FuelCalculator() {
               />
             </div>
 
-            {/* Кнопка сброса */}
-            <button
-              onClick={() => {
-                setDistance('');
-                setConsumption('');
-                setFuelPrice('');
-                setShowDetails(false);
-              }}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+              >
+                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {result ? (
-            <div className="space-y-4">
+          {calculated && result ? (
+            <div className="space-y-4 animate-fade-in">
               {/* Объём топлива */}
               <div className="bg-linear-to-br from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-lg shadow-orange-500/20">
                 <p className="text-sm font-medium text-white/70 mb-1">{t('fuel.liters')}</p>
@@ -165,7 +185,6 @@ export default function FuelCalculator() {
 
               {showDetails && (
                 <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm animate-fade-in space-y-4">
-                  {/* Стоимость на км */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
@@ -179,10 +198,7 @@ export default function FuelCalculator() {
                       </div>
                     </div>
                   </div>
-
                   <div className="border-t border-slate-100" />
-
-                  {/* Стоимость на 100 км в деньгах */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
@@ -201,7 +217,6 @@ export default function FuelCalculator() {
               )}
             </div>
           ) : (
-            /* Подсказка */
             <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center h-full flex flex-col items-center justify-center">
               <div className="text-slate-300 mb-3">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto">
@@ -211,8 +226,8 @@ export default function FuelCalculator() {
               </div>
               <p className="text-sm text-slate-300">
                 {getLanguage() === 'ru'
-                  ? 'Заполните данные для расчёта расхода топлива'
-                  : 'Fill in the fields to calculate fuel consumption'}
+                  ? 'Заполните данные и нажмите «Рассчитать»'
+                  : 'Fill in the fields and press «Calculate»'}
               </p>
             </div>
           )}
