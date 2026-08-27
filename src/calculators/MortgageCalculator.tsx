@@ -15,7 +15,7 @@
  *   Основной долг / n + Остаток × P
  *   Платёж уменьшается каждый месяц
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 /* Тип платежа */
@@ -39,6 +39,8 @@ export default function MortgageCalculator() {
   const [loanTerm, setLoanTerm] = useState('20');
   const [paymentType, setPaymentType] = useState<PaymentType>('annuity');
   const [showSchedule, setShowSchedule] = useState(false);
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -56,11 +58,13 @@ export default function MortgageCalculator() {
     setLoanTerm('');
     setPaymentType('annuity');
     setShowSchedule(false);
+    setCalculated(false);
+    setResult(null);
   };
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
-  const result = useMemo(() => {
+  const calculate = useCallback(() => {
     const S = parseFloat(loanAmount);
     const annualRate = parseFloat(interestRate);
     const years = parseInt(loanTerm);
@@ -132,6 +136,11 @@ export default function MortgageCalculator() {
       monthSchedule,
     };
   }, [loanAmount, interestRate, loanTerm]);
+
+  const handleCalculate = () => {
+    setResult(calculate());
+    setCalculated(true);
+  };
 
   /* ==================== ФОРМАТИРОВАНИЕ ==================== */
 
@@ -252,19 +261,27 @@ export default function MortgageCalculator() {
               </div>
             </div>
 
-            {/* Кнопка сброса */}
-            <button
-              onClick={handleReset}
-              className="mt-4 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+              >
+                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {result ? (
+          {calculated && result ? (
             <div className="space-y-4">
               {/* Ежемесячный платёж */}
               <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">
@@ -365,8 +382,8 @@ export default function MortgageCalculator() {
               </div>
               <p className="text-sm text-slate-300">
                 {getLanguage() === 'ru'
-                  ? 'Заполните параметры кредита для расчёта'
-                  : 'Fill in loan parameters to calculate'}
+                  ? 'Заполните параметры и нажмите «Рассчитать»'
+                  : 'Fill in parameters and press «Calculate»'}
               </p>
             </div>
           )}
