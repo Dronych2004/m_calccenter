@@ -137,6 +137,12 @@ const translations: Record<Language, TranslationKeys> = {
       description: 'Рассчитайте ежемесячный платёж, переплату и график погашения кредита',
     },
 
+    /* ОСАГО */
+    osago: {
+      title: 'Калькулятор ОСАГО',
+      description: 'Рассчитайте примерную стоимость полиса ОСАГО по формуле ЦБ РФ',
+    },
+
     /* Расход топлива */
     fuel: {
       title: 'Расход топлива',
@@ -309,6 +315,12 @@ const translations: Record<Language, TranslationKeys> = {
     credit: {
       title: 'Credit Calculator',
       description: 'Calculate monthly payment, overpayment and loan repayment schedule',
+    },
+
+    /* OSAGO */
+    osago: {
+      title: 'OSAGO Calculator',
+      description: 'Estimate your OSAGO policy cost based on CBR formula',
     },
     fuel: {
       title: 'Fuel Cost Calculator',

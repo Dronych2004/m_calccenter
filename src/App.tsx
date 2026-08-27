@@ -38,6 +38,7 @@ import DiscountCalculator from './calculators/DiscountCalculator';
 import PasswordGenerator from './calculators/PasswordGenerator';
 import CreditCalculator from './calculators/CreditCalculator';
 import AutoCreditCalculator from './calculators/AutoCreditCalculator';
+import OSAGOCalculator from './calculators/OSAGOCalculator';
 
 export default function App() {
   return (
@@ -71,6 +72,7 @@ export default function App() {
               <Route path="/password" element={<PasswordGenerator />} />
               <Route path="/credit" element={<CreditCalculator />} />
               <Route path="/auto-credit" element={<AutoCreditCalculator />} />
+              <Route path="/osago" element={<OSAGOCalculator />} />
             </Routes>
           </main>
 
