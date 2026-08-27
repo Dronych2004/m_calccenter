@@ -95,7 +95,7 @@ export default function DateCalculator() {
   }, []);
 
   /**
-   * Вычисляет результат при изменении дат.
+   * Вычисляет результат при нажатии кнопки.
    */
   const handleCalculate = useCallback(() => {
     const res = calculateDateDiff(startDate, endDate);
@@ -109,13 +109,6 @@ export default function DateCalculator() {
       setResult(res);
     }
   }, [startDate, endDate]);
-
-  /* Автоматический расчёт при изменении дат */
-  useEffect(() => {
-    if (startDate && endDate) {
-      handleCalculate();
-    }
-  }, [startDate, endDate, handleCalculate]);
 
   /**
    * Форматирует дату для отображения на русском.
@@ -188,6 +181,26 @@ export default function DateCalculator() {
             </span>
           </div>
         )}
+
+        {/* Кнопки */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={handleCalculate}
+            className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+          >
+            {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+          </button>
+          <button
+            onClick={() => {
+              setStartDate('');
+              setEndDate('');
+              setResult(null);
+            }}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+          >
+            {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+          </button>
+        </div>
       </div>
 
       {/* Результаты */}

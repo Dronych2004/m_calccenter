@@ -7,13 +7,15 @@
  * - Экономию
  * - Поддержка нескольких последовательных скидок (10% + 5%)
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');
   const [discount, setDiscount] = useState('');
   const [extraDiscount, setExtraDiscount] = useState('');
+  const [calculated, setCalculated] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function DiscountCalculator() {
     return () => window.removeEventListener('languageChange', handler);
   }, []);
 
-  const result = useMemo(() => {
+  const calculate = useCallback(() => {
     const p = parseFloat(price);
     const d = parseFloat(discount);
     const ed = parseFloat(extraDiscount);
@@ -53,6 +55,19 @@ export default function DiscountCalculator() {
       hasExtraDiscount: ed > 0 && ed <= 100,
     };
   }, [price, discount, extraDiscount]);
+
+  const handleCalculate = () => {
+    setResult(calculate());
+    setCalculated(true);
+  };
+
+  const handleReset = () => {
+    setPrice('');
+    setDiscount('');
+    setExtraDiscount('');
+    setCalculated(false);
+    setResult(null);
+  };
 
   const lang = getLanguage();
 
@@ -132,23 +147,27 @@ export default function DiscountCalculator() {
               </p>
             </div>
 
-            {/* Сброс */}
-            <button
-              onClick={() => {
-                setPrice('');
-                setDiscount('');
-                setExtraDiscount('');
-              }}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
-            >
-              {lang === 'ru' ? 'Сбросить' : 'Reset'}
-            </button>
+            {/* Кнопки */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCalculate}
+                className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
+              >
+                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
+              >
+                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* РЕЗУЛЬТАТЫ */}
         <div className="flex-1">
-          {result ? (
+          {calculated && result ? (
             <div className="space-y-4">
               {/* Итоговая цена — главная карточка */}
               <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
@@ -276,8 +295,8 @@ export default function DiscountCalculator() {
               </div>
               <p className="text-sm text-slate-300">
                 {lang === 'ru'
-                  ? 'Введите цену и размер скидки для расчёта'
-                  : 'Enter price and discount to calculate'}
+                  ? 'Заполните данные и нажмите «Рассчитать»'
+                  : 'Fill in the fields and press «Calculate»'}
               </p>
             </div>
           )}
