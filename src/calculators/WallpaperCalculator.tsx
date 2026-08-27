@@ -19,7 +19,7 @@
  *   Банки краски:
  *     Кол-во = ⌈Площадь / Расход / Объём банки⌉
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { t, getLanguage } from '../i18n';
 
 /* Режим калькулятора */
@@ -46,6 +46,7 @@ export default function WallpaperCalculator() {
   const [paintCoverage, setPaintCoverage] = useState('10');
   const [paintVolume, setPaintVolume] = useState('2.5');
 
+  const [calculated, setCalculated] = useState(false);
   const [, setLangTick] = useState(0);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function WallpaperCalculator() {
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
-  const wallArea = useMemo(() => {
+  const calculateWallArea = useCallback(() => {
     const w = parseFloat(roomWidth);
     const l = parseFloat(roomLength);
     const h = parseFloat(roomHeight);
