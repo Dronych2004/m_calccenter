@@ -74,8 +74,8 @@ const categories: CategoryCard[] = [
     titleEn: 'Taxes',
     descRu: 'НДФЛ, НДС, расчёт процентов — всё для точных финансовых расчётов',
     descEn: 'Income tax, VAT, interest — everything for accurate financial calculations',
-    gradient: 'from-violet-500 to-purple-500',
-    shadow: 'shadow-violet-500/20',
+    gradient: 'from-fuchsia-500 to-pink-500',
+    shadow: 'shadow-fuchsia-500/20',
     calculators: [
       { path: '/ndfl', titleRu: 'НДФЛ', titleEn: 'Income Tax' },
       { path: '/nds', titleRu: 'НДС', titleEn: 'VAT' },
@@ -104,8 +104,8 @@ const categories: CategoryCard[] = [
     titleEn: 'Health',
     descRu: 'ИМТ, суточная норма калорий и рекомендации по весу',
     descEn: 'BMI, daily calorie needs and weight recommendations',
-    gradient: 'from-rose-500 to-pink-500',
-    shadow: 'shadow-rose-500/20',
+    gradient: 'from-red-500 to-rose-500',
+    shadow: 'shadow-red-500/20',
     calculators: [
       { path: '/bmi', titleRu: 'ИМТ и калории', titleEn: 'BMI & Calories' },
     ],
@@ -130,8 +130,8 @@ const categories: CategoryCard[] = [
     titleEn: 'Utilities',
     descRu: 'Калькулятор дней, генератор паролей и скидки',
     descEn: 'Date calculator, password generator and discounts',
-    gradient: 'from-amber-500 to-yellow-500',
-    shadow: 'shadow-amber-500/20',
+    gradient: 'from-yellow-500 to-lime-500',
+    shadow: 'shadow-yellow-500/20',
     calculators: [
       { path: '/days', titleRu: 'Калькулятор дней', titleEn: 'Date Calculator' },
       { path: '/password', titleRu: 'Генератор паролей', titleEn: 'Password Generator' },
@@ -145,8 +145,8 @@ const categories: CategoryCard[] = [
     titleEn: 'Reference',
     descRu: 'Телефонные коды России и стран мира, коды регионов, конвертер единиц',
     descEn: 'Russia and world phone codes, region codes, unit converter',
-    gradient: 'from-slate-500 to-gray-500',
-    shadow: 'shadow-slate-500/20',
+    gradient: 'from-slate-600 to-zinc-500',
+    shadow: 'shadow-slate-600/20',
     calculators: [
       { path: '/phone-codes', titleRu: 'Телефонные коды России', titleEn: 'Russia Phone Codes' },
       { path: '/country-codes', titleRu: 'Телефонные коды стран мира', titleEn: 'World Country Codes' },
