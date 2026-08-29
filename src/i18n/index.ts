@@ -252,6 +252,12 @@ const translations: Record<Language, TranslationKeys> = {
       description: 'Рассчитайте стоимость утилизационного сбора при ввозе ТС в РФ',
     },
 
+    /* Калькулятор растаможки */
+    customs: {
+      title: 'Калькулятор растаможки',
+      description: 'Рассчитайте полную стоимость таможенного оформления автомобиля',
+    },
+
     /* Футер */
     footer: {
       copyright: '© {year} Центр калькуляторов. Все права защищены.',
@@ -442,6 +448,11 @@ const translations: Record<Language, TranslationKeys> = {
     utilFee: {
       title: 'Utilization Fee Calculator',
       description: 'Calculate vehicle utilization fee for import to Russia',
+    },
+    /* Customs Clearance Calculator */
+    customs: {
+      title: 'Customs Clearance Calculator',
+      description: 'Calculate full customs clearance cost when importing a vehicle to Russia',
     },
     footer: {
       copyright: '© {year} Calculator Center. All rights reserved.',

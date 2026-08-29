@@ -45,6 +45,7 @@ import NDFLCalculator from './calculators/NDFLCalculator';
 import NDSCalculator from './calculators/NDSCalculator';
 import InterestCalculator from './calculators/InterestCalculator';
 import UtilFeeCalculator from './calculators/UtilFeeCalculator';
+import CustomsCalculator from './calculators/CustomsCalculator';
 
 export default function App() {
   return (
@@ -85,6 +86,7 @@ export default function App() {
               <Route path="/nds" element={<NDSCalculator />} />
               <Route path="/interest" element={<InterestCalculator />} />
               <Route path="/util-fee" element={<UtilFeeCalculator />} />
+              <Route path="/customs" element={<CustomsCalculator />} />
             </Routes>
           </main>
 
