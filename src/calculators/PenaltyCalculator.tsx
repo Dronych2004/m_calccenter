@@ -18,7 +18,7 @@
  * Ставка ЦБ РФ по умолчанию: 21% (актуально с 2024 г.)
  */
 import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { t } from '../i18n';
 import { useCBRRate } from '../hooks/useCBRRate';
 import { formatCurrency } from '../lib/format';
 
@@ -41,7 +41,6 @@ export default function PenaltyCalculator() {
   const [cbrRate, setCbrRate] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<PenaltyResult | null>(null);
-  const [, setLangTick] = useState(0);
 
   /* Загружаем актуальную ставку ЦБ из API (кэш 24ч) */
   const { rate: cbrRateFromAPI, date: cbrRateDate, loading: cbrLoading } = useCBRRate();
@@ -52,14 +51,6 @@ export default function PenaltyCalculator() {
       setCbrRate(String(cbrRateFromAPI));
     }
   }, [cbrLoading, cbrRateFromAPI, cbrRate]);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
 
   const calculate = useCallback((): PenaltyResult | null => {
     const amount = parseFloat(debtAmount);
@@ -133,10 +124,10 @@ export default function PenaltyCalculator() {
     setPaymentDate(`${yyyy}-${mm}-${dd}`);
   };
 
-  const penaltyTypeLabels: Record<PenaltyType, { ru: string; en: string }> = {
-    tax: { ru: 'Пени по налогам, сборам и страховым взносам', en: 'Penalties for taxes, fees and insurance contributions' },
-    salary: { ru: 'Компенсация за задержку в выплате заработной платы', en: 'Compensation for delayed salary payment' },
-    utilities: { ru: 'Пени за просрочку при оплате коммунальных услуг', en: 'Penalties for late utility payments' },
+  const penaltyTypeKeys: Record<PenaltyType, string> = {
+    tax: 'penalty.typeTax',
+    salary: 'penalty.typeSalary',
+    utilities: 'penalty.typeUtilities',
   };
 
   return (
@@ -144,12 +135,10 @@ export default function PenaltyCalculator() {
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-          {lang === 'ru' ? 'Калькулятор пеней' : 'Penalty Calculator'}
+          {t('penalty.title')}
         </h1>
         <p className="text-sm text-slate-400">
-          {lang === 'ru'
-            ? 'Рассчитайте пени за просрочку налогов, взносов или коммунальных платежей, а также компенсацию за задержку зарплаты'
-            : 'Calculate penalties for overdue taxes, contributions or utility bills, and salary delay compensation'}
+          {t('penalty.description')}
         </p>
       </div>
 
@@ -158,10 +147,10 @@ export default function PenaltyCalculator() {
         {/* Тип расчёта */}
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
           <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0 sm:mt-1">
-            {lang === 'ru' ? 'Рассчитать' : 'Calculate'}
+            {t('penalty.calculateLabel')}
           </label>
           <div className="space-y-3">
-            {(Object.keys(penaltyTypeLabels) as PenaltyType[]).map((type) => (
+            {(Object.keys(penaltyTypeKeys) as PenaltyType[]).map((type) => (
               <label key={type} className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="radio"
@@ -170,7 +159,7 @@ export default function PenaltyCalculator() {
                   onChange={() => setPenaltyType(type)}
                   className="w-4 h-4 text-indigo-500 border-slate-300 focus:ring-indigo-500"
                 />
-                <span className="text-sm text-slate-700">{penaltyTypeLabels[type][lang === 'ru' ? 'ru' : 'en']}</span>
+                <span className="text-sm text-slate-700">{t(penaltyTypeKeys[type])}</span>
               </label>
             ))}
           </div>
@@ -180,15 +169,15 @@ export default function PenaltyCalculator() {
         {penaltyType === 'tax' && (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
             <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-              {lang === 'ru' ? 'Налогоплательщик' : 'Taxpayer'}
+              {t('penalty.taxpayer')}
             </label>
             <select
               value={taxpayerType}
               onChange={(e) => setTaxpayerType(e.target.value as TaxpayerType)}
               className="flex-1 max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
             >
-              <option value="individual">{lang === 'ru' ? 'Физическое лицо' : 'Individual'}</option>
-              <option value="legal">{lang === 'ru' ? 'Юридическое лицо' : 'Legal entity'}</option>
+              <option value="individual">{t('penalty.individual')}</option>
+              <option value="legal">{t('penalty.legalEntity')}</option>
             </select>
           </div>
         )}
@@ -196,7 +185,7 @@ export default function PenaltyCalculator() {
         {/* Сумма задолженности */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-            {lang === 'ru' ? 'Сумма задолженности' : 'Debt amount'}
+            {t('penalty.debtAmount')}
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -207,14 +196,14 @@ export default function PenaltyCalculator() {
               placeholder="0"
               className="w-48 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
             />
-            <span className="text-sm text-slate-400">{lang === 'ru' ? 'руб.' : 'RUB'}</span>
+            <span className="text-sm text-slate-400">{t('penalty.currency')}</span>
           </div>
         </div>
 
         {/* Срок уплаты */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-            {lang === 'ru' ? 'Установленный срок уплаты' : 'Due date'}
+            {t('penalty.dueDate')}
           </label>
           <input
             type="date"
@@ -227,7 +216,7 @@ export default function PenaltyCalculator() {
         {/* Дата погашения */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-            {lang === 'ru' ? 'Дата погашения задолженности' : 'Payment date'}
+            {t('penalty.paymentDate')}
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -240,7 +229,7 @@ export default function PenaltyCalculator() {
               onClick={setToday}
               className="px-3 py-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all whitespace-nowrap"
             >
-              {lang === 'ru' ? 'Сегодня' : 'Today'}
+              {t('penalty.today')}
             </button>
           </div>
         </div>
@@ -249,7 +238,7 @@ export default function PenaltyCalculator() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-              {lang === 'ru' ? 'Ставка ЦБ РФ (%)' : 'CBR rate (%)'}
+              {t('penalty.cbrRate')}
             </label>
             <input
               type="text"
@@ -260,13 +249,9 @@ export default function PenaltyCalculator() {
             />
           </div>
           <p className="text-[11px] text-slate-300 mt-1.5 sm:ml-40">
-            {lang === 'ru'
-              ? cbrRateDate
-                ? `Актуальная ставка на ${cbrRateDate} (обновляется раз в сутки)`
-                : 'Загрузка ставки с cbr.ru...'
-              : cbrRateDate
-                ? `Current rate as of ${cbrRateDate} (updated daily)`
-                : 'Loading rate from cbr.ru...'}
+            {cbrRateDate
+              ? t('penalty.cbrRateCurrent', { date: cbrRateDate })
+              : t('penalty.cbrRateLoading')}
           </p>
         </div>
 
@@ -276,13 +261,13 @@ export default function PenaltyCalculator() {
             onClick={handleCalculate}
             className="px-8 py-3 rounded-xl bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
           >
-            {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+            {t('penalty.calcBtn')}
           </button>
           <button
             onClick={handleReset}
             className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 font-medium text-sm hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
           >
-            {lang === 'ru' ? 'Сбросить' : 'Reset'}
+            {t('penalty.reset')}
           </button>
         </div>
       </div>
@@ -293,20 +278,20 @@ export default function PenaltyCalculator() {
           {/* Сумма пеней — главная карточка */}
           <div className="bg-linear-to-br from-rose-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg shadow-rose-500/20">
             <p className="text-sm font-medium text-white/70 mb-1">
-              {lang === 'ru' ? 'Сумма пеней' : 'Penalty amount'}
+              {t('penalty.penaltyAmount')}
             </p>
             <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
               {formatCurrency(result.penalty, 2)}
             </p>
             <p className="text-sm text-white/60 mt-2">
-              {result.days} {lang === 'ru' ? 'дн. просрочки' : 'days overdue'}
+              {result.days} {t('penalty.daysOverdue')}
             </p>
           </div>
 
           {/* Итого к оплате */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
             <p className="text-xs text-slate-400 mb-1">
-              {lang === 'ru' ? 'Итого к оплате' : 'Total to pay'}
+              {t('penalty.totalToPay')}
             </p>
             <p className="text-xl font-bold text-slate-800">
               {formatCurrency(result.totalDebt, 2)}
@@ -316,26 +301,26 @@ export default function PenaltyCalculator() {
           {/* Детали */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
             <p className="text-sm font-semibold text-slate-700 mb-3">
-              {lang === 'ru' ? 'Расчёт пеней' : 'Penalty breakdown'}
+              {t('penalty.penaltyBreakdown')}
             </p>
             <div className="space-y-2.5">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Сумма задолженности' : 'Debt amount'}</span>
+                <span className="text-slate-500">{t('penalty.debtAmountLabel')}</span>
                 <span className="font-semibold text-slate-700">{formatCurrency(parseFloat(debtAmount) || 0, 2)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Дней просрочки' : 'Days overdue'}</span>
+                <span className="text-slate-500">{t('penalty.daysOverdueLabel')}</span>
                 <span className="font-semibold text-slate-700">{result.days}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Ставка ЦБ РФ' : 'CBR rate'}</span>
+                <span className="text-slate-500">{t('penalty.cbrRateLabel')}</span>
                 <span className="font-semibold text-slate-700">{cbrRate}%</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">
                   {penaltyType === 'salary'
-                    ? (lang === 'ru' ? 'Формула (ст. 236 ТК РФ)' : 'Formula (Art. 236 LC RF)')
-                    : (lang === 'ru' ? 'Формула (ст. 75 НК РФ)' : 'Formula (Art. 75 TC RF)')}
+                    ? t('penalty.formulaSalary')
+                    : t('penalty.formulaTax')}
                 </span>
                 <span className="font-mono text-xs text-slate-600">
                   {penaltyType === 'salary'
@@ -348,7 +333,7 @@ export default function PenaltyCalculator() {
                 </span>
               </div>
               <div className="border-t border-slate-100 pt-2 flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Начислено пеней' : 'Penalty charged'}</span>
+                <span className="text-slate-500">{t('penalty.penaltyCharged')}</span>
                 <span className="font-bold text-rose-500">{formatCurrency(result.penalty, 2)}</span>
               </div>
             </div>
@@ -357,9 +342,7 @@ export default function PenaltyCalculator() {
           {/* Примечание */}
           <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
             <p className="text-xs text-amber-700">
-              {lang === 'ru'
-                ? '⚠️ Расчёт приблизительный. Ставка ЦБ РФ может отличаться от фактической на момент просрочки. Точный расчёт могут провести ФНС или суд.'
-                : '⚠️ Estimate only. CBR rate may differ from the actual rate during the overdue period. Contact FTS or court for exact calculation.'}
+              {t('penalty.disclaimer')}
             </p>
           </div>
         </div>
@@ -368,9 +351,7 @@ export default function PenaltyCalculator() {
       {calculated && !result && (
         <div className="mt-6 bg-red-50 rounded-2xl border border-red-200 p-5 text-center animate-fade-in">
           <p className="text-sm text-red-600">
-            {lang === 'ru'
-              ? 'Пожалуйста, заполните сумму и даты для расчёта'
-              : 'Please enter amount and dates to calculate'}
+            {t('penalty.errorNoData')}
           </p>
         </div>
       )}

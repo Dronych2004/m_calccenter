@@ -15,7 +15,6 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
-import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency, formatNumber } from '../lib/format';
 
 interface FuelResult {
@@ -32,7 +31,6 @@ export default function FuelCalculator() {
   const [showDetails, setShowDetails] = useState(false);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<FuelResult | null>(null);
-  const lang = useLanguage();
 
   const calculate = useCallback((): FuelResult | null => {
     const d = parseFloat(distance);
@@ -126,13 +124,13 @@ export default function FuelCalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {t('fuel.calculate')}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+                {t('fuel.reset')}
               </button>
             </div>
           </div>
@@ -164,7 +162,7 @@ export default function FuelCalculator() {
                 onClick={() => setShowDetails(!showDetails)}
                 className="w-full bg-white rounded-2xl border border-slate-100 p-4 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 transition-all shadow-sm"
               >
-                {lang === 'ru' ? 'Подробнее' : 'Details'}
+                {t('fuel.details')}
                 <span className="ml-2 text-xs text-slate-400">{showDetails ? '▲' : '▼'}</span>
               </button>
 
@@ -178,7 +176,7 @@ export default function FuelCalculator() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">{lang === 'ru' ? 'Стоимость на 1 км' : 'Cost per 1 km'}</p>
+                        <p className="text-xs text-slate-400">{t('fuel.costPerKm')}</p>
                         <p className="text-lg font-bold text-slate-800">{formatCurrency(result.costPerKm)}</p>
                       </div>
                     </div>
@@ -193,7 +191,7 @@ export default function FuelCalculator() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">{lang === 'ru' ? 'Расход на 100 км в деньгах' : 'Cost per 100 km'}</p>
+                        <p className="text-xs text-slate-400">{t('fuel.costPer100km')}</p>
                         <p className="text-lg font-bold text-slate-800">{formatCurrency(result.costPer100km)}</p>
                       </div>
                     </div>
@@ -210,9 +208,7 @@ export default function FuelCalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните данные и нажмите «Рассчитать»'
-                  : 'Fill in the fields and press «Calculate»'}
+                {t('fuel.hint')}
               </p>
             </div>
           )}

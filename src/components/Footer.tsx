@@ -30,7 +30,7 @@ export default function Footer() {
                 {t('footer.terms')}
               </button>
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">{t('footer.copyright').replace('{year}', String(new Date().getFullYear()))}</p>
+            <p className="text-[11px] text-slate-400 font-medium">{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           </div>
         </div>
       </footer>

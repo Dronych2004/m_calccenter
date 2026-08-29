@@ -13,7 +13,6 @@
  */
 import { useState } from 'react';
 import { t } from '../i18n';
-import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
@@ -27,7 +26,6 @@ export default function CreditCalculator() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<LoanResult | null>(null);
-  const lang = useLanguage();
 
   const ins = parseFloat(insurance) || 0;
   const comm = parseFloat(commission) || 0;
@@ -70,7 +68,7 @@ export default function CreditCalculator() {
             {/* Сумма кредита */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Сумма кредита' : 'Loan amount'}
+                {t('credit.loanAmount')}
               </label>
               <input
                 type="text"
@@ -88,7 +86,7 @@ export default function CreditCalculator() {
             {/* Процентная ставка */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Процентная ставка (% годовых)' : 'Interest rate (% per year)'}
+                {t('credit.interestRate')}
               </label>
               <input
                 type="text"
@@ -103,7 +101,7 @@ export default function CreditCalculator() {
             {/* Срок кредита */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Срок кредита (лет)' : 'Loan term (years)'}
+                {t('credit.loanTerm')}
               </label>
               <input
                 type="text"
@@ -118,7 +116,7 @@ export default function CreditCalculator() {
             {/* Тип платежа */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Тип платежа' : 'Payment type'}
+                {t('credit.paymentType')}
               </label>
               <div className="flex gap-2">
                 <button
@@ -129,7 +127,7 @@ export default function CreditCalculator() {
                       : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  {lang === 'ru' ? 'Аннуитетный' : 'Annuity'}
+                  {t('credit.annuity')}
                 </button>
                 <button
                   onClick={() => setPaymentType('differentiated')}
@@ -139,7 +137,7 @@ export default function CreditCalculator() {
                       : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  {lang === 'ru' ? 'Дифференцированный' : 'Differentiated'}
+                  {t('credit.differentiated')}
                 </button>
               </div>
             </div>
@@ -147,13 +145,13 @@ export default function CreditCalculator() {
             {/* Доп. расходы — сворачиваемый блок */}
             <details className="mb-6">
               <summary className="text-sm font-medium text-slate-500 cursor-pointer hover:text-slate-700 transition-colors">
-                {lang === 'ru' ? 'Дополнительные расходы (необязательно)' : 'Additional costs (optional)'}
+                {t('credit.additionalCostsOptional')}
               </summary>
               <div className="mt-4 space-y-4">
                 {/* Страхование */}
                 <div>
                   <label className="block text-xs font-medium text-slate-500 mb-1.5">
-                    {lang === 'ru' ? 'Страхование (₽)' : 'Insurance (₽)'}
+                    {t('credit.insurance')}
                   </label>
                   <input
                     type="text"
@@ -167,7 +165,7 @@ export default function CreditCalculator() {
                 {/* Комиссия */}
                 <div>
                   <label className="block text-xs font-medium text-slate-500 mb-1.5">
-                    {lang === 'ru' ? 'Комиссия за выдачу (₽)' : 'Disbursement fee (₽)'}
+                    {t('credit.disbursementFee')}
                   </label>
                   <input
                     type="text"
@@ -187,13 +185,13 @@ export default function CreditCalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {t('credit.calculate')}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+                {t('credit.reset')}
               </button>
             </div>
           </div>
@@ -206,7 +204,7 @@ export default function CreditCalculator() {
               {/* Ежемесячный платёж — главная карточка */}
               <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
                 <p className="text-sm font-medium text-white/70 mb-1">
-                  {lang === 'ru' ? 'Ежемесячный платёж' : 'Monthly payment'}
+                  {t('credit.monthlyPayment')}
                 </p>
                 <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
                   {formatCurrency(
@@ -215,9 +213,7 @@ export default function CreditCalculator() {
                 </p>
                 {paymentType === 'differentiated' && (
                   <p className="text-sm text-white/60 mt-2">
-                    {lang === 'ru'
-                      ? `от ${formatCurrency(result.lastPaymentDiff)} до ${formatCurrency(result.firstPaymentDiff)}`
-                      : `from ${formatCurrency(result.lastPaymentDiff)} to ${formatCurrency(result.firstPaymentDiff)}`}
+                    {t('credit.paymentRange', { from: formatCurrency(result.lastPaymentDiff), to: formatCurrency(result.firstPaymentDiff) })}
                   </p>
                 )}
               </div>
@@ -225,7 +221,7 @@ export default function CreditCalculator() {
               {/* Общая выплата */}
               <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
                 <p className="text-xs text-slate-400 mb-1">
-                  {lang === 'ru' ? 'Общая выплата' : 'Total payment'}
+                  {t('credit.totalPayment')}
                 </p>
                 <p className="text-xl font-bold text-slate-800">
                   {formatCurrency(paymentType === 'annuity' ? result.totalAnnuity : result.totalDiff)}
@@ -235,7 +231,7 @@ export default function CreditCalculator() {
               {/* Переплата */}
               <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
                 <p className="text-xs text-slate-400 mb-1">
-                  {lang === 'ru' ? 'Переплата по процентам' : 'Total interest'}
+                  {t('credit.totalInterest')}
                 </p>
                 <p className="text-xl font-bold text-rose-500">
                   {formatCurrency(paymentType === 'annuity' ? result.overpaymentAnnuity : result.overpaymentDiff)}
@@ -246,13 +242,13 @@ export default function CreditCalculator() {
               {(ins > 0 || comm > 0) && (
                 <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm animate-fade-in">
                   <p className="text-xs text-slate-400 mb-3">
-                    {lang === 'ru' ? 'Дополнительные расходы' : 'Additional costs'}
+                    {t('credit.additionalCosts')}
                   </p>
                   <div className="space-y-2">
                     {ins > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">
-                          {lang === 'ru' ? 'Страхование' : 'Insurance'}
+                          {t('credit.insuranceLabel')}
                         </span>
                         <span className="text-sm font-semibold text-slate-700">{formatCurrency(ins)}</span>
                       </div>
@@ -260,14 +256,14 @@ export default function CreditCalculator() {
                     {comm > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">
-                          {lang === 'ru' ? 'Комиссия за выдачу' : 'Disbursement fee'}
+                          {t('credit.disbursementFeeLabel')}
                         </span>
                         <span className="text-sm font-semibold text-slate-700">{formatCurrency(comm)}</span>
                       </div>
                     )}
                     <div className="border-t border-slate-100 pt-2 flex items-center justify-between">
                       <span className="text-sm font-medium text-slate-600">
-                        {lang === 'ru' ? 'Полная стоимость' : 'Total cost'}
+                        {t('credit.totalCost')}
                       </span>
                       <span className="text-sm font-bold text-slate-800">
                         {formatCurrency(result.S + ins + comm)}
@@ -282,7 +278,7 @@ export default function CreditCalculator() {
                 onClick={() => setShowSchedule(!showSchedule)}
                 className="w-full bg-white rounded-2xl border border-slate-100 p-4 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 transition-all shadow-sm"
               >
-                {lang === 'ru' ? 'График платежей' : 'Payment schedule'}
+                {t('credit.paymentSchedule')}
                 <span className="ml-2 text-xs text-slate-400">
                   {showSchedule ? '▲' : '▼'}
                 </span>
@@ -297,19 +293,19 @@ export default function CreditCalculator() {
                         <tr className="border-b border-slate-100">
                           <th className="px-3 py-3 text-center font-semibold text-slate-400 w-10">№</th>
                           <th className="px-3 py-3 text-left font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Период' : 'Period'}
+                            {t('credit.period')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Платёж, ₽' : 'Payment, ₽'}
+                            {t('credit.colPayment')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Долг, ₽' : 'Principal, ₽'}
+                            {t('credit.colPrincipal')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Проценты, ₽' : 'Interest, ₽'}
+                            {t('credit.colInterest')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Остаток, ₽' : 'Balance, ₽'}
+                            {t('credit.colBalance')}
                           </th>
                         </tr>
                       </thead>
@@ -342,9 +338,7 @@ export default function CreditCalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните параметры и нажмите «Рассчитать»'
-                  : 'Fill in parameters and press «Calculate»'}
+                {t('credit.hint')}
               </p>
             </div>
           )}

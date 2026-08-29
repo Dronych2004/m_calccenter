@@ -14,7 +14,7 @@
  *   Компенсация = Неиспользованные × Средний дневной заработок
  */
 import { useState, useEffect, useCallback } from 'react';
-import { useLanguage } from '../hooks/useLanguage';
+import { t } from '../i18n';
 import { formatCurrency } from '../lib/format';
 
 interface ExcludedPeriod {
@@ -43,7 +43,6 @@ export default function VacationCalculator() {
   const [excludedPeriods, setExcludedPeriods] = useState<ExcludedPeriod[]>([]);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const lang = useLanguage();
 
   useEffect(() => {
     if (!calcDate) {
@@ -159,12 +158,10 @@ export default function VacationCalculator() {
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-          {lang === 'ru' ? 'Калькулятор дней отпуска' : 'Vacation Days Calculator'}
+          {t('vacation.title')}
         </h1>
         <p className="text-sm text-slate-400">
-          {lang === 'ru'
-            ? 'Рассчитайте количество неиспользованных дней отпуска и положенную денежную компенсацию'
-            : 'Calculate unused vacation days and compensation'}
+          {t('vacation.description')}
         </p>
       </div>
 
@@ -173,7 +170,7 @@ export default function VacationCalculator() {
         {/* Дата приёма на работу */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
-            {lang === 'ru' ? 'Дата приёма на работу' : 'Date of employment'}
+            {t('vacation.hireDate')}
           </label>
           <input
             type="date"
@@ -186,7 +183,7 @@ export default function VacationCalculator() {
         {/* Расчетная дата */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
-            {lang === 'ru' ? 'Расчётная дата' : 'Calculation date'}
+            {t('vacation.calcDate')}
           </label>
           <div className="flex items-center gap-2 flex-1 max-w-xs">
             <input
@@ -199,7 +196,7 @@ export default function VacationCalculator() {
               onClick={setToday}
               className="px-3 py-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all whitespace-nowrap"
             >
-              {lang === 'ru' ? 'Сегодня' : 'Today'}
+              {t('vacation.today')}
             </button>
           </div>
         </div>
@@ -209,15 +206,15 @@ export default function VacationCalculator() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
               <span className="flex items-center gap-1.5">
-                {lang === 'ru' ? 'Периоды, не включаемые в отпускной стаж' : 'Periods excluded from vacation seniority'}
-                <span className="text-slate-300" title={lang === 'ru' ? 'Отпуск по уходу за ребёнком, прогулы и т.д.' : 'Childcare leave, absenteeism, etc.'}>ⓘ</span>
+                {t('vacation.excludedPeriodsLabel')}
+                <span className="text-slate-300" title={t('vacation.excludedPeriodsTooltip')}>ⓘ</span>
               </span>
             </label>
             <button
               onClick={addExcludedPeriod}
               className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors"
             >
-              + {lang === 'ru' ? 'Исключить период' : 'Exclude period'}
+              + {t('vacation.excludePeriod')}
             </button>
           </div>
 
@@ -254,8 +251,8 @@ export default function VacationCalculator() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
             <span className="flex items-center gap-1.5">
-              {lang === 'ru' ? 'Продолжительность ежегодного отпуска' : 'Annual vacation duration'}
-              <span className="text-slate-300" title={lang === 'ru' ? 'Стандарт — 28 дней (ст. 115 ТК РФ)' : 'Standard — 28 days (Art. 115 LC RF)'}>ⓘ</span>
+              {t('vacation.annualDuration')}
+              <span className="text-slate-300" title={t('vacation.annualDurationTooltip')}>ⓘ</span>
             </span>
           </label>
           <div className="flex items-center gap-2">
@@ -266,14 +263,14 @@ export default function VacationCalculator() {
               onChange={(e) => setVacationDays(e.target.value.replace(/\D/g, ''))}
               className="w-24 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
             />
-            <span className="text-sm text-slate-400">{lang === 'ru' ? 'дн.' : 'days'}</span>
+            <span className="text-sm text-slate-400">{t('vacation.days')}</span>
           </div>
         </div>
 
         {/* Использованные дни */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
           <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
-            {lang === 'ru' ? 'Использованные дни отпуска за весь период' : 'Vacation days used during entire period'}
+            {t('vacation.usedDays')}
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -283,7 +280,7 @@ export default function VacationCalculator() {
               onChange={(e) => setUsedDays(e.target.value.replace(/\D/g, ''))}
               className="w-24 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
             />
-            <span className="text-sm text-slate-400">{lang === 'ru' ? 'дн.' : 'days'}</span>
+            <span className="text-sm text-slate-400">{t('vacation.days')}</span>
           </div>
         </div>
 
@@ -291,8 +288,8 @@ export default function VacationCalculator() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
           <label className="text-sm font-medium text-slate-600 sm:w-56 shrink-0">
             <span className="flex items-center gap-1.5">
-              {lang === 'ru' ? 'Средний дневной заработок' : 'Average daily earnings'}
-              <span className="text-slate-300" title={lang === 'ru' ? 'Для расчёта компенсации' : 'For compensation calculation'}>ⓘ</span>
+              {t('vacation.dailyEarnings')}
+              <span className="text-slate-300" title={t('vacation.dailyEarningsTooltip')}>ⓘ</span>
             </span>
           </label>
           <div className="flex items-center gap-2">
@@ -301,13 +298,13 @@ export default function VacationCalculator() {
               inputMode="decimal"
               value={dailyEarnings}
               onChange={(e) => setDailyEarnings(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))}
-              placeholder={lang === 'ru' ? 'необязательно' : 'optional'}
+              placeholder={t('vacation.optional')}
               className="w-40 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
             />
             <span className="text-sm text-slate-400">₽</span>
           </div>
           <p className="text-xs text-slate-400 sm:ml-2">
-            {lang === 'ru' ? 'Для расчёта компенсации' : 'For compensation calculation'}
+            {t('vacation.dailyEarningsTooltip')}
           </p>
         </div>
 
@@ -317,13 +314,13 @@ export default function VacationCalculator() {
             onClick={handleCalculate}
             className="px-8 py-3 rounded-xl bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
           >
-            {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+            {t('vacation.calcBtn')}
           </button>
           <button
             onClick={handleReset}
             className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 font-medium text-sm hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
           >
-            {lang === 'ru' ? 'Сбросить' : 'Reset'}
+            {t('vacation.reset')}
           </button>
         </div>
       </div>
@@ -334,16 +331,14 @@ export default function VacationCalculator() {
           {/* Неиспользованные дни — главная карточка */}
           <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
             <p className="text-sm font-medium text-white/70 mb-1">
-              {lang === 'ru' ? 'Неиспользованные дни отпуска' : 'Unused vacation days'}
+              {t('vacation.unusedDays')}
             </p>
             <p className="text-5xl sm:text-6xl font-extrabold tracking-tight">
               {result.unusedDays}
-              <span className="text-lg font-semibold text-white/70 ml-2">{lang === 'ru' ? 'дн.' : 'days'}</span>
+              <span className="text-lg font-semibold text-white/70 ml-2">{t('vacation.days')}</span>
             </p>
             <p className="text-sm text-white/60 mt-2">
-              {lang === 'ru'
-                ? `Стаж: ${result.years} ${lang === 'ru' ? 'лет' : 'years'} ${result.months} ${lang === 'ru' ? 'мес.' : 'mo.'}`
-                : `Seniority: ${result.years} years ${result.months} mo.`}
+              {t('vacation.seniority', { years: result.years, months: result.months })}
             </p>
           </div>
 
@@ -351,20 +346,20 @@ export default function VacationCalculator() {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
               <p className="text-[11px] text-slate-400 mb-1">
-                {lang === 'ru' ? 'Отпускной стаж' : 'Vacation seniority'}
+                {t('vacation.vacationSeniority')}
               </p>
               <p className="text-lg font-bold text-slate-800">
                 {result.vacationSeniority.toLocaleString('ru-RU')}
-                <span className="text-xs text-slate-400 ml-1">{lang === 'ru' ? 'дн.' : 'days'}</span>
+                <span className="text-xs text-slate-400 ml-1">{t('vacation.days')}</span>
               </p>
             </div>
             <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
               <p className="text-[11px] text-slate-400 mb-1">
-                {lang === 'ru' ? 'Накоплено дней' : 'Earned days'}
+                {t('vacation.earnedDays')}
               </p>
               <p className="text-lg font-bold text-indigo-600">
                 {result.earnedDays}
-                <span className="text-xs text-slate-400 ml-1">{lang === 'ru' ? 'дн.' : 'days'}</span>
+                <span className="text-xs text-slate-400 ml-1">{t('vacation.days')}</span>
               </p>
             </div>
           </div>
@@ -372,24 +367,24 @@ export default function VacationCalculator() {
           {/* Стаж */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
             <p className="text-sm font-semibold text-slate-700 mb-3">
-              {lang === 'ru' ? 'Разбивка стажа' : 'Seniority breakdown'}
+              {t('vacation.seniorityBreakdown')}
             </p>
             <div className="space-y-2.5">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Общий стаж' : 'Total seniority'}</span>
-                <span className="font-semibold text-slate-700">{result.totalDays.toLocaleString('ru-RU')} {lang === 'ru' ? 'дн.' : 'days'}</span>
+                <span className="text-slate-500">{t('vacation.totalSeniority')}</span>
+                <span className="font-semibold text-slate-700">{result.totalDays.toLocaleString('ru-RU')} {t('vacation.days')}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Исключённые периоды' : 'Excluded periods'}</span>
-                <span className="font-semibold text-rose-500">−{result.excludedDays.toLocaleString('ru-RU')} {lang === 'ru' ? 'дн.' : 'days'}</span>
+                <span className="text-slate-500">{t('vacation.excludedPeriods')}</span>
+                <span className="font-semibold text-rose-500">−{result.excludedDays.toLocaleString('ru-RU')} {t('vacation.days')}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Отпускной стаж' : 'Vacation seniority'}</span>
-                <span className="font-semibold text-emerald-600">{result.vacationSeniority.toLocaleString('ru-RU')} {lang === 'ru' ? 'дн.' : 'days'}</span>
+                <span className="text-slate-500">{t('vacation.vacationSeniority')}</span>
+                <span className="font-semibold text-emerald-600">{result.vacationSeniority.toLocaleString('ru-RU')} {t('vacation.days')}</span>
               </div>
               <div className="border-t border-slate-100 pt-2 flex items-center justify-between text-sm">
-                <span className="text-slate-500">{lang === 'ru' ? 'Ежегодный отпуск' : 'Annual vacation'}</span>
-                <span className="font-semibold text-slate-700">{result.annualDays} {lang === 'ru' ? 'дн./год' : 'days/year'}</span>
+                <span className="text-slate-500">{t('vacation.annualVacation')}</span>
+                <span className="font-semibold text-slate-700">{result.annualDays} {t('vacation.daysPerYear')}</span>
               </div>
             </div>
           </div>
@@ -398,13 +393,13 @@ export default function VacationCalculator() {
           {result.compensation > 0 && (
             <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 text-white shadow-lg shadow-indigo-500/20">
               <p className="text-sm font-medium text-white/70 mb-1">
-                {lang === 'ru' ? 'Компенсация при увольнении' : 'Termination compensation'}
+                {t('vacation.compensation')}
               </p>
               <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
                 {formatCurrency(result.compensation)}
               </p>
               <p className="text-sm text-white/60 mt-2">
-                {result.unusedDays} {lang === 'ru' ? 'дн. ×' : 'days ×'} {formatCurrency(parseFloat(dailyEarnings) || 0)}
+                {result.unusedDays} {t('vacation.daysTimes')} {formatCurrency(parseFloat(dailyEarnings) || 0)}
               </p>
             </div>
           )}
@@ -412,9 +407,7 @@ export default function VacationCalculator() {
           {/* Примечание */}
           <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
             <p className="text-xs text-amber-700">
-              {lang === 'ru'
-                ? '⚠️ Расчёт приблизительный, основан на ст. 115, 121 ТК РФ. Точный расчёт может отличаться в зависимости от обстоятельств. Обратитесь к кадровику или юристу.'
-                : '⚠️ Estimate based on Art. 115, 121 LC RF. Actual calculation may vary. Consult HR or legal counsel.'}
+              {t('vacation.disclaimer')}
             </p>
           </div>
         </div>
@@ -423,9 +416,7 @@ export default function VacationCalculator() {
       {calculated && !result && (
         <div className="mt-6 bg-red-50 rounded-2xl border border-red-200 p-5 text-center animate-fade-in">
           <p className="text-sm text-red-600">
-            {lang === 'ru'
-              ? 'Пожалуйста, заполните даты для расчёта'
-              : 'Please enter dates to calculate'}
+            {t('vacation.errorNoDates')}
           </p>
         </div>
       )}

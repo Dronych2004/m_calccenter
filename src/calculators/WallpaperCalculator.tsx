@@ -21,7 +21,6 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
-import { useLanguage } from '../hooks/useLanguage';
 
 /* Режим калькулятора */
 type CalcMode = 'wallpaper' | 'paint';
@@ -51,7 +50,6 @@ export default function WallpaperCalculator() {
   const [wallArea, setWallArea] = useState<{ perimeter: number; grossArea: number; doorArea: number; windowArea: number; netArea: number } | null>(null);
   const [wallpaperResult, setWallpaperResult] = useState<{ stripLength: number; totalStrips: number; totalLength: number; rolls: number } | null>(null);
   const [paintResult, setPaintResult] = useState<{ litersNeeded: number; cans: number } | null>(null);
-  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
@@ -129,19 +127,19 @@ export default function WallpaperCalculator() {
 
             {/* Параметры комнаты */}
             <h3 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">
-              {lang === 'ru' ? 'Комната' : 'Room'}
+              {t('wallpaper.room')}
             </h3>
 
             <div className="grid grid-cols-2 gap-3 mb-5">
               {/* Ширина */}
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Ширина (м)' : 'Width (m)'}</label>
+                <label className="block text-xs text-slate-400 mb-1">{t('wallpaper.width')}</label>
                 <input type="text" inputMode="decimal" value={roomWidth} onChange={(e) => setRoomWidth(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))} placeholder="0"
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
               </div>
               {/* Длина */}
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Длина (м)' : 'Length (m)'}</label>
+                <label className="block text-xs text-slate-400 mb-1">{t('wallpaper.length')}</label>
                 <input type="text" inputMode="decimal" value={roomLength} onChange={(e) => setRoomLength(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))} placeholder="0"
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
               </div>
@@ -149,14 +147,14 @@ export default function WallpaperCalculator() {
 
             {/* Высота */}
             <div className="mb-5">
-              <label className="block text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Высота стен (м)' : 'Wall height (m)'}</label>
+              <label className="block text-xs text-slate-400 mb-1">{t('wallpaper.wallHeightLabel')}</label>
               <input type="text" inputMode="decimal" value={roomHeight} onChange={(e) => setRoomHeight(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))} placeholder="0"
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
             </div>
 
             {/* Дверь */}
             <div className="mb-4">
-              <label className="block text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Дверь (Ш × В м)' : 'Door (W × H m)'}</label>
+              <label className="block text-xs text-slate-400 mb-1">{t('wallpaper.door')}</label>
               <div className="grid grid-cols-2 gap-3">
                 <input type="text" inputMode="decimal" value={doorWidth} onChange={(e) => setDoorWidth(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))} placeholder="0.9"
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
@@ -167,7 +165,7 @@ export default function WallpaperCalculator() {
 
             {/* Окно */}
             <div className="mb-6">
-              <label className="block text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Окно (Ш × В м) × кол-во' : 'Window (W × H m) × count'}</label>
+              <label className="block text-xs text-slate-400 mb-1">{t('wallpaper.window')}</label>
               <div className="grid grid-cols-3 gap-3">
                 <input type="text" inputMode="decimal" value={windowWidth} onChange={(e) => setWindowWidth(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))} placeholder="1.2"
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
@@ -186,7 +184,7 @@ export default function WallpaperCalculator() {
               </button>
               <button onClick={() => setMode('paint')}
                 className={`flex-1 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${mode === 'paint' ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/25' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
-                {lang === 'ru' ? 'Краска' : 'Paint'}
+                {t('wallpaper.paint')}
               </button>
             </div>
 
@@ -194,7 +192,7 @@ export default function WallpaperCalculator() {
             {mode === 'wallpaper' && (
               <div className="mb-5 animate-fade-in">
                 <h3 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">
-                  {lang === 'ru' ? 'Параметры рулона' : 'Roll parameters'}
+                  {t('wallpaper.rollParams')}
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -215,7 +213,7 @@ export default function WallpaperCalculator() {
             {mode === 'paint' && (
               <div className="mb-5 animate-fade-in">
                 <h3 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">
-                  {lang === 'ru' ? 'Параметры краски' : 'Paint parameters'}
+                  {t('wallpaper.paintParams')}
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -238,7 +236,7 @@ export default function WallpaperCalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {t('wallpaper.calcBtn')}
               </button>
               <button onClick={() => {
                 setRoomWidth(''); setRoomLength(''); setRoomHeight('');
@@ -249,7 +247,7 @@ export default function WallpaperCalculator() {
                 setCalculated(false); setWallArea(null); setWallpaperResult(null); setPaintResult(null);
               }}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all">
-                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+                {t('wallpaper.reset')}
               </button>
             </div>
           </div>
@@ -266,9 +264,7 @@ export default function WallpaperCalculator() {
                   {fmt(wallArea.netArea)} <span className="text-lg font-medium text-white/70">{t('wallpaper.m2')}</span>
                 </p>
                 <p className="text-xs text-white/50 mt-1">
-                  {lang === 'ru'
-                    ? `за вычетом ${fmt(wallArea.doorArea)} м² двери и ${fmt(wallArea.windowArea)} м² окон`
-                    : `minus ${fmt(wallArea.doorArea)} m² door and ${fmt(wallArea.windowArea)} m² windows`}
+                  {t('wallpaper.netAreaDetail', { doorArea: fmt(wallArea.doorArea), windowArea: fmt(wallArea.windowArea) })}
                 </p>
               </div>
 
@@ -286,7 +282,7 @@ export default function WallpaperCalculator() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400">{t('wallpaper.wallpaperRolls')}</p>
-                        <p className="text-2xl font-bold text-slate-800">{wallpaperResult.rolls} <span className="text-sm text-slate-400">шт.</span></p>
+                        <p className="text-2xl font-bold text-slate-800">{wallpaperResult.rolls} <span className="text-sm text-slate-400">{t('wallpaper.pcs')}</span></p>
                       </div>
                     </div>
                   </div>
@@ -294,17 +290,17 @@ export default function WallpaperCalculator() {
                   {/* Детали */}
                   <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">{lang === 'ru' ? 'Длина полосы' : 'Strip length'}</span>
+                      <span className="text-slate-400">{t('wallpaper.stripLength')}</span>
                       <span className="font-medium text-slate-700">{fmt(wallpaperResult.stripLength)} м</span>
                     </div>
                     <div className="border-t border-slate-100" />
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">{lang === 'ru' ? 'Кол-во полос' : 'Strips count'}</span>
-                      <span className="font-medium text-slate-700">{wallpaperResult.totalStrips} шт.</span>
+                      <span className="text-slate-400">{t('wallpaper.stripsCount')}</span>
+                      <span className="font-medium text-slate-700">{wallpaperResult.totalStrips} {t('wallpaper.pcs')}</span>
                     </div>
                     <div className="border-t border-slate-100" />
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">{lang === 'ru' ? 'Общая длина' : 'Total length'}</span>
+                      <span className="text-slate-400">{t('wallpaper.totalLength')}</span>
                       <span className="font-medium text-slate-700">{fmt(wallpaperResult.totalLength, 0)} м</span>
                     </div>
                   </div>
@@ -322,7 +318,7 @@ export default function WallpaperCalculator() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400">{t('wallpaper.paintCans')}</p>
-                        <p className="text-2xl font-bold text-slate-800">{paintResult.cans} <span className="text-sm text-slate-400">шт.</span></p>
+                        <p className="text-2xl font-bold text-slate-800">{paintResult.cans} <span className="text-sm text-slate-400">{t('wallpaper.pcs')}</span></p>
                       </div>
                     </div>
                   </div>
@@ -330,12 +326,12 @@ export default function WallpaperCalculator() {
                   {/* Детали */}
                   <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">{lang === 'ru' ? 'Нужно краски' : 'Paint needed'}</span>
+                      <span className="text-slate-400">{t('wallpaper.paintNeeded')}</span>
                       <span className="font-medium text-slate-700">{fmt(paintResult.litersNeeded)} л</span>
                     </div>
                     <div className="border-t border-slate-100" />
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">{lang === 'ru' ? 'Банок в запасе' : 'Extra paint'}</span>
+                      <span className="text-slate-400">{t('wallpaper.extraPaint')}</span>
                       <span className="font-medium text-slate-700">
                         {fmt((paintResult.cans * parseFloat(paintVolume)) - paintResult.litersNeeded)} л
                       </span>
@@ -354,9 +350,7 @@ export default function WallpaperCalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните размеры комнаты для расчёта'
-                  : 'Fill in room dimensions to calculate'}
+                {t('wallpaper.fillDimensions')}
               </p>
             </div>
           )}

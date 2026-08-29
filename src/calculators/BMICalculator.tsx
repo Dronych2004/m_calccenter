@@ -18,7 +18,6 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
-import { useLanguage } from '../hooks/useLanguage';
 
 /* Тип пола */
 type Gender = 'male' | 'female';
@@ -27,16 +26,14 @@ type Gender = 'male' | 'female';
 interface ActivityLevel {
   key: string;
   factor: number;
-  labelRu: string;
-  labelEn: string;
 }
 
 const activityLevels: ActivityLevel[] = [
-  { key: 'sedentary', factor: 1.2, labelRu: 'Малоподвижный (офис)', labelEn: 'Sedentary (office)' },
-  { key: 'light', factor: 1.375, labelRu: 'Лёгкая активность (1–3 р/нед)', labelEn: 'Light (1–3 times/week)' },
-  { key: 'moderate', factor: 1.55, labelRu: 'Умеренная (3–5 р/нед)', labelEn: 'Moderate (3–5 times/week)' },
-  { key: 'active', factor: 1.725, labelRu: 'Высокая (6–7 р/нед)', labelEn: 'High (6–7 times/week)' },
-  { key: 'veryActive', factor: 1.9, labelRu: 'Очень высокая (тренировки)', labelEn: 'Very high (athlete)' },
+  { key: 'sedentary', factor: 1.2 },
+  { key: 'light', factor: 1.375 },
+  { key: 'moderate', factor: 1.55 },
+  { key: 'active', factor: 1.725 },
+  { key: 'veryActive', factor: 1.9 },
 ];
 
 /* Категория ИМТ */
@@ -46,25 +43,17 @@ interface BMICategory {
   bg: string;
 }
 
-function getBMICategory(bmi: number, lang: string): BMICategory {
+function getBMICategory(bmi: number): BMICategory {
   if (bmi < 18.5) {
-    return lang === 'ru'
-      ? { label: 'Недостаточный вес', color: 'text-sky-600', bg: 'bg-sky-50' }
-      : { label: 'Underweight', color: 'text-sky-600', bg: 'bg-sky-50' };
+    return { label: t('bmi.categories.underweight'), color: 'text-sky-600', bg: 'bg-sky-50' };
   }
   if (bmi < 25) {
-    return lang === 'ru'
-      ? { label: 'Норма', color: 'text-emerald-600', bg: 'bg-emerald-50' }
-      : { label: 'Normal', color: 'text-emerald-600', bg: 'bg-emerald-50' };
+    return { label: t('bmi.categories.normal'), color: 'text-emerald-600', bg: 'bg-emerald-50' };
   }
   if (bmi < 30) {
-    return lang === 'ru'
-      ? { label: 'Избыточный вес', color: 'text-amber-600', bg: 'bg-amber-50' }
-      : { label: 'Overweight', color: 'text-amber-600', bg: 'bg-amber-50' };
+    return { label: t('bmi.categories.overweight'), color: 'text-amber-600', bg: 'bg-amber-50' };
   }
-  return lang === 'ru'
-    ? { label: 'Ожирение', color: 'text-rose-600', bg: 'bg-rose-50' }
-    : { label: 'Obese', color: 'text-rose-600', bg: 'bg-rose-50' };
+  return { label: t('bmi.categories.obese'), color: 'text-rose-600', bg: 'bg-rose-50' };
 }
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
@@ -77,7 +66,6 @@ export default function BMICalculator() {
   const [targetWeight, setTargetWeight] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
@@ -113,7 +101,7 @@ export default function BMICalculator() {
     const dailyHarris = bmrHarris * activity.factor;
 
     /* Категория ИМТ */
-    const category = getBMICategory(bmi, lang);
+    const category = getBMICategory(bmi);
 
     /* Анализ целевого веса */
     let targetAnalysis: {
@@ -137,7 +125,7 @@ export default function BMICalculator() {
       const weeksToGoal = Math.ceil(totalDeficitCal / (deficit * 7));
 
       targetAnalysis = {
-        goal: diffKg < 0 ? (lang === 'ru' ? 'Снизить вес' : 'Lose weight') : (lang === 'ru' ? 'Набрать вес' : 'Gain weight'),
+        goal: diffKg < 0 ? t('bmi.loseWeightGoal') : t('bmi.gainWeightGoal'),
         diffKg: Math.abs(diffKg),
         currentCalories: Math.round(dailyMifflin),
         recommendedCalories: Math.max(1200, recommendedCalories),
@@ -235,7 +223,7 @@ export default function BMICalculator() {
             {/* Целевой вес (необязательно) */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Целевой вес (кг) — необязательно' : 'Target weight (kg) — optional'}
+                {t('bmi.targetWeight')}
               </label>
               <input
                 type="text"
@@ -274,7 +262,7 @@ export default function BMICalculator() {
                         : 'bg-slate-50 text-slate-500 border border-transparent hover:bg-slate-100'
                     }`}
                   >
-                    {lang === 'ru' ? level.labelRu : level.labelEn}
+                    {t(`bmi.activityLevels.${level.key}`)}
                   </button>
                 ))}
               </div>
@@ -286,13 +274,13 @@ export default function BMICalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {t('bmi.calculate')}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+                {t('bmi.reset')}
               </button>
             </div>
           </div>
@@ -323,11 +311,11 @@ export default function BMICalculator() {
                       <span className="text-xs font-bold text-indigo-500">1</span>
                     </div>
                     <p className="text-xs font-semibold text-slate-600">
-                      {lang === 'ru' ? 'Миффлин-Сан Жеор' : 'Mifflin-St Jeor'}
+                      {t('bmi.mifflinStJeor')}
                     </p>
                   </div>
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {lang === 'ru' ? 'Базовый обмен' : 'BMR'}
+                    {t('bmi.bmr')}
                   </p>
                   <p className="text-lg font-bold text-slate-800 mb-2">
                     {Math.round(result.bmrMifflin).toLocaleString('ru-RU')}
@@ -335,7 +323,7 @@ export default function BMICalculator() {
                   </p>
                   <div className="border-t border-slate-100 pt-2">
                     <p className="text-[11px] text-slate-400 mb-0.5">
-                      {lang === 'ru' ? 'С учётом активности' : 'With activity'}
+                      {t('bmi.withActivity')}
                     </p>
                     <p className="text-base font-bold text-indigo-600">
                       {Math.round(result.dailyMifflin).toLocaleString('ru-RU')}
@@ -351,11 +339,11 @@ export default function BMICalculator() {
                       <span className="text-xs font-bold text-violet-500">2</span>
                     </div>
                     <p className="text-xs font-semibold text-slate-600">
-                      {lang === 'ru' ? 'Харрис-Бенедикт' : 'Harris-Benedict'}
+                      {t('bmi.harrisBenedict')}
                     </p>
                   </div>
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {lang === 'ru' ? 'Базовый обмен' : 'BMR'}
+                    {t('bmi.bmr')}
                   </p>
                   <p className="text-lg font-bold text-slate-800 mb-2">
                     {Math.round(result.bmrHarris).toLocaleString('ru-RU')}
@@ -363,7 +351,7 @@ export default function BMICalculator() {
                   </p>
                   <div className="border-t border-slate-100 pt-2">
                     <p className="text-[11px] text-slate-400 mb-0.5">
-                      {lang === 'ru' ? 'С учётом активности' : 'With activity'}
+                      {t('bmi.withActivity')}
                     </p>
                     <p className="text-base font-bold text-violet-600">
                       {Math.round(result.dailyHarris).toLocaleString('ru-RU')}
@@ -389,7 +377,7 @@ export default function BMICalculator() {
                     <div>
                       <p className="text-sm font-semibold text-slate-700">{result.targetAnalysis.goal}</p>
                       <p className="text-xs text-slate-400">
-                        {lang === 'ru' ? `на ${result.targetAnalysis.diffKg.toFixed(1)} кг` : `by ${result.targetAnalysis.diffKg.toFixed(1)} kg`}
+                        {t('bmi.targetDiff', { diff: result.targetAnalysis.diffKg.toFixed(1) })}
                       </p>
                     </div>
                   </div>
@@ -397,9 +385,7 @@ export default function BMICalculator() {
                   {/* Рекомендуемые калории — главная карточка */}
                   <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-xl p-4 text-white text-center mb-3">
                     <p className="text-xs font-medium text-white/70 mb-1">
-                      {lang === 'ru'
-                        ? 'Рекомендуется в день для похудения'
-                        : 'Recommended daily intake for weight loss'}
+                      {t('bmi.recommendedDaily')}
                     </p>
                     <p className="text-3xl font-extrabold">
                       {result.targetAnalysis.recommendedCalories.toLocaleString('ru-RU')}
@@ -410,7 +396,7 @@ export default function BMICalculator() {
                   {/* Текущая норма */}
                   <div className="flex items-center justify-between mb-3 px-1 bg-slate-50 rounded-xl p-3">
                     <p className="text-[11px] text-slate-400">
-                      {lang === 'ru' ? 'Сейчас нужно для поддержания' : 'Current maintenance'}
+                      {t('bmi.currentMaintenance')}
                     </p>
                     <p className="text-sm font-bold text-slate-600">
                       {result.targetAnalysis.currentCalories.toLocaleString('ru-RU')} ккал
@@ -421,7 +407,7 @@ export default function BMICalculator() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="bg-slate-50 rounded-xl p-3 text-center">
                       <p className="text-[11px] text-slate-400 mb-1">
-                        {lang === 'ru' ? 'Дефицит в день' : 'Daily deficit'}
+                        {t('bmi.dailyDeficit')}
                       </p>
                       <p className="text-base font-bold text-emerald-600">
                         −{result.targetAnalysis.deficit.toLocaleString('ru-RU')} ккал
@@ -429,20 +415,18 @@ export default function BMICalculator() {
                     </div>
                     <div className="bg-slate-50 rounded-xl p-3 text-center">
                       <p className="text-[11px] text-slate-400 mb-1">
-                        {lang === 'ru' ? 'Примерный срок' : 'Estimated time'}
+                        {t('bmi.estimatedTime')}
                       </p>
                       <p className="text-base font-bold text-slate-800">
                         {result.targetAnalysis.weeksToGoal >= 4
-                          ? `${Math.round(result.targetAnalysis.weeksToGoal / 4)} ${lang === 'ru' ? 'мес.' : 'mo.'}`
-                          : `${result.targetAnalysis.weeksToGoal} ${lang === 'ru' ? 'нед.' : 'wk'}`}
+                          ? `${Math.round(result.targetAnalysis.weeksToGoal / 4)} ${t('bmi.monthsAbbr')}`
+                          : `${result.targetAnalysis.weeksToGoal} ${t('bmi.weeksAbbr')}`}
                       </p>
                     </div>
                   </div>
 
                   <p className="text-[11px] text-slate-300 mt-3 text-center">
-                    {lang === 'ru'
-                      ? 'Безопасный темп: ~0.5 кг/нед. Минимум: 1 200 ккал/день'
-                      : 'Safe pace: ~0.5 kg/week. Minimum: 1,200 kcal/day'}
+                    {t('bmi.safePace')}
                   </p>
                 </div>
               )}
@@ -456,9 +440,7 @@ export default function BMICalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните данные и нажмите «Рассчитать»'
-                  : 'Fill in your data and press «Calculate»'}
+                {t('bmi.hint')}
               </p>
             </div>
           )}

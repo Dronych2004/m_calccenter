@@ -12,7 +12,7 @@
  * - Поддержка аннуитетного и дифференцированного платежа
  */
 import { useState } from 'react';
-import { useLanguage } from '../hooks/useLanguage';
+import { t } from '../i18n';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
@@ -28,7 +28,6 @@ export default function AutoCreditCalculator() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<LoanResult | null>(null);
-  const lang = useLanguage();
 
   /* Рассчитываем первый взнос в рублях для передачи в хук */
   const dpValue = parseFloat(downPayment) || 0;
@@ -67,12 +66,10 @@ export default function AutoCreditCalculator() {
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-          {lang === 'ru' ? 'Автокредитный калькулятор' : 'Auto Loan Calculator'}
+          {t('autoCredit.title')}
         </h1>
         <p className="text-sm text-slate-400">
-          {lang === 'ru'
-            ? 'Рассчитайте ежемесячный платёж, переплату и стоимость кредита на автомобиль'
-            : 'Calculate monthly payment, overpayment and total cost of your auto loan'}
+          {t('autoCredit.description')}
         </p>
       </div>
 
@@ -83,7 +80,7 @@ export default function AutoCreditCalculator() {
             {/* Цена автомобиля */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Цена автомобиля' : 'Car price'}
+                {t('autoCredit.carPrice')}
               </label>
               <input
                 type="text"
@@ -101,7 +98,7 @@ export default function AutoCreditCalculator() {
             {/* Первый взнос */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Первый взнос' : 'Down payment'}
+                {t('autoCredit.downPayment')}
               </label>
               <div className="flex gap-2">
                 <input
@@ -148,7 +145,7 @@ export default function AutoCreditCalculator() {
             {/* Процентная ставка */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Процентная ставка (% годовых)' : 'Interest rate (% per year)'}
+                {t('autoCredit.interestRate')}
               </label>
               <input
                 type="text"
@@ -163,7 +160,7 @@ export default function AutoCreditCalculator() {
             {/* Срок кредита */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Срок кредита (лет)' : 'Loan term (years)'}
+                {t('autoCredit.loanTerm')}
               </label>
               <input
                 type="text"
@@ -178,7 +175,7 @@ export default function AutoCreditCalculator() {
             {/* Тип платежа */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {lang === 'ru' ? 'Тип платежа' : 'Payment type'}
+                {t('autoCredit.paymentType')}
               </label>
               <div className="flex gap-2">
                 <button
@@ -189,7 +186,7 @@ export default function AutoCreditCalculator() {
                       : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  {lang === 'ru' ? 'Аннуитетный' : 'Annuity'}
+                  {t('autoCredit.annuity')}
                 </button>
                 <button
                   onClick={() => setPaymentType('differentiated')}
@@ -199,7 +196,7 @@ export default function AutoCreditCalculator() {
                       : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  {lang === 'ru' ? 'Дифференцированный' : 'Differentiated'}
+                  {t('autoCredit.differentiated')}
                 </button>
               </div>
             </div>
@@ -210,13 +207,13 @@ export default function AutoCreditCalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {t('autoCredit.calculate')}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {lang === 'ru' ? 'Сбросить' : 'Reset'}
+                {t('autoCredit.reset')}
               </button>
             </div>
           </div>
@@ -229,7 +226,7 @@ export default function AutoCreditCalculator() {
               {/* Ежемесячный платёж — главная карточка */}
               <div className="bg-linear-to-br from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-lg shadow-orange-500/20">
                 <p className="text-sm font-medium text-white/70 mb-1">
-                  {lang === 'ru' ? 'Ежемесячный платёж' : 'Monthly payment'}
+                  {t('autoCredit.monthlyPayment')}
                 </p>
                 <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
                   {formatCurrency(
@@ -238,9 +235,7 @@ export default function AutoCreditCalculator() {
                 </p>
                 {paymentType === 'differentiated' && (
                   <p className="text-sm text-white/60 mt-2">
-                    {lang === 'ru'
-                      ? `от ${formatCurrency(result.lastPaymentDiff)} до ${formatCurrency(result.firstPaymentDiff)}`
-                      : `from ${formatCurrency(result.lastPaymentDiff)} to ${formatCurrency(result.firstPaymentDiff)}`}
+                    {t('autoCredit.paymentRange', { from: formatCurrency(result.lastPaymentDiff), to: formatCurrency(result.firstPaymentDiff) })}
                   </p>
                 )}
               </div>
@@ -250,7 +245,7 @@ export default function AutoCreditCalculator() {
                 {/* Сумма кредита */}
                 <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {lang === 'ru' ? 'Сумма кредита' : 'Loan amount'}
+                    {t('autoCredit.loanAmount')}
                   </p>
                   <p className="text-base font-bold text-slate-800">
                     {formatCurrency(result.S)}
@@ -260,7 +255,7 @@ export default function AutoCreditCalculator() {
                 {/* Первый взнос */}
                 <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {lang === 'ru' ? 'Первый взнос' : 'Down payment'}
+                    {t('autoCredit.downPayment')}
                   </p>
                   <p className="text-base font-bold text-emerald-600">
                     {formatCurrency(downPaymentRub)}
@@ -271,7 +266,7 @@ export default function AutoCreditCalculator() {
               {/* Общая выплата */}
               <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
                 <p className="text-xs text-slate-400 mb-1">
-                  {lang === 'ru' ? 'Общая выплата' : 'Total payment'}
+                  {t('autoCredit.totalPayment')}
                 </p>
                 <p className="text-xl font-bold text-slate-800">
                   {formatCurrency(paymentType === 'annuity' ? result.totalAnnuity + downPaymentRub : result.totalDiff + downPaymentRub)}
@@ -281,7 +276,7 @@ export default function AutoCreditCalculator() {
               {/* Переплата */}
               <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
                 <p className="text-xs text-slate-400 mb-1">
-                  {lang === 'ru' ? 'Переплата по процентам' : 'Total interest'}
+                  {t('autoCredit.totalInterest')}
                 </p>
                 <p className="text-xl font-bold text-rose-500">
                   {formatCurrency(paymentType === 'annuity' ? result.overpaymentAnnuity : result.overpaymentDiff)}
@@ -301,10 +296,10 @@ export default function AutoCreditCalculator() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-700">
-                        {lang === 'ru' ? 'Полная стоимость авто' : 'Total car cost'}
+                        {t('autoCredit.totalCarCost')}
                       </p>
                       <p className="text-xs text-slate-400">
-                        {lang === 'ru' ? 'Цена + переплата' : 'Price + interest'}
+                        {t('autoCredit.pricePlusInterest')}
                       </p>
                     </div>
                   </div>
@@ -319,7 +314,7 @@ export default function AutoCreditCalculator() {
                 onClick={() => setShowSchedule(!showSchedule)}
                 className="w-full bg-white rounded-2xl border border-slate-100 p-4 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 transition-all shadow-sm"
               >
-                {lang === 'ru' ? 'График платежей' : 'Payment schedule'}
+                {t('autoCredit.paymentSchedule')}
                 <span className="ml-2 text-xs text-slate-400">
                   {showSchedule ? '▲' : '▼'}
                 </span>
@@ -334,19 +329,19 @@ export default function AutoCreditCalculator() {
                         <tr className="border-b border-slate-100">
                           <th className="px-3 py-3 text-center font-semibold text-slate-400 w-10">№</th>
                           <th className="px-3 py-3 text-left font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Период' : 'Period'}
+                            {t('autoCredit.period')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Платёж, ₽' : 'Payment, ₽'}
+                            {t('autoCredit.colPayment')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Долг, ₽' : 'Principal, ₽'}
+                            {t('autoCredit.colPrincipal')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Проценты, ₽' : 'Interest, ₽'}
+                            {t('autoCredit.colInterest')}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {lang === 'ru' ? 'Остаток, ₽' : 'Balance, ₽'}
+                            {t('autoCredit.colBalance')}
                           </th>
                         </tr>
                       </thead>
@@ -380,9 +375,7 @@ export default function AutoCreditCalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {lang === 'ru'
-                  ? 'Заполните параметры и нажмите «Рассчитать»'
-                  : 'Fill in parameters and press «Calculate»'}
+                {t('autoCredit.hint')}
               </p>
             </div>
           )}
