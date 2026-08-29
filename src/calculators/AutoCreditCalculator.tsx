@@ -11,22 +11,12 @@
  * - Возможность задать первый взнос (в % или ₽)
  * - Поддержка аннуитетного и дифференцированного платежа
  */
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency, formatNumber } from '../lib/format';
+import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
-type PaymentType = 'annuity' | 'differentiated';
 type DownPaymentMode = 'percent' | 'fixed';
-
-interface MonthSchedule {
-  month: number;
-  year: number;
-  monthInYear: number;
-  payment: number;
-  principal: number;
-  interest: number;
-  remaining: number;
-}
 
 export default function AutoCreditCalculator() {
   const [carPrice, setCarPrice] = useState('');
@@ -37,8 +27,23 @@ export default function AutoCreditCalculator() {
   const [paymentType, setPaymentType] = useState<PaymentType>('annuity');
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
-  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
+  const [result, setResult] = useState<LoanResult | null>(null);
   const lang = useLanguage();
+
+  /* Рассчитываем первый взнос в рублях для передачи в хук */
+  const dpValue = parseFloat(downPayment) || 0;
+  const price = parseFloat(carPrice) || 0;
+  const downPaymentRub = downPaymentMode === 'percent'
+    ? price * (dpValue / 100)
+    : dpValue;
+
+  const { calculate } = useLoanCalculator({
+    loanAmount: carPrice,
+    interestRate,
+    loanTerm,
+    paymentType,
+    downPayment: downPaymentRub,
+  });
 
   const handleReset = () => {
     setCarPrice('');
@@ -51,84 +56,6 @@ export default function AutoCreditCalculator() {
     setCalculated(false);
     setResult(null);
   };
-
-  const calculate = useCallback(() => {
-    const price = parseFloat(carPrice);
-    const dpValue = parseFloat(downPayment) || 0;
-    const annualRate = parseFloat(interestRate);
-    const years = parseInt(loanTerm);
-
-    if (!price || !annualRate || !years || price <= 0 || annualRate <= 0 || years <= 0) {
-      return null;
-    }
-
-    /* Рассчитываем первый взнос в рублях */
-    const downPaymentRub = downPaymentMode === 'percent'
-      ? price * (dpValue / 100)
-      : dpValue;
-
-    /* Сумма кредита = цена авто − первый взнос */
-    const loanAmount = Math.max(0, price - downPaymentRub);
-
-    if (loanAmount <= 0) return null;
-
-    const n = years * 12;
-    const P = annualRate / 100 / 12;
-
-    /* Аннуитетный платёж */
-    const annuityFactor = (P * Math.pow(1 + P, n)) / (Math.pow(1 + P, n) - 1);
-    const monthlyAnnuity = loanAmount * annuityFactor;
-    const totalAnnuity = monthlyAnnuity * n;
-    const overpaymentAnnuity = totalAnnuity - loanAmount;
-
-    /* Дифференцированный платёж */
-    const monthlyPrincipal = loanAmount / n;
-    const firstPaymentDiff = monthlyPrincipal + loanAmount * P;
-    const lastPaymentDiff = monthlyPrincipal + monthlyPrincipal * P;
-
-    let remaining = loanAmount;
-    let totalDiff = 0;
-    const monthSchedule: MonthSchedule[] = [];
-
-    for (let i = 0; i < n; i++) {
-      if (remaining <= 0) break;
-      const interestPayment = remaining * P;
-      const principalPayment = Math.min(monthlyPrincipal, remaining);
-      const payment = principalPayment + interestPayment;
-
-      remaining -= principalPayment;
-      totalDiff += payment;
-
-      const year = Math.floor(i / 12) + 1;
-      const monthInYear = (i % 12) + 1;
-
-      monthSchedule.push({
-        month: i + 1,
-        year,
-        monthInYear,
-        payment,
-        principal: principalPayment,
-        interest: interestPayment,
-        remaining: Math.max(0, remaining),
-      });
-    }
-
-    const overpaymentDiff = totalDiff - loanAmount;
-
-    return {
-      carPrice: price,
-      downPaymentRub,
-      loanAmount,
-      monthlyAnnuity,
-      totalAnnuity,
-      overpaymentAnnuity,
-      firstPaymentDiff,
-      lastPaymentDiff,
-      totalDiff,
-      overpaymentDiff,
-      monthSchedule,
-    };
-  }, [carPrice, downPayment, downPaymentMode, interestRate, loanTerm]);
 
   const handleCalculate = () => {
     setResult(calculate());
@@ -326,7 +253,7 @@ export default function AutoCreditCalculator() {
                     {lang === 'ru' ? 'Сумма кредита' : 'Loan amount'}
                   </p>
                   <p className="text-base font-bold text-slate-800">
-                    {formatCurrency(result.loanAmount)}
+                    {formatCurrency(result.S)}
                   </p>
                 </div>
 
@@ -336,7 +263,7 @@ export default function AutoCreditCalculator() {
                     {lang === 'ru' ? 'Первый взнос' : 'Down payment'}
                   </p>
                   <p className="text-base font-bold text-emerald-600">
-                    {formatCurrency(result.downPaymentRub)}
+                    {formatCurrency(downPaymentRub)}
                   </p>
                 </div>
               </div>
@@ -347,7 +274,7 @@ export default function AutoCreditCalculator() {
                   {lang === 'ru' ? 'Общая выплата' : 'Total payment'}
                 </p>
                 <p className="text-xl font-bold text-slate-800">
-                  {formatCurrency(paymentType === 'annuity' ? result.totalAnnuity + result.downPaymentRub : result.totalDiff + result.downPaymentRub)}
+                  {formatCurrency(paymentType === 'annuity' ? result.totalAnnuity + downPaymentRub : result.totalDiff + downPaymentRub)}
                 </p>
               </div>
 
@@ -382,7 +309,7 @@ export default function AutoCreditCalculator() {
                     </div>
                   </div>
                   <p className="text-lg font-bold text-slate-800">
-                    {formatCurrency(result.carPrice + (paymentType === 'annuity' ? result.overpaymentAnnuity : result.overpaymentDiff))}
+                    {formatCurrency(price + (paymentType === 'annuity' ? result.overpaymentAnnuity : result.overpaymentDiff))}
                   </p>
                 </div>
               </div>

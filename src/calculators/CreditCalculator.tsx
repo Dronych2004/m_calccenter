@@ -11,22 +11,11 @@
  * - Короче сроки (до 10 лет)
  * - Дополнительные опции: страхование, комиссии
  */
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency, formatNumber } from '../lib/format';
-
-type PaymentType = 'annuity' | 'differentiated';
-
-interface MonthSchedule {
-  month: number;
-  year: number;
-  monthInYear: number;
-  payment: number;
-  principal: number;
-  interest: number;
-  remaining: number;
-}
+import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
 export default function CreditCalculator() {
   const [loanAmount, setLoanAmount] = useState('');
@@ -37,8 +26,13 @@ export default function CreditCalculator() {
   const [commission, setCommission] = useState('');
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
-  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
+  const [result, setResult] = useState<LoanResult | null>(null);
   const lang = useLanguage();
+
+  const ins = parseFloat(insurance) || 0;
+  const comm = parseFloat(commission) || 0;
+
+  const { calculate } = useLoanCalculator({ loanAmount, interestRate, loanTerm, paymentType });
 
   const handleReset = () => {
     setLoanAmount('');
@@ -51,82 +45,6 @@ export default function CreditCalculator() {
     setCalculated(false);
     setResult(null);
   };
-
-  const calculate = useCallback(() => {
-    const S = parseFloat(loanAmount);
-    const annualRate = parseFloat(interestRate);
-    const years = parseInt(loanTerm);
-    const ins = parseFloat(insurance) || 0;
-    const comm = parseFloat(commission) || 0;
-
-    if (!S || !annualRate || !years || S <= 0 || annualRate <= 0 || years <= 0) {
-      return null;
-    }
-
-    const n = years * 12;
-    const P = annualRate / 100 / 12;
-
-    /* Аннуитетный платёж */
-    const annuityFactor = (P * Math.pow(1 + P, n)) / (Math.pow(1 + P, n) - 1);
-    const monthlyAnnuity = S * annuityFactor;
-    const totalAnnuity = monthlyAnnuity * n;
-    const overpaymentAnnuity = totalAnnuity - S;
-
-    /* Дифференцированный платёж */
-    const monthlyPrincipal = S / n;
-    const firstPaymentDiff = monthlyPrincipal + S * P;
-    const lastPaymentDiff = monthlyPrincipal + monthlyPrincipal * P;
-
-    let remaining = S;
-    let totalDiff = 0;
-    const monthSchedule: MonthSchedule[] = [];
-
-    for (let i = 0; i < n; i++) {
-      if (remaining <= 0) break;
-      const interestPayment = remaining * P;
-      const principalPayment = Math.min(monthlyPrincipal, remaining);
-      const payment = principalPayment + interestPayment;
-
-      remaining -= principalPayment;
-      totalDiff += payment;
-
-      const year = Math.floor(i / 12) + 1;
-      const monthInYear = (i % 12) + 1;
-
-      monthSchedule.push({
-        month: i + 1,
-        year,
-        monthInYear,
-        payment,
-        principal: principalPayment,
-        interest: interestPayment,
-        remaining: Math.max(0, remaining),
-      });
-    }
-
-    const overpaymentDiff = totalDiff - S;
-
-    /* Общая стоимость кредита с доп. расходами */
-    const totalCost = S + ins + comm;
-
-    return {
-      monthlyAnnuity,
-      totalAnnuity,
-      overpaymentAnnuity,
-      firstPaymentDiff,
-      lastPaymentDiff,
-      totalDiff,
-      overpaymentDiff,
-      monthlyPrincipal,
-      P,
-      n,
-      S,
-      totalCost,
-      insurance: ins,
-      commission: comm,
-      monthSchedule,
-    };
-  }, [loanAmount, interestRate, loanTerm, insurance, commission]);
 
   const handleCalculate = () => {
     setResult(calculate());
@@ -325,26 +243,26 @@ export default function CreditCalculator() {
               </div>
 
               {/* Доп. расходы (если есть) */}
-              {(result.insurance > 0 || result.commission > 0) && (
+              {(ins > 0 || comm > 0) && (
                 <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm animate-fade-in">
                   <p className="text-xs text-slate-400 mb-3">
                     {lang === 'ru' ? 'Дополнительные расходы' : 'Additional costs'}
                   </p>
                   <div className="space-y-2">
-                    {result.insurance > 0 && (
+                    {ins > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">
                           {lang === 'ru' ? 'Страхование' : 'Insurance'}
                         </span>
-                        <span className="text-sm font-semibold text-slate-700">{formatCurrency(result.insurance)}</span>
+                        <span className="text-sm font-semibold text-slate-700">{formatCurrency(ins)}</span>
                       </div>
                     )}
-                    {result.commission > 0 && (
+                    {comm > 0 && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">
                           {lang === 'ru' ? 'Комиссия за выдачу' : 'Disbursement fee'}
                         </span>
-                        <span className="text-sm font-semibold text-slate-700">{formatCurrency(result.commission)}</span>
+                        <span className="text-sm font-semibold text-slate-700">{formatCurrency(comm)}</span>
                       </div>
                     )}
                     <div className="border-t border-slate-100 pt-2 flex items-center justify-between">
@@ -352,7 +270,7 @@ export default function CreditCalculator() {
                         {lang === 'ru' ? 'Полная стоимость' : 'Total cost'}
                       </span>
                       <span className="text-sm font-bold text-slate-800">
-                        {formatCurrency(result.totalCost)}
+                        {formatCurrency(result.S + ins + comm)}
                       </span>
                     </div>
                   </div>

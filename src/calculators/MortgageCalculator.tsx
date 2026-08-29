@@ -15,24 +15,11 @@
  *   Основной долг / n + Остаток × P
  *   Платёж уменьшается каждый месяц
  */
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency, formatNumber } from '../lib/format';
-
-/* Тип платежа */
-type PaymentType = 'annuity' | 'differentiated';
-
-/* Запись графика платежей по месяцу */
-interface MonthSchedule {
-  month: number;      /* Порядковый номер месяца (1, 2, 3...) */
-  year: number;       /* Год */
-  monthInYear: number /* Месяц в году (1-12) */
-  payment: number;    /* Платёж в этом месяце */
-  principal: number;  /* Основной долг в этом месяце */
-  interest: number;   /* Проценты в этом месяце */
-  remaining: number;  /* Остаток долга после платежа */
-}
+import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function MortgageCalculator() {
@@ -42,8 +29,10 @@ export default function MortgageCalculator() {
   const [paymentType, setPaymentType] = useState<PaymentType>('annuity');
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
-  const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
+  const [result, setResult] = useState<LoanResult | null>(null);
   const lang = useLanguage();
+
+  const { calculate } = useLoanCalculator({ loanAmount, interestRate, loanTerm, paymentType });
 
   /**
    * Сбрасывает все введённые данные к начальным значениям.
@@ -57,81 +46,6 @@ export default function MortgageCalculator() {
     setCalculated(false);
     setResult(null);
   };
-
-  /* ==================== ВЫЧИСЛЕНИЯ ==================== */
-
-  const calculate = useCallback(() => {
-    const S = parseFloat(loanAmount);
-    const annualRate = parseFloat(interestRate);
-    const years = parseInt(loanTerm);
-
-    if (!S || !annualRate || !years || S <= 0 || annualRate <= 0 || years <= 0) {
-      return null;
-    }
-
-    const n = years * 12; /* Количество месяцев */
-    const P = annualRate / 100 / 12; /* Месячная ставка */
-
-    /* ---------- Аннуитетный платёж ---------- */
-    const annuityFactor = (P * Math.pow(1 + P, n)) / (Math.pow(1 + P, n) - 1);
-    const monthlyAnnuity = S * annuityFactor;
-    const totalAnnuity = monthlyAnnuity * n;
-    const overpaymentAnnuity = totalAnnuity - S;
-
-    /* ---------- Дифференцированный платёж ---------- */
-    const monthlyPrincipal = S / n; /* Фиксированная часть основного долга */
-    const firstPaymentDiff = monthlyPrincipal + S * P; /* Первый платёж (максимальный) */
-    const lastPaymentDiff = monthlyPrincipal + monthlyPrincipal * P; /* Последний (минимальный) */
-
-    /* Строим помесячный график дифференцированных платежей */
-    let remaining = S;
-    let totalDiff = 0;
-    const monthSchedule: MonthSchedule[] = [];
-
-    for (let i = 0; i < n; i++) {
-      if (remaining <= 0) break;
-      const interestPayment = remaining * P;
-      const principalPayment = Math.min(monthlyPrincipal, remaining);
-      const payment = principalPayment + interestPayment;
-
-      remaining -= principalPayment;
-      totalDiff += payment;
-
-      const year = Math.floor(i / 12) + 1;
-      const monthInYear = (i % 12) + 1;
-
-      monthSchedule.push({
-        month: i + 1,
-        year,
-        monthInYear,
-        payment,
-        principal: principalPayment,
-        interest: interestPayment,
-        remaining: Math.max(0, remaining),
-      });
-    }
-
-    const overpaymentDiff = totalDiff - S;
-
-    return {
-      /* Аннуитетный */
-      monthlyAnnuity,
-      totalAnnuity,
-      overpaymentAnnuity,
-      /* Дифференцированный */
-      firstPaymentDiff,
-      lastPaymentDiff,
-      totalDiff,
-      overpaymentDiff,
-      /* Общее */
-      monthlyPrincipal,
-      P,
-      n,
-      S,
-      /* График */
-      monthSchedule,
-    };
-  }, [loanAmount, interestRate, loanTerm]);
 
   const handleCalculate = () => {
     setResult(calculate());
