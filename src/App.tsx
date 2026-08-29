@@ -43,6 +43,7 @@ import VacationCalculator from './calculators/VacationCalculator';
 import PenaltyCalculator from './calculators/PenaltyCalculator';
 import NDFLCalculator from './calculators/NDFLCalculator';
 import NDSCalculator from './calculators/NDSCalculator';
+import InterestCalculator from './calculators/InterestCalculator';
 
 export default function App() {
   return (
@@ -81,6 +82,7 @@ export default function App() {
               <Route path="/penalty" element={<PenaltyCalculator />} />
               <Route path="/ndfl" element={<NDFLCalculator />} />
               <Route path="/nds" element={<NDSCalculator />} />
+              <Route path="/interest" element={<InterestCalculator />} />
             </Routes>
           </main>
 

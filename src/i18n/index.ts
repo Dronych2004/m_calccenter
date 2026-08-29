@@ -240,6 +240,12 @@ const translations: Record<Language, TranslationKeys> = {
       description: 'Рассчитайте НДС прибавлением или извлечением из суммы',
     },
 
+    /* Калькулятор процентов */
+    interest: {
+      title: 'Калькулятор процентов',
+      description: 'Рассчитайте прибыль по вкладу или переплату по кредиту с простыми и сложными процентами',
+    },
+
     /* Футер */
     footer: {
       copyright: '© {year} Центр калькуляторов. Все права защищены.',
@@ -420,6 +426,11 @@ const translations: Record<Language, TranslationKeys> = {
     nds: {
       title: 'VAT Calculator',
       description: 'Calculate VAT by adding or extracting from the amount',
+    },
+    /* Interest Calculator */
+    interest: {
+      title: 'Interest Calculator',
+      description: 'Calculate deposit income or loan overpayment with simple and compound interest',
     },
     footer: {
       copyright: '© {year} Calculator Center. All rights reserved.',
