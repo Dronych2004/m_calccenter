@@ -234,6 +234,12 @@ const translations: Record<Language, TranslationKeys> = {
       description: 'Рассчитайте подоходный налог 13%/15% и сумму на руки с учётом вычетов',
     },
 
+    /* Калькулятор НДС */
+    nds: {
+      title: 'Калькулятор НДС',
+      description: 'Рассчитайте НДС прибавлением или извлечением из суммы',
+    },
+
     /* Футер */
     footer: {
       copyright: '© {year} Центр калькуляторов. Все права защищены.',
@@ -409,6 +415,11 @@ const translations: Record<Language, TranslationKeys> = {
     ndfl: {
       title: 'Income Tax Calculator',
       description: 'Calculate income tax at 13%/15% and net income with deductions',
+    },
+    /* VAT Calculator */
+    nds: {
+      title: 'VAT Calculator',
+      description: 'Calculate VAT by adding or extracting from the amount',
     },
     footer: {
       copyright: '© {year} Calculator Center. All rights reserved.',

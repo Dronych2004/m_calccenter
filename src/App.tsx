@@ -42,6 +42,7 @@ import OSAGOCalculator from './calculators/OSAGOCalculator';
 import VacationCalculator from './calculators/VacationCalculator';
 import PenaltyCalculator from './calculators/PenaltyCalculator';
 import NDFLCalculator from './calculators/NDFLCalculator';
+import NDSCalculator from './calculators/NDSCalculator';
 
 export default function App() {
   return (
@@ -79,6 +80,7 @@ export default function App() {
               <Route path="/vacation" element={<VacationCalculator />} />
               <Route path="/penalty" element={<PenaltyCalculator />} />
               <Route path="/ndfl" element={<NDFLCalculator />} />
+              <Route path="/nds" element={<NDSCalculator />} />
             </Routes>
           </main>
 
