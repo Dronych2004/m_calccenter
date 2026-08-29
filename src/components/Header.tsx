@@ -112,6 +112,13 @@ export default function Header() {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
+  /* Очистка таймера при размонтировании */
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   const handleMouseEnter = (categoryId: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);

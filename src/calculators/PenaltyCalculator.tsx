@@ -98,7 +98,7 @@ export default function PenaltyCalculator() {
       penalty: Math.round(penalty * 100) / 100,
       totalDebt: amount + Math.round(penalty * 100) / 100,
     };
-  }, [debtAmount, dueDate, paymentDate, penaltyType, taxpayerType, cbrRate]);
+  }, [debtAmount, dueDate, paymentDate, penaltyType, taxpayerType, cbrRate, cbrRateFromAPI]);
 
   const handleCalculate = () => {
     setResult(calculate());

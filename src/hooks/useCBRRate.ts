@@ -156,29 +156,10 @@ export function useCBRRate() {
           }
         }
 
-        /* Если key_rate нет — пробуем другой источник */
-        throw new Error('key_rate not found in response');
+        /* Если key_rate нет — возвращаем null, используем fallback */
+        return null;
       } catch {
-        /* Пробуем альтернативный источник — XML API через прокси */
-        try {
-          const response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-          if (!response.ok) throw new Error('Alt failed');
-
-          /* Парсим JSON и ищем данные о ставке */
-          const data = await response.json();
-          if (data.KeyRate && Array.isArray(data.KeyRate)) {
-            const last = data.KeyRate[data.KeyRate.length - 1];
-            const rateVal = parseFloat(last.rate);
-            const dateVal = last.date || todayStr();
-            if (!isNaN(rateVal)) {
-              saveCache(rateVal, dateVal);
-              return { rate: rateVal, date: dateVal };
-            }
-          }
-        } catch {
-          /* Оба источника недоступны */
-        }
-
+        /* API недоступен — используем fallback */
         return null;
       }
     }

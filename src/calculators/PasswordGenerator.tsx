@@ -115,6 +115,13 @@ export default function PasswordGenerator() {
   const [history, setHistory] = useState<string[]>([]);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
+  /* Очистка таймера при размонтировании */
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
+
   const generate = useCallback(() => {
     const newPassword = generatePassword(length, options);
     setPassword(newPassword);

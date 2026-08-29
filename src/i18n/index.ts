@@ -12,19 +12,27 @@ export type TranslationKeys = {
 /* Все доступные языки */
 export type Language = 'ru' | 'en';
 
-/* Текущий выбранный язык (по умолчанию русский) */
-let currentLanguage: Language = 'ru';
+/* Текущий выбранный язык — читаем из localStorage или русский */
+function getInitialLanguage(): Language {
+  try {
+    const saved = localStorage.getItem('calccenter_lang');
+    if (saved === 'ru' || saved === 'en') return saved;
+  } catch { /* localStorage недоступен */ }
+  return 'ru';
+}
+
+let currentLanguage: Language = getInitialLanguage();
 
 /* Функция для получения текущего языка */
 export function getLanguage(): Language {
   return currentLanguage;
 }
 
-/* Функция для установки языка */
+/* Функция для установки языка + сохранение в localStorage */
 export function setLanguage(lang: Language): void {
   currentLanguage = lang;
-  /* Обновляем атрибут lang у тега html для accessibility */
   document.documentElement.lang = lang;
+  try { localStorage.setItem('calccenter_lang', lang); } catch { /* ignore */ }
 }
 
 /**
