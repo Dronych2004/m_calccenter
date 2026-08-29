@@ -135,10 +135,6 @@ export default function PasswordGenerator() {
     });
   }, [length, options]);
 
-  useEffect(() => {
-    generate();
-  }, []);
-
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(password);
