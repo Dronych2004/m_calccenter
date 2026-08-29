@@ -228,6 +228,12 @@ const translations: Record<Language, TranslationKeys> = {
       weeks: 'Недель',
     },
 
+    /* Калькулятор НДФЛ */
+    ndfl: {
+      title: 'Калькулятор НДФЛ',
+      description: 'Рассчитайте подоходный налог 13%/15% и сумму на руки с учётом вычетов',
+    },
+
     /* Футер */
     footer: {
       copyright: '© {year} Центр калькуляторов. Все права защищены.',
@@ -398,6 +404,11 @@ const translations: Record<Language, TranslationKeys> = {
       months: 'Months',
       years: 'Years',
       weeks: 'Weeks',
+    },
+    /* Income Tax Calculator */
+    ndfl: {
+      title: 'Income Tax Calculator',
+      description: 'Calculate income tax at 13%/15% and net income with deductions',
     },
     footer: {
       copyright: '© {year} Calculator Center. All rights reserved.',
