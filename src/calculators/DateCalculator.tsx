@@ -75,7 +75,6 @@ export default function DateCalculator() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [result, setResult] = useState<DateResult | null>(null);
-  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   const lang = useLanguage();
 
   /**
@@ -95,12 +94,6 @@ export default function DateCalculator() {
   const handleCalculate = useCallback(() => {
     const res = calculateDateDiff(startDate, endDate);
     if (res) {
-      /* Если конечная раньше начальной — меняем местами для отображения */
-      if (new Date(endDate) < new Date(startDate)) {
-        setDirection('backward');
-      } else {
-        setDirection('forward');
-      }
       setResult(res);
     }
   }, [startDate, endDate]);
@@ -205,7 +198,7 @@ export default function DateCalculator() {
           <div className="bg-linear-to-br from-indigo-500 to-violet-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg shadow-indigo-500/20">
             <div className="text-center">
               <p className="text-sm font-medium text-white/70 mb-1">
-                {direction === 'forward' ? t('days.calendarDays') : t('days.calendarDays')}
+                {t('days.calendarDays')}
               </p>
               <p className="text-5xl sm:text-6xl font-extrabold tracking-tight">
                 {result.calendarDays.toLocaleString()}
