@@ -309,7 +309,8 @@ export default function EngineeringCalculator() {
         throw new Error('Invalid result');
       }
 
-      const resultStr = String(Math.round(evalResult * 1e10) / 1e10);
+      /* toPrecision(12) убирает ошибки плавающей точки (0.30000000000000004 → 0.3) */
+      const resultStr = String(parseFloat(evalResult.toPrecision(12)));
 
       setHistory((prev) => [
         { expression, result: resultStr },
