@@ -37,7 +37,6 @@ const FuelCalculator = lazy(() => import('./calculators/FuelCalculator'));
 const BMICalculator = lazy(() => import('./calculators/BMICalculator'));
 const WallpaperCalculator = lazy(() => import('./calculators/WallpaperCalculator'));
 const DateCalculator = lazy(() => import('./calculators/DateCalculator'));
-const PhoneCodesRussia = lazy(() => import('./calculators/PhoneCodesRussia'));
 const CountryCodes = lazy(() => import('./calculators/CountryCodes'));
 const RegionCodes = lazy(() => import('./calculators/RegionCodes'));
 const UnitConverter = lazy(() => import('./calculators/UnitConverter'));
@@ -92,7 +91,6 @@ export default function App() {
                   <Route path="/bmi" element={<BMICalculator />} />
                   <Route path="/wallpaper" element={<WallpaperCalculator />} />
                   <Route path="/days" element={<DateCalculator />} />
-                  <Route path="/phone-codes" element={<PhoneCodesRussia />} />
                   <Route path="/country-codes" element={<CountryCodes />} />
                   <Route path="/region-codes" element={<RegionCodes />} />
                   <Route path="/unit-converter" element={<UnitConverter />} />
