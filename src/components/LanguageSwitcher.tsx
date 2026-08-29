@@ -1,10 +1,11 @@
 /**
  * Переключатель языка — крупный
  */
-import { getLanguage, setLanguage, type Language } from '../i18n';
+import { setLanguage, type Language } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 export default function LanguageSwitcher() {
-  const currentLang = getLanguage();
+  const currentLang = useLanguage();
   const handleChange = (lang: Language) => {
     setLanguage(lang);
     window.dispatchEvent(new Event('languageChange'));

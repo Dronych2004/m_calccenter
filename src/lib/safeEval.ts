@@ -27,6 +27,7 @@ type TokenType =
   | 'operator'
   | 'lparen'
   | 'rparen'
+  | 'comma'
   | 'function'
   | 'constant'
   | 'factorial';
@@ -125,6 +126,13 @@ function tokenize(expr: string): Token[] {
     }
     if (ch === ')') {
       tokens.push({ type: 'rparen', value: ')' });
+      i++;
+      continue;
+    }
+
+    /* Запятая — разделитель аргументов функции (pow) */
+    if (ch === ',') {
+      tokens.push({ type: 'comma', value: ',' });
       i++;
       continue;
     }
@@ -269,9 +277,9 @@ function parseFactor(): number {
     const arg = parseExpression();
     expect('rparen', ')');
 
-    /* pow(x, y) — две аргумента */
+    /* pow(x, y) — два аргумента через запятую */
     if (funcName === 'pow') {
-      expect('lparen', '(');
+      expect('comma', ',');
       const arg2 = parseExpression();
       expect('rparen', ')');
       return Math.pow(arg, arg2);

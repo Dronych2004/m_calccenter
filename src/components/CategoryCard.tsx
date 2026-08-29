@@ -6,7 +6,7 @@
  * каждый "выпячивается" с эффектом глубины и подсветки.
  */
 import { Link } from 'react-router-dom';
-import { getLanguage } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 type IconComponent = React.FC<{ size?: number; className?: string }>;
 
@@ -33,7 +33,7 @@ export default function CategoryCard({
   shadow,
   calculators,
 }: CategoryCardProps) {
-  const lang = getLanguage();
+  const lang = useLanguage();
 
   return (
     <div className="group/card bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 overflow-hidden">

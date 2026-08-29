@@ -266,7 +266,7 @@ export default function CreditCalculator() {
                         {t('credit.totalCost')}
                       </span>
                       <span className="text-sm font-bold text-slate-800">
-                        {formatCurrency(result.S + ins + comm)}
+                        {formatCurrency((paymentType === 'annuity' ? result.totalAnnuity : result.totalDiff) + ins + comm)}
                       </span>
                     </div>
                   </div>

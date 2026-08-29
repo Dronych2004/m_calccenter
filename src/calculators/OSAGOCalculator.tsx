@@ -139,7 +139,7 @@ const REGIONS: Region[] = [
   { id: '79', nameRu: 'Еврейская автономная область', nameEn: 'Jewish Autonomous Oblast', kt: 1.16 },
   /* Автономные округа */
   { id: '83', nameRu: 'Ненецкий автономный округ', nameEn: 'Nenets AO', kt: 1.12 },
-  { id: '79', nameRu: 'Ханты-Мансийский автономный округ — Югра', nameEn: 'Khanty-Mansi AO', kt: 1.28 },
+  { id: '86', nameRu: 'Ханты-Мансийский автономный округ — Югра', nameEn: 'Khanty-Mansi AO', kt: 1.28 },
   { id: '80', nameRu: 'Чукотский автономный округ', nameEn: 'Chukotka AO', kt: 1.12 },
   { id: '81', nameRu: 'Ямало-Ненецкий автономный округ', nameEn: 'Yamalo-Nenets AO', kt: 1.28 },
   /* Другой */
@@ -256,8 +256,11 @@ export default function OSAGOCalculator() {
     const KN = 1.00;
 
     let KVS = 1.00;
-    if (!limitedDrivers && drivers.length > 0) {
-      // Берём худший (максимальный) КВС среди водителей
+    if (limitedDrivers) {
+      /* Без ограничений — худший случай для любого водителя */
+      KVS = 1.94;
+    } else if (drivers.length > 0) {
+      /* Ограниченный список — берём худший (максимальный) КВС */
       let maxKVS = 0;
       for (const driver of drivers) {
         const age = parseInt(driver.age);
@@ -267,9 +270,7 @@ export default function OSAGOCalculator() {
           if (kvs > maxKVS) maxKVS = kvs;
         }
       }
-      KVS = maxKVS || 1.00;
-    } else if (!limitedDrivers) {
-      KVS = 1.94;
+      KVS = maxKVS || 1.94;
     }
 
     const total = Math.round(BT * KT * KBM * KVS * KO * KM * KS * KN);
