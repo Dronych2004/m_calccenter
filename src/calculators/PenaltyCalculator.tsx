@@ -19,12 +19,10 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { getLanguage } from '../i18n';
+import { useCBRRate } from '../hooks/useCBRRate';
 
 type PenaltyType = 'tax' | 'salary' | 'utilities';
 type TaxpayerType = 'individual' | 'legal';
-
-/* Ставка ЦБ РФ (%) — по состоянию на 2024 г., проверяйте актуальность на cbr.ru */
-const CBR_RATE = 21;
 
 interface PenaltyResult {
   days: number;
@@ -39,10 +37,20 @@ export default function PenaltyCalculator() {
   const [debtAmount, setDebtAmount] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [paymentDate, setPaymentDate] = useState('');
-  const [cbrRate, setCbrRate] = useState(String(CBR_RATE));
+  const [cbrRate, setCbrRate] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<PenaltyResult | null>(null);
   const [, setLangTick] = useState(0);
+
+  /* Загружаем актуальную ставку ЦБ из API (кэш 24ч) */
+  const { rate: cbrRateFromAPI, date: cbrRateDate, loading: cbrLoading } = useCBRRate();
+
+  /* Устанавливаем ставку из API при загрузке */
+  useEffect(() => {
+    if (!cbrLoading && cbrRateFromAPI && !cbrRate) {
+      setCbrRate(String(cbrRateFromAPI));
+    }
+  }, [cbrLoading, cbrRateFromAPI, cbrRate]);
 
   const lang = getLanguage();
 
@@ -65,7 +73,7 @@ export default function PenaltyCalculator() {
     const diffMs = pay.getTime() - due.getTime();
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    const rate = parseFloat(cbrRate) || CBR_RATE;
+    const rate = parseFloat(cbrRate) || cbrRateFromAPI;
     const dailyRate = rate / 100;
 
     let penalty = 0;
@@ -111,7 +119,7 @@ export default function PenaltyCalculator() {
     setDebtAmount('');
     setDueDate('');
     setPaymentDate('');
-    setCbrRate(String(CBR_RATE));
+    setCbrRate(String(cbrRateFromAPI));
     setCalculated(false);
     setResult(null);
   };
@@ -256,8 +264,12 @@ export default function PenaltyCalculator() {
           </div>
           <p className="text-[11px] text-slate-300 mt-1.5 sm:ml-40">
             {lang === 'ru'
-              ? 'По умолчанию 21% (2024). Проверьте актуальную ставку на cbr.ru'
-              : 'Default 21% (2024). Verify current rate at cbr.ru'}
+              ? cbrRateDate
+                ? `Актуальная ставка на ${cbrRateDate} (обновляется раз в сутки)`
+                : 'Загрузка ставки с cbr.ru...'
+              : cbrRateDate
+                ? `Current rate as of ${cbrRateDate} (updated daily)`
+                : 'Loading rate from cbr.ru...'}
           </p>
         </div>
 
