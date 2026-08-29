@@ -73,8 +73,8 @@ interface CustomsResult {
 
 /* ==================== КОНСТАНТЫ ==================== */
 
-/* Курс евро (₽/€) — можно менять */
-const DEFAULT_EUR_RATE = 100;
+/* Курс евро (₽/€) — из .env или значение по умолчанию */
+const DEFAULT_EUR_RATE = Number(import.meta.env.VITE_EUR_RATE) || 100;
 
 /* Порог мощности для начала начисления акциза */
 const EXCISE_THRESHOLD = 150;

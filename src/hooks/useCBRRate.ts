@@ -25,8 +25,8 @@ const LS_FETCHED = 'cbr_rate_fetched';
 /* Время жизни кэша: 24 часа в миллисекундах */
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 
-/* Fallback значение (если API недоступен) */
-const FALLBACK_RATE = 21;
+/* Fallback значение — из .env или 21% */
+const FALLBACK_RATE = Number(import.meta.env.VITE_CBR_RATE) || 21;
 
 /**
  * Получает строку today в формате YYYY-MM-DD для сравнения с датой из API
