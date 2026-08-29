@@ -41,11 +41,16 @@ interface NDFLResult {
   grossIncome: number;      /* Сумма дохода (годовая) */
   totalDeduction: number;   /* Общая сумма вычетов */
   taxableBase: number;      /* Налоговая база */
-  taxAmount: number;        /* Сумма НДФЛ */
-  netIncome: number;        /* Сумма на руки */
+  taxAmount: number;        /* Сумма НДФЛ (годовая) */
+  netIncome: number;        /* Сумма на руки (годовая) */
   effectiveRate: number;    /* Эффективная ставка (%) */
   childDeduction: number;   /* Вычет на детей (годовой) */
   standardDeduction: number;/* Стандартный вычет (годовой, инвалидность) */
+  /* Помесячные значения — для удобства отображения */
+  monthlyGross: number;     /* Доход до вычетов (мес.) */
+  monthlyTax: number;       /* НДФЛ (мес.) */
+  monthlyNet: number;       /* На руки (мес.) */
+  monthlyDeduction: number; /* Вычеты (мес.) */
 }
 
 /* ==================== КОНСТАНТЫ ==================== */
@@ -228,6 +233,11 @@ export default function NDFLCalculator() {
       effectiveRate,
       childDeduction,
       standardDeduction,
+      /* Помесячные значения (делим годовые на 12) */
+      monthlyGross: annualIncome / 12,
+      monthlyTax: taxAmount / 12,
+      monthlyNet: netIncome / 12,
+      monthlyDeduction: totalDeduction / 12,
     };
   }, [income, period, hasDisability, children]);
 
@@ -429,12 +439,23 @@ export default function NDFLCalculator() {
           {/* Сумма на руки — главная карточка */}
           <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
             <p className="text-sm font-medium text-white/70 mb-1">
-              {lang === 'ru' ? 'Итого на руки (за год)' : 'Net income (per year)'}
+              {lang === 'ru' ? 'Итого на руки' : 'Net income'}
             </p>
-            <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-              {formatCurrency(result.netIncome)}
-            </p>
-            <p className="text-sm text-white/60 mt-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <p className="text-xs text-white/50 mb-1">{lang === 'ru' ? 'за месяц' : 'per month'}</p>
+                <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  {formatCurrency(result.monthlyNet)}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-white/50 mb-1">{lang === 'ru' ? 'за год' : 'per year'}</p>
+                <p className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  {formatCurrency(result.netIncome)}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-white/60 mt-3 text-center">
               {lang === 'ru' ? `Эффективная ставка: ${result.effectiveRate.toFixed(1)}%` : `Effective rate: ${result.effectiveRate.toFixed(1)}%`}
             </p>
           </div>
@@ -442,11 +463,22 @@ export default function NDFLCalculator() {
           {/* Сумма НДФЛ */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
             <p className="text-xs text-slate-400 mb-1">
-              {lang === 'ru' ? 'Сумма НДФЛ (за год)' : 'Income tax (per year)'}
+              {lang === 'ru' ? 'Сумма НДФЛ' : 'Income tax'}
             </p>
-            <p className="text-xl font-bold text-rose-500">
-              {formatCurrency(result.taxAmount)}
-            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за месяц' : 'per month'}</p>
+                <p className="text-xl font-bold text-rose-500">
+                  {formatCurrency(result.monthlyTax)}
+                </p>
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за год' : 'per year'}</p>
+                <p className="text-xl font-bold text-rose-500">
+                  {formatCurrency(result.taxAmount)}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Доход до вычетов */}
@@ -454,9 +486,20 @@ export default function NDFLCalculator() {
             <p className="text-xs text-slate-400 mb-1">
               {lang === 'ru' ? 'Доход до вычета НДФЛ' : 'Gross income'}
             </p>
-            <p className="text-xl font-bold text-slate-800">
-              {formatCurrency(result.grossIncome)}
-            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за месяц' : 'per month'}</p>
+                <p className="text-xl font-bold text-slate-800">
+                  {formatCurrency(result.monthlyGross)}
+                </p>
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за год' : 'per year'}</p>
+                <p className="text-xl font-bold text-slate-800">
+                  {formatCurrency(result.grossIncome)}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Налоговая база */}
