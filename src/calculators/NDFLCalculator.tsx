@@ -2,29 +2,36 @@
  * Калькулятор НДФЛ (Налог на доходы физических лиц)
  *
  * Рассчитывает:
- * - Сумму налога по прогрессивной шкале (13% / 15%)
- * - Итоговую сумму "на руки"
- * - Применимые вычеты
+ * - Сумму налога для разных видов дохода
+ * - Прогрессивную шкалу (13% / 15%)
+ * - Ставку 35% для призов/выигрышей
+ * - Вычеты на детей и инвалидность
  *
- * Формулы (НК РФ, ст. 224):
- *   НДФЛ = (Доход − Вычеты) × Ставка
- *
- * Ставки (2024+):
- *   ≤ 5 000 000 ₽/год  → 13%
- *   > 5 000 000 ₽/год  → 15%
+ * Виды дохода и ставки (НК РФ, ст. 224):
+ *   Зарплата, аренда, продажа имущества, ЦБ, дивиденды, вклады → 13% / 15%
+ *   Призы/выигрыши → 35% (без прогрессивной шкалы)
+ *   СВО-выплаты → 13% / 15% (по основной ставке)
  *
  * Стандартные вычеты (ст. 218 НК РФ):
- *   - 1 400 ₽/мес на первого и второго ребёнка
- *   - 3 000 ₽/мес на третьего и каждого следующего
+ *   - 1 400 ₽/мес на 1-го и 2-го ребёнка
+ *   - 3 000 ₽/мес на 3-го и далее
+ *   - 12 000 ₽/мес на ребёнка-инвалида
  *   - 500 ₽/мес для инвалидов I и II группы
  *   Лимит дохода для вычетов на детей: 350 000 ₽/год
+ *
+ * Примечание:
+ *   Вычеты на детей и инвалидность применяются только к основной ставке (13%/15%),
+ *   не к 35%. Для 35% вычеты не предусмотрены.
  */
 import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { t, getLanguage } from '../i18n';
 
 /* ==================== ТИПЫ ==================== */
 
-/* Тип дохода: ежемесячный или годовой */
+/* Вид дохода — ключи для объекта INCOME_TYPES */
+type IncomeType = 'salary' | 'svo' | 'property' | 'rental' | 'securities' | 'dividends' | 'deposits' | 'prize' | 'ad_prize' | 'custom';
+
+/* Период дохода */
 type IncomePeriod = 'monthly' | 'yearly';
 
 /* Типы вычетов на детей */
@@ -36,21 +43,31 @@ interface Child {
   type: ChildDeductionType;
 }
 
+/* Описание вида дохода */
+interface IncomeTypeInfo {
+  labelRu: string;
+  labelEn: string;
+  /* Ставка: number — фиксированная, null — прогрессивная шкала */
+  rate: number | null;
+  /* Можно ли применять вычеты к этому виду дохода */
+  allowsDeductions: boolean;
+}
+
 /* Интерфейс результата расчёта */
 interface NDFLResult {
-  grossIncome: number;      /* Сумма дохода (годовая) */
-  totalDeduction: number;   /* Общая сумма вычетов */
-  taxableBase: number;      /* Налоговая база */
-  taxAmount: number;        /* Сумма НДФЛ (годовая) */
-  netIncome: number;        /* Сумма на руки (годовая) */
-  effectiveRate: number;    /* Эффективная ставка (%) */
-  childDeduction: number;   /* Вычет на детей (годовой) */
-  standardDeduction: number;/* Стандартный вычет (годовой, инвалидность) */
-  /* Помесячные значения — для удобства отображения */
-  monthlyGross: number;     /* Доход до вычетов (мес.) */
-  monthlyTax: number;       /* НДФЛ (мес.) */
-  monthlyNet: number;       /* На руки (мес.) */
-  monthlyDeduction: number; /* Вычеты (мес.) */
+  grossIncome: number;
+  totalDeduction: number;
+  taxableBase: number;
+  taxAmount: number;
+  netIncome: number;
+  effectiveRate: number;
+  childDeduction: number;
+  standardDeduction: number;
+  monthlyGross: number;
+  monthlyTax: number;
+  monthlyNet: number;
+  monthlyDeduction: number;
+  appliedRate: number; /* Какая ставка была применена (%) */
 }
 
 /* ==================== КОНСТАНТЫ ==================== */
@@ -58,26 +75,83 @@ interface NDFLResult {
 /* Порог прогрессивной шкалы (₽/год) */
 const TAX_THRESHOLD = 5_000_000;
 
-/* Ставки НДФЛ */
-const RATE_LOW = 13;   /* Ставка до порога (%) */
-const RATE_HIGH = 15;  /* Ставка сверх порога (%) */
-
 /* Стандартные вычеты на детей (₽/мес) — ст. 218 НК РФ */
 const CHILD_DEDUCTIONS: Record<ChildDeductionType, number> = {
   first: 1400,
   second: 1400,
   third: 3000,
-  disabled: 12000, /* Для инвалидов I/II группы (родители/опекуны) */
+  disabled: 12000,
 };
 
 /* Лимит дохода для вычетов на детей (₽/год) */
 const CHILD_DEDUCTION_LIMIT = 350_000;
 
+/* Виды дохода с описаниями и ставками */
+const INCOME_TYPES: Record<IncomeType, IncomeTypeInfo> = {
+  salary: {
+    labelRu: 'Заработная плата',
+    labelEn: 'Salary / wages',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: true,
+  },
+  svo: {
+    labelRu: 'Выплаты, связанные с СВО',
+    labelEn: 'Payments related to SMO',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: true,
+  },
+  property: {
+    labelRu: 'Доход с продажи имущества',
+    labelEn: 'Income from property sale',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: false, /* Вычеты на детей не применяются */
+  },
+  rental: {
+    labelRu: 'Доход с аренды',
+    labelEn: 'Rental income',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: false,
+  },
+  securities: {
+    labelRu: 'Доход по операциям с ценными бумагами',
+    labelEn: 'Securities income',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: false,
+  },
+  dividends: {
+    labelRu: 'Дивиденды',
+    labelEn: 'Dividends',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: false,
+  },
+  deposits: {
+    labelRu: 'Проценты по вкладам',
+    labelEn: 'Deposit interest',
+    rate: null, /* Прогрессивная шкала: 13% / 15% */
+    allowsDeductions: false,
+  },
+  prize: {
+    labelRu: 'Приз / выигрыш',
+    labelEn: 'Prize / winnings',
+    rate: 35, /* Фиксированная ставка 35% */
+    allowsDeductions: false,
+  },
+  ad_prize: {
+    labelRu: 'Приз / выигрыш в мероприятии рекламного характера',
+    labelEn: 'Prize in promotional event',
+    rate: 35, /* Фиксированная ставка 35% */
+    allowsDeductions: false,
+  },
+  custom: {
+    labelRu: 'Указать ставку вручную',
+    labelEn: 'Set rate manually',
+    rate: 0, /* Задаётся пользователем */
+    allowsDeductions: false,
+  },
+};
+
 /* ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==================== */
 
-/**
- * Генерирует уникальный ID для списка детей
- */
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
@@ -85,14 +159,8 @@ function generateId(): string {
 /**
  * Рассчитывает годовую сумму вычета на детей
  * с учётом лимита дохода 350 000 ₽/год
- *
- * Формула: min(Месячный вычет × Кол-во месяцев, Лимит)
- * Где "месяцев" = кол-во месяцев до достижения лимита
  */
-function calcChildDeductionYearly(
-  children: Child[],
-  annualIncome: number,
-): number {
+function calcChildDeductionYearly(children: Child[], annualIncome: number): number {
   if (annualIncome <= 0 || children.length === 0) return 0;
 
   let totalMonthly = 0;
@@ -100,13 +168,7 @@ function calcChildDeductionYearly(
     totalMonthly += CHILD_DEDUCTIONS[child.type];
   }
 
-  /* Кол-во месяцев, пока доход не превысит лимит */
-  const months = Math.min(
-    12,
-    Math.max(0, Math.floor((CHILD_DEDUCTION_LIMIT - annualIncome / 12 < 0 ? 0 : 1))),
-  );
-
-  /* Более точный расчёт: считаем месяц за месяцем */
+  /* Считаем месяц за месяцем, пока накопленный доход ≤ лимита */
   const monthlyIncome = annualIncome / 12;
   let applicableMonths = 0;
   let cumulative = 0;
@@ -125,11 +187,17 @@ function calcChildDeductionYearly(
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function NDFLCalculator() {
-  /* Период дохода: ежемесячный или годовой */
+  /* Вид дохода */
+  const [incomeType, setIncomeType] = useState<IncomeType>('salary');
+
+  /* Период дохода */
   const [period, setPeriod] = useState<IncomePeriod>('monthly');
 
-  /* Сумма дохода (до вычетов) */
+  /* Сумма дохода */
   const [income, setIncome] = useState('');
+
+  /* Пользовательская ставка (только для типа 'custom') */
+  const [customRate, setCustomRate] = useState('13');
 
   /* Стандартный вычет (инвалидность) */
   const [hasDisability, setHasDisability] = useState(false);
@@ -152,12 +220,17 @@ export default function NDFLCalculator() {
     return () => window.removeEventListener('languageChange', handler);
   }, []);
 
+  /* Текущая информация о виде дохода */
+  const currentType = INCOME_TYPES[incomeType];
+
+  /* Определяем, применять ли прогрессивную шкалу */
+  const useProgressiveScale = currentType.rate === null;
+
+  /* Определяем, применять ли вычеты */
+  const canApplyDeductions = currentType.allowsDeductions;
+
   /* ==================== ОБРАБОТКА СОБЫТИЙ ==================== */
 
-  /**
-   * Добавляет ребёнка в список для вычета
-   * По умолчанию — первый ребёнок (1 400 ₽)
-   */
   const addChild = () => {
     const type: ChildDeductionType =
       children.length === 0 ? 'first'
@@ -166,16 +239,10 @@ export default function NDFLCalculator() {
     setChildren([...children, { id: generateId(), type }]);
   };
 
-  /**
-   * Удаляет ребёнка из списка
-   */
   const removeChild = (id: string) => {
     setChildren(children.filter((c) => c.id !== id));
   };
 
-  /**
-   * Меняет тип вычета для ребёнка
-   */
   const updateChildType = (id: string, type: ChildDeductionType) => {
     setChildren(children.map((c) => (c.id === id ? { ...c, type } : c)));
   };
@@ -186,43 +253,50 @@ export default function NDFLCalculator() {
     const val = parseFloat(income);
     if (!val || val <= 0) return null;
 
-    /* Переводим годовой доход */
     const annualIncome = period === 'monthly' ? val * 12 : val;
 
-    /* Вычет на детей (годовой) */
-    const childDeduction = calcChildDeductionYearly(children, annualIncome);
-
-    /* Стандартный вычет инвалидности: 500 ₽/мес × 12 = 6 000 ₽/год */
-    const standardDeduction = hasDisability ? 500 * 12 : 0;
-
-    /* Общая сумма вычетов */
-    const totalDeduction = childDeduction + standardDeduction;
-
-    /* Налоговая база (не может быть отрицательной) */
-    const taxableBase = Math.max(0, annualIncome - totalDeduction);
-
     /**
-     * Прогрессивная шкала НДФЛ (ст. 224 НК РФ):
-     * - 13% на сумму до 5 000 000 ₽
-     * - 15% на сумму свыше 5 000 000 ₽
+     * Вычеты применяются ТОЛЬКО к основной ставке (13%/15%)
+     * и ТОЛЬКО для видов дохода, где allowsDeductions = true
      */
-    let taxAmount: number;
-    if (taxableBase <= TAX_THRESHOLD) {
-      taxAmount = taxableBase * (RATE_LOW / 100);
-    } else {
-      /* 13% на первые 5 млн + 15% на остаток */
-      taxAmount =
-        TAX_THRESHOLD * (RATE_LOW / 100) +
-        (taxableBase - TAX_THRESHOLD) * (RATE_HIGH / 100);
+    let childDeduction = 0;
+    let standardDeduction = 0;
+    let totalDeduction = 0;
+
+    if (canApplyDeductions) {
+      childDeduction = calcChildDeductionYearly(children, annualIncome);
+      standardDeduction = hasDisability ? 500 * 12 : 0;
+      totalDeduction = childDeduction + standardDeduction;
     }
 
-    /* Итого на руки */
-    const netIncome = annualIncome - taxAmount;
+    /* Налоговая база */
+    const taxableBase = Math.max(0, annualIncome - totalDeduction);
 
-    /* Эффективная ставка */
-    const effectiveRate = annualIncome > 0
-      ? (taxAmount / annualIncome) * 100
-      : 0;
+    /* Определяем ставку и считаем налог */
+    let taxAmount: number;
+    let appliedRate: number;
+
+    if (useProgressiveScale) {
+      /**
+       * Прогрессивная шкала (ст. 224 НК РФ):
+       * 13% до 5 млн, 15% сверх
+       */
+      if (taxableBase <= TAX_THRESHOLD) {
+        taxAmount = taxableBase * 0.13;
+        appliedRate = 13;
+      } else {
+        taxAmount = TAX_THRESHOLD * 0.13 + (taxableBase - TAX_THRESHOLD) * 0.15;
+        appliedRate = 15;
+      }
+    } else {
+      /* Фиксированная ставка (35% для призов или пользовательская) */
+      const rate = incomeType === 'custom' ? parseFloat(customRate) || 0 : currentType.rate!;
+      taxAmount = taxableBase * (rate / 100);
+      appliedRate = rate;
+    }
+
+    const netIncome = annualIncome - taxAmount;
+    const effectiveRate = annualIncome > 0 ? (taxAmount / annualIncome) * 100 : 0;
 
     return {
       grossIncome: annualIncome,
@@ -233,25 +307,24 @@ export default function NDFLCalculator() {
       effectiveRate,
       childDeduction,
       standardDeduction,
-      /* Помесячные значения (делим годовые на 12) */
       monthlyGross: annualIncome / 12,
       monthlyTax: taxAmount / 12,
       monthlyNet: netIncome / 12,
       monthlyDeduction: totalDeduction / 12,
+      appliedRate,
     };
-  }, [income, period, hasDisability, children]);
+  }, [income, period, hasDisability, children, incomeType, customRate, canApplyDeductions, useProgressiveScale, currentType]);
 
   const handleCalculate = () => {
     setResult(calculate());
     setCalculated(true);
   };
 
-  /**
-   * Сброс всех полей к начальным значениям
-   */
   const handleReset = () => {
+    setIncomeType('salary');
     setPeriod('monthly');
     setIncome('');
+    setCustomRate('13');
     setHasDisability(false);
     setChildren([]);
     setCalculated(false);
@@ -275,13 +348,67 @@ export default function NDFLCalculator() {
         </h1>
         <p className="text-sm text-slate-400">
           {lang === 'ru'
-            ? 'Рассчитайте подоходный налог 13%/15% и сумму на руки с учётом вычетов'
-            : 'Calculate income tax at 13%/15% and net income with deductions'}
+            ? 'Рассчитайте НДФЛ с вашего дохода с учётом прогрессивной шкалы налогообложения'
+            : 'Calculate income tax with progressive taxation scale'}
         </p>
       </div>
 
       {/* ФОРМА */}
       <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+        {/* Вид дохода */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
+            {lang === 'ru' ? 'Вид дохода' : 'Income type'}
+          </label>
+          <select
+            value={incomeType}
+            onChange={(e) => setIncomeType(e.target.value as IncomeType)}
+            className="flex-1 max-w-md rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+          >
+            {(Object.keys(INCOME_TYPES) as IncomeType[]).map((key) => (
+              <option key={key} value={key}>
+                {lang === 'ru' ? INCOME_TYPES[key].labelRu : INCOME_TYPES[key].labelEn}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Подсказка по ставке */}
+        <div className="mb-6 bg-slate-50 rounded-xl px-4 py-3">
+          <p className="text-xs text-slate-400">
+            {useProgressiveScale
+              ? (lang === 'ru'
+                ? 'Прогрессивная шкала: 13% до 5 000 000 ₽/год, 15% сверх. Вычеты применяются.'
+                : 'Progressive scale: 13% up to 5,000,000 ₽/year, 15% above. Deductions apply.')
+              : (lang === 'ru'
+                ? `Фиксированная ставка: ${incomeType === 'custom' ? customRate : currentType.rate}%${
+                    !canApplyDeductions ? '. Вычеты не применяются.' : ''
+                  }`
+                : `Fixed rate: ${incomeType === 'custom' ? customRate : currentType.rate}%${
+                    !canApplyDeductions ? '. No deductions apply.' : ''}`)}
+          </p>
+        </div>
+
+        {/* Пользовательская ставка (только для типа 'custom') */}
+        {incomeType === 'custom' && (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+            <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
+              {lang === 'ru' ? 'Ставка НДФЛ' : 'Tax rate'}
+            </label>
+            <div className="flex items-center gap-2 flex-1 max-w-xs">
+              <input
+                type="text"
+                inputMode="decimal"
+                value={customRate}
+                onChange={(e) => setCustomRate(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))}
+                placeholder="13"
+                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-base font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+              />
+              <span className="text-sm text-slate-400">%</span>
+            </div>
+          </div>
+        )}
+
         {/* Период дохода */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
           <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
@@ -314,7 +441,7 @@ export default function NDFLCalculator() {
         {/* Сумма дохода */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
           <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
-            {lang === 'ru' ? 'Сумма до вычета НДФЛ' : 'Gross income'}
+            {lang === 'ru' ? 'Доход' : 'Income'}
           </label>
           <div className="flex items-center gap-2 flex-1 max-w-xs">
             <input
@@ -329,92 +456,97 @@ export default function NDFLCalculator() {
           </div>
         </div>
 
-        {/* Стандартный вычет — инвалидность */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-          <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
-            <span className="flex items-center gap-1.5">
-              {lang === 'ru' ? 'Стандартный вычет' : 'Standard deduction'}
-              <span
-                className="text-slate-300"
-                title={lang === 'ru'
-                  ? 'Инвалиды I и II группы: 500 ₽/мес (ст. 218 НК РФ)'
-                  : 'Disability I and II groups: 500 ₽/month (Art. 218 Tax Code)'}
-              >
-                ⓘ
-              </span>
-            </span>
-          </label>
-          <label className="flex items-center gap-2.5 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={hasDisability}
-              onChange={(e) => setHasDisability(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-indigo-500 focus:ring-indigo-500"
-            />
-            <span className="text-sm text-slate-700">
-              {lang === 'ru' ? 'Инвалид I или II группы' : 'Disability group I or II'}
-            </span>
-          </label>
-        </div>
-
-        {/* Вычеты на детей */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
-            <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
-              <span className="flex items-center gap-1.5">
-                {lang === 'ru' ? 'Вычеты на детей' : 'Child deductions'}
-                <span
-                  className="text-slate-300"
-                  title={lang === 'ru'
-                    ? '1 400 ₽/мес — 1-й и 2-й ребёнок, 3 000 ₽/мес — 3-й и далее, 12 000 ₽/мес — инвалид. Лимит: 350 000 ₽/год'
-                    : '1,400 ₽/mo — 1st and 2nd child, 3,000 ₽/mo — 3rd+, 12,000 ₽/mo — disabled. Limit: 350,000 ₽/year'}
-                >
-                  ⓘ
+        {/* Налоговый вычет — только для видов с allowsDeductions */}
+        {canApplyDeductions && (
+          <>
+            {/* Стандартный вычет — инвалидность */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+              <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
+                <span className="flex items-center gap-1.5">
+                  {lang === 'ru' ? 'Налоговый вычет' : 'Tax deduction'}
+                  <span
+                    className="text-slate-300"
+                    title={lang === 'ru'
+                      ? 'Инвалиды I и II группы: 500 ₽/мес (ст. 218 НК РФ)'
+                      : 'Disability I and II groups: 500 ₽/month (Art. 218 Tax Code)'}
+                  >
+                    ⓘ
+                  </span>
                 </span>
-              </span>
-            </label>
-            <button
-              onClick={addChild}
-              className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors"
-            >
-              + {lang === 'ru' ? 'Добавить ребёнка' : 'Add child'}
-            </button>
-          </div>
-
-          {children.length > 0 && (
-            <div className="space-y-2">
-              {children.map((child, index) => (
-                <div key={child.id} className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 w-6">#{index + 1}</span>
-                  <select
-                    value={child.type}
-                    onChange={(e) => updateChildType(child.id, e.target.value as ChildDeductionType)}
-                    className="flex-1 max-w-xs rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
-                  >
-                    <option value="first">
-                      {lang === 'ru' ? '1-й или 2-й ребёнок — 1 400 ₽/мес' : '1st or 2nd child — 1,400 ₽/mo'}
-                    </option>
-                    <option value="second">
-                      {lang === 'ru' ? '1-й или 2-й ребёнок — 1 400 ₽/мес' : '1st or 2nd child — 1,400 ₽/mo'}
-                    </option>
-                    <option value="third">
-                      {lang === 'ru' ? '3-й и далее — 3 000 ₽/мес' : '3rd and more — 3,000 ₽/mo'}
-                    </option>
-                    <option value="disabled">
-                      {lang === 'ru' ? 'Ребёнок-инвалид — 12 000 ₽/мес' : 'Disabled child — 12,000 ₽/mo'}
-                    </option>
-                  </select>
-                  <button
-                    onClick={() => removeChild(child.id)}
-                    className="w-7 h-7 rounded-lg bg-rose-50 text-rose-400 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-all text-xs"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+              </label>
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasDisability}
+                  onChange={(e) => setHasDisability(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 text-indigo-500 focus:ring-indigo-500"
+                />
+                <span className="text-sm text-slate-700">
+                  {lang === 'ru' ? 'Инвалид I или II группы' : 'Disability group I or II'}
+                </span>
+              </label>
             </div>
-          )}
-        </div>
+
+            {/* Вычеты на детей */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
+                  <span className="flex items-center gap-1.5">
+                    {lang === 'ru' ? 'Вычеты на детей' : 'Child deductions'}
+                    <span
+                      className="text-slate-300"
+                      title={lang === 'ru'
+                        ? '1 400 ₽/мес — 1-й и 2-й, 3 000 ₽/мес — 3-й+, 12 000 ₽/мес — инвалид. Лимит: 350 000 ₽/год'
+                        : '1,400 ₽/mo — 1st/2nd, 3,000 ₽/mo — 3rd+, 12,000 ₽/mo — disabled. Limit: 350,000 ₽/year'}
+                    >
+                      ⓘ
+                    </span>
+                  </span>
+                </label>
+                <button
+                  onClick={addChild}
+                  className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors"
+                >
+                  + {lang === 'ru' ? 'Добавить ребёнка' : 'Add child'}
+                </button>
+              </div>
+
+              {children.length > 0 && (
+                <div className="space-y-2">
+                  {children.map((child, index) => (
+                    <div key={child.id} className="flex items-center gap-2">
+                      <span className="text-xs text-slate-400 w-6">#{index + 1}</span>
+                      <select
+                        value={child.type}
+                        onChange={(e) => updateChildType(child.id, e.target.value as ChildDeductionType)}
+                        className="flex-1 max-w-xs rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                      >
+                        <option value="first">
+                          {lang === 'ru' ? '1-й или 2-й ребёнок — 1 400 ₽/мес' : '1st or 2nd child — 1,400 ₽/mo'}
+                        </option>
+                        <option value="second">
+                          {lang === 'ru' ? '1-й или 2-й ребёнок — 1 400 ₽/мес' : '1st or 2nd child — 1,400 ₽/mo'}
+                        </option>
+                        <option value="third">
+                          {lang === 'ru' ? '3-й и далее — 3 000 ₽/мес' : '3rd and more — 3,000 ₽/mo'}
+                        </option>
+                        <option value="disabled">
+                          {lang === 'ru' ? 'Ребёнок-инвалид — 12 000 ₽/мес' : 'Disabled child — 12,000 ₽/mo'}
+                        </option>
+                      </select>
+                      <button
+                        onClick={() => removeChild(child.id)}
+                        className="w-7 h-7 rounded-lg bg-rose-50 text-rose-400 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-all text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Кнопки */}
         <div className="flex gap-3">
@@ -436,7 +568,7 @@ export default function NDFLCalculator() {
       {/* РЕЗУЛЬТАТЫ */}
       {calculated && result ? (
         <div className="mt-6 space-y-4 animate-fade-in">
-          {/* Сумма на руки — главная карточка */}
+          {/* Итого на руки — главная карточка */}
           <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
             <p className="text-sm font-medium text-white/70 mb-1">
               {lang === 'ru' ? 'Итого на руки' : 'Net income'}
@@ -456,7 +588,9 @@ export default function NDFLCalculator() {
               </div>
             </div>
             <p className="text-sm text-white/60 mt-3 text-center">
-              {lang === 'ru' ? `Эффективная ставка: ${result.effectiveRate.toFixed(1)}%` : `Effective rate: ${result.effectiveRate.toFixed(1)}%`}
+              {lang === 'ru'
+                ? `${lang === 'ru' ? INCOME_TYPES[incomeType].labelRu : INCOME_TYPES[incomeType].labelEn} — ставка ${result.appliedRate}%`
+                : `${INCOME_TYPES[incomeType].labelEn} — rate ${result.appliedRate}%`}
             </p>
           </div>
 
@@ -468,15 +602,11 @@ export default function NDFLCalculator() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за месяц' : 'per month'}</p>
-                <p className="text-xl font-bold text-rose-500">
-                  {formatCurrency(result.monthlyTax)}
-                </p>
+                <p className="text-xl font-bold text-rose-500">{formatCurrency(result.monthlyTax)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за год' : 'per year'}</p>
-                <p className="text-xl font-bold text-rose-500">
-                  {formatCurrency(result.taxAmount)}
-                </p>
+                <p className="text-xl font-bold text-rose-500">{formatCurrency(result.taxAmount)}</p>
               </div>
             </div>
           </div>
@@ -489,27 +619,19 @@ export default function NDFLCalculator() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за месяц' : 'per month'}</p>
-                <p className="text-xl font-bold text-slate-800">
-                  {formatCurrency(result.monthlyGross)}
-                </p>
+                <p className="text-xl font-bold text-slate-800">{formatCurrency(result.monthlyGross)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-slate-400 mb-0.5">{lang === 'ru' ? 'за год' : 'per year'}</p>
-                <p className="text-xl font-bold text-slate-800">
-                  {formatCurrency(result.grossIncome)}
-                </p>
+                <p className="text-xl font-bold text-slate-800">{formatCurrency(result.grossIncome)}</p>
               </div>
             </div>
           </div>
 
           {/* Налоговая база */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
-            <p className="text-xs text-slate-400 mb-1">
-              {lang === 'ru' ? 'Налоговая база' : 'Taxable base'}
-            </p>
-            <p className="text-xl font-bold text-indigo-600">
-              {formatCurrency(result.taxableBase)}
-            </p>
+            <p className="text-xs text-slate-400 mb-1">{lang === 'ru' ? 'Налоговая база' : 'Taxable base'}</p>
+            <p className="text-xl font-bold text-indigo-600">{formatCurrency(result.taxableBase)}</p>
           </div>
 
           {/* Детали вычетов (если есть) */}
@@ -521,54 +643,40 @@ export default function NDFLCalculator() {
               <div className="space-y-2.5">
                 {result.standardDeduction > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'Стандартный (инвалидность)' : 'Standard (disability)'}
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      −{formatCurrency(result.standardDeduction)}
-                    </span>
+                    <span className="text-slate-500">{lang === 'ru' ? 'Стандартный (инвалидность)' : 'Standard (disability)'}</span>
+                    <span className="font-semibold text-emerald-600">−{formatCurrency(result.standardDeduction)}</span>
                   </div>
                 )}
                 {result.childDeduction > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">
-                      {lang === 'ru' ? 'На детей' : 'Child deduction'}
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      −{formatCurrency(result.childDeduction)}
-                    </span>
+                    <span className="text-slate-500">{lang === 'ru' ? 'На детей' : 'Child deduction'}</span>
+                    <span className="font-semibold text-emerald-600">−{formatCurrency(result.childDeduction)}</span>
                   </div>
                 )}
                 <div className="border-t border-slate-100 pt-2 flex items-center justify-between text-sm">
-                  <span className="text-slate-500">
-                    {lang === 'ru' ? 'Итого вычетов' : 'Total deductions'}
-                  </span>
-                  <span className="font-bold text-emerald-600">
-                    −{formatCurrency(result.totalDeduction)}
-                  </span>
+                  <span className="text-slate-500">{lang === 'ru' ? 'Итого вычетов' : 'Total deductions'}</span>
+                  <span className="font-bold text-emerald-600">−{formatCurrency(result.totalDeduction)}</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Ставки НДФЛ */}
+          {/* Ставки НДФЛ — таблица */}
           <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
             <p className="text-sm font-semibold text-slate-700 mb-3">
-              {lang === 'ru' ? 'Прогрессивная шкала' : 'Progressive scale'}
+              {lang === 'ru' ? 'Ставки НДФЛ (ст. 224 НК РФ)' : 'Tax rates (Art. 224 Tax Code)'}
             </p>
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">
-                  {lang === 'ru' ? 'До 5 000 000 ₽/год' : 'Up to 5,000,000 ₽/year'}
-                </span>
-                <span className="font-semibold text-slate-700">13%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">
-                  {lang === 'ru' ? 'Свыше 5 000 000 ₽/год' : 'Over 5,000,000 ₽/year'}
-                </span>
-                <span className="font-semibold text-slate-700">15%</span>
-              </div>
+              {[
+                { rate: '13%', descRu: 'Зарплата, аренда, продажа имущества, ЦБ, дивиденды, вклады (до 5 млн ₽/год)', descEn: 'Salary, rental, property, securities, dividends, deposits (up to 5M ₽/yr)' },
+                { rate: '15%', descRu: 'То же, свыше 5 000 000 ₽/год', descEn: 'Same, over 5,000,000 ₽/year' },
+                { rate: '35%', descRu: 'Призы, выигрыши, рекламные мероприятия', descEn: 'Prizes, winnings, promotional events' },
+              ].map((item) => (
+                <div key={item.rate} className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500">{lang === 'ru' ? item.descRu : item.descEn}</span>
+                  <span className="font-semibold text-slate-700">{item.rate}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -576,13 +684,12 @@ export default function NDFLCalculator() {
           <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
             <p className="text-xs text-amber-700">
               {lang === 'ru'
-                ? '⚠️ Расчёт приблизительный. Реальная сумма НДФЛ зависит от вычетов, льгот и налогового периода. Обратитесь к бухгалтеру или в ФНС для точного расчёта.'
-                : '⚠️ Estimate only. Actual tax depends on deductions, benefits and tax period. Consult an accountant or FTS for exact calculation.'}
+                ? '⚠️ Расчёт приблизительный. Реальная сумма НДФЛ зависит от вычетов, льгот и налогового периода. Обратитесь к бухгалтеру или в ФНС.'
+                : '⚠️ Estimate only. Actual tax depends on deductions, benefits and tax period. Consult an accountant or FTS.'}
             </p>
           </div>
         </div>
       ) : (
-        /* Подсказка */
         <div className="mt-6 bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center">
           <div className="text-slate-300 mb-3">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto">
@@ -592,8 +699,8 @@ export default function NDFLCalculator() {
           </div>
           <p className="text-sm text-slate-300">
             {lang === 'ru'
-              ? 'Введите доход и нажмите «Рассчитать»'
-              : 'Enter income and press «Calculate»'}
+              ? 'Выберите вид дохода, введите сумму и нажмите «Рассчитать»'
+              : 'Select income type, enter amount and press «Calculate»'}
           </p>
         </div>
       )}
