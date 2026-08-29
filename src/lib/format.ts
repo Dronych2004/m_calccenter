@@ -7,16 +7,30 @@
 
 /**
  * Форматирует число как валюту (₽) с пробелами-разделителями
- * Округляет до целого: 1234567 → "1 234 567 ₽"
+ *
+ * @param value — число для форматирования
+ * @param decimals — кол-во знаков после запятой (по умолчанию 0 = целое)
+ *
+ * formatCurrency(1234567)     → "1 234 567 ₽"
+ * formatCurrency(1234.56, 2)  → "1 234,56 ₽"
  */
-export function formatCurrency(value: number): string {
-  return Math.round(value).toLocaleString('ru-RU') + ' ₽';
+export function formatCurrency(value: number, decimals = 0): string {
+  return value.toLocaleString('ru-RU', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }) + ' ₽';
 }
 
 /**
  * Форматирует число без знака валюты — только цифры с пробелами
  * Используется в таблицах графика платежей
+ *
+ * @param value — число для форматирования
+ * @param decimals — кол-во знаков после запятой (по умолчанию 0 = целое)
  */
-export function formatNumber(value: number): string {
-  return Math.round(value).toLocaleString('ru-RU');
+export function formatNumber(value: number, decimals = 0): string {
+  return value.toLocaleString('ru-RU', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 }

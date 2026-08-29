@@ -23,6 +23,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency } from '../lib/format';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -146,15 +147,6 @@ export default function NDSCalculator() {
     setNdsType('20');
     setCalculated(false);
     setResult(null);
-  };
-
-  /* ==================== ФОРМАТИРОВАНИЕ ==================== */
-
-  const formatCurrency = (value: number): string => {
-    return value.toLocaleString('ru-RU', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }) + ' ₽';
   };
 
   /* ==================== РЕНДЕР ==================== */
@@ -283,7 +275,7 @@ export default function NDSCalculator() {
               {lang === 'ru' ? 'Сумма НДС' : 'VAT amount'}
             </p>
             <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-              {formatCurrency(result.ndsAmount)}
+              {formatCurrency(result.ndsAmount, 2)}
             </p>
             <p className="text-sm text-white/60 mt-2">
               {lang === 'ru' ? `Ставка: ${result.rate}%` : `Rate: ${result.rate}%`}
@@ -296,7 +288,7 @@ export default function NDSCalculator() {
               {lang === 'ru' ? 'Цена без НДС' : 'Price without VAT'}
             </p>
             <p className="text-xl font-bold text-slate-800">
-              {formatCurrency(result.priceWithoutNDS)}
+              {formatCurrency(result.priceWithoutNDS, 2)}
             </p>
           </div>
 
@@ -306,7 +298,7 @@ export default function NDSCalculator() {
               {lang === 'ru' ? 'Цена с НДС' : 'Price with VAT'}
             </p>
             <p className="text-xl font-bold text-indigo-600">
-              {formatCurrency(result.priceWithNDS)}
+              {formatCurrency(result.priceWithNDS, 2)}
             </p>
           </div>
 
@@ -323,7 +315,7 @@ export default function NDSCalculator() {
                       {lang === 'ru' ? 'НДС = Цена × Ставка / 100' : 'VAT = Price × Rate / 100'}
                     </span>
                     <span className="font-mono text-xs text-slate-600">
-                      {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} × {result.rate}% = {formatCurrency(result.ndsAmount)}
+                      {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} × {result.rate}% = {formatCurrency(result.ndsAmount, 2)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -331,7 +323,7 @@ export default function NDSCalculator() {
                       {lang === 'ru' ? 'Итого с НДС' : 'Total with VAT'}
                     </span>
                     <span className="font-mono text-xs text-slate-600">
-                      {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} + {result.ndsAmount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = {formatCurrency(result.priceWithNDS)}
+                      {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} + {result.ndsAmount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = {formatCurrency(result.priceWithNDS, 2)}
                     </span>
                   </div>
                 </>
@@ -342,7 +334,7 @@ export default function NDSCalculator() {
                       {lang === 'ru' ? 'Цена без НДС = Цена с НДС / (1 + Ставка/100)' : 'Price without VAT = Price with VAT / (1 + Rate/100)'}
                     </span>
                     <span className="font-mono text-xs text-slate-600">
-                      {result.priceWithNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(1 + result.rate / 100).toFixed(2)} = {formatCurrency(result.priceWithoutNDS)}
+                      {result.priceWithNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(1 + result.rate / 100).toFixed(2)} = {formatCurrency(result.priceWithoutNDS, 2)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -350,7 +342,7 @@ export default function NDSCalculator() {
                       {lang === 'ru' ? 'НДС = Цена с НДС − Цена без НДС' : 'VAT = Price with VAT − Price without VAT'}
                     </span>
                     <span className="font-mono text-xs text-slate-600">
-                      {result.priceWithNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} − {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = {formatCurrency(result.ndsAmount)}
+                      {result.priceWithNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} − {result.priceWithoutNDS.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = {formatCurrency(result.ndsAmount, 2)}
                     </span>
                   </div>
                 </>

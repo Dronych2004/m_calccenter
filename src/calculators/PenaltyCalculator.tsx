@@ -20,6 +20,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getLanguage } from '../i18n';
 import { useCBRRate } from '../hooks/useCBRRate';
+import { formatCurrency } from '../lib/format';
 
 type PenaltyType = 'tax' | 'salary' | 'utilities';
 type TaxpayerType = 'individual' | 'legal';
@@ -130,10 +131,6 @@ export default function PenaltyCalculator() {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setPaymentDate(`${yyyy}-${mm}-${dd}`);
-  };
-
-  const formatCurrency = (value: number): string => {
-    return value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
   };
 
   const penaltyTypeLabels: Record<PenaltyType, { ru: string; en: string }> = {
@@ -299,7 +296,7 @@ export default function PenaltyCalculator() {
               {lang === 'ru' ? 'Сумма пеней' : 'Penalty amount'}
             </p>
             <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-              {formatCurrency(result.penalty)}
+              {formatCurrency(result.penalty, 2)}
             </p>
             <p className="text-sm text-white/60 mt-2">
               {result.days} {lang === 'ru' ? 'дн. просрочки' : 'days overdue'}
@@ -312,7 +309,7 @@ export default function PenaltyCalculator() {
               {lang === 'ru' ? 'Итого к оплате' : 'Total to pay'}
             </p>
             <p className="text-xl font-bold text-slate-800">
-              {formatCurrency(result.totalDebt)}
+              {formatCurrency(result.totalDebt, 2)}
             </p>
           </div>
 
@@ -324,7 +321,7 @@ export default function PenaltyCalculator() {
             <div className="space-y-2.5">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">{lang === 'ru' ? 'Сумма задолженности' : 'Debt amount'}</span>
-                <span className="font-semibold text-slate-700">{formatCurrency(parseFloat(debtAmount) || 0)}</span>
+                <span className="font-semibold text-slate-700">{formatCurrency(parseFloat(debtAmount) || 0, 2)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">{lang === 'ru' ? 'Дней просрочки' : 'Days overdue'}</span>
@@ -352,7 +349,7 @@ export default function PenaltyCalculator() {
               </div>
               <div className="border-t border-slate-100 pt-2 flex items-center justify-between text-sm">
                 <span className="text-slate-500">{lang === 'ru' ? 'Начислено пеней' : 'Penalty charged'}</span>
-                <span className="font-bold text-rose-500">{formatCurrency(result.penalty)}</span>
+                <span className="font-bold text-rose-500">{formatCurrency(result.penalty, 2)}</span>
               </div>
             </div>
           </div>

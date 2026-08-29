@@ -15,6 +15,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency } from '../lib/format';
 
 interface ExcludedPeriod {
   id: string;
@@ -151,10 +152,6 @@ export default function VacationCalculator() {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setCalcDate(`${yyyy}-${mm}-${dd}`);
-  };
-
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
   };
 
   return (

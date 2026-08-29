@@ -26,6 +26,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency } from '../lib/format';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -321,12 +322,6 @@ export default function NDFLCalculator() {
     setChildren([]);
     setCalculated(false);
     setResult(null);
-  };
-
-  /* ==================== ФОРМАТИРОВАНИЕ ==================== */
-
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
   };
 
   /* ==================== РЕНДЕР ==================== */

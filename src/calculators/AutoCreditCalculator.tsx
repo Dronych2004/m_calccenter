@@ -13,6 +13,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency, formatNumber } from '../lib/format';
 
 type PaymentType = 'annuity' | 'differentiated';
 type DownPaymentMode = 'percent' | 'fixed';
@@ -132,14 +133,6 @@ export default function AutoCreditCalculator() {
   const handleCalculate = () => {
     setResult(calculate());
     setCalculated(true);
-  };
-
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-  };
-
-  const formatNumber = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU');
   };
 
   return (

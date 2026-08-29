@@ -14,6 +14,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency, formatNumber } from '../lib/format';
 
 type PaymentType = 'annuity' | 'differentiated';
 
@@ -130,14 +131,6 @@ export default function CreditCalculator() {
   const handleCalculate = () => {
     setResult(calculate());
     setCalculated(true);
-  };
-
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-  };
-
-  const formatNumber = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU');
   };
 
   return (

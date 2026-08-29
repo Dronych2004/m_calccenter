@@ -18,6 +18,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency, formatNumber } from '../lib/format';
 
 /* Тип платежа */
 type PaymentType = 'annuity' | 'differentiated';
@@ -135,23 +136,6 @@ export default function MortgageCalculator() {
   const handleCalculate = () => {
     setResult(calculate());
     setCalculated(true);
-  };
-
-  /* ==================== ФОРМАТИРОВАНИЕ ==================== */
-
-  /**
-   * Форматирует число как валюту (₽) с пробелами-разделителями.
-   */
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-  };
-
-  /**
-   * Форматирует число без знака валюты — только цифры с пробелами.
-   * Используется в таблице графика, где ₽ уже есть в заголовке.
-   */
-  const formatNumber = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU');
   };
 
   /* ==================== РЕНДЕР ==================== */

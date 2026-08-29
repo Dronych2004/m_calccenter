@@ -16,6 +16,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency, formatNumber } from '../lib/format';
 
 interface FuelResult {
   liters: number;
@@ -60,17 +61,6 @@ export default function FuelCalculator() {
     setShowDetails(false);
     setCalculated(false);
     setResult(null);
-  };
-
-  const formatNumber = (value: number, decimals = 1): string => {
-    return value.toLocaleString('ru-RU', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    });
-  };
-
-  const formatCurrency = (value: number): string => {
-    return Math.round(value).toLocaleString('ru-RU') + ' ₽';
   };
 
   return (
@@ -156,7 +146,7 @@ export default function FuelCalculator() {
               <div className="bg-linear-to-br from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-lg shadow-orange-500/20">
                 <p className="text-sm font-medium text-white/70 mb-1">{t('fuel.liters')}</p>
                 <p className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                  {formatNumber(result.liters)}
+                  {formatNumber(result.liters, 1)}
                   <span className="text-lg font-semibold text-white/70 ml-2">{t('fuel.litersUnit')}</span>
                 </p>
               </div>

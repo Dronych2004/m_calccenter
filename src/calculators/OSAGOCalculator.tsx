@@ -17,6 +17,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import { formatCurrency } from '../lib/format';
 
 type OwnerType = 'individual' | 'legal';
 type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer' | 'B_legal' | 'C_legal' | 'D_legal';
@@ -298,10 +299,6 @@ export default function OSAGOCalculator() {
     setKbmIndex(6);
     setCalculated(false);
     setResult(null);
-  };
-
-  const formatCurrency = (value: number): string => {
-    return value.toLocaleString('ru-RU') + ' ₽';
   };
 
   return (
