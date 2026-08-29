@@ -43,6 +43,9 @@ import { getLanguage } from '../i18n';
 /* Тип транспортного средства */
 type VehicleCategory = 'car' | 'truck' | 'bus' | 'motorcycle' | 'trailer';
 
+/* Тип двигателя (влияет на КД для грузовых 7+ лет) */
+type EngineType = 'diesel' | 'gasoline';
+
 /* Интерфейс результата */
 interface UtilFeeResult {
   baseRate: number;        /* Базовая ставка БТ (₽) */
@@ -124,9 +127,9 @@ const TYPE_COEFFICIENTS: Record<VehicleCategory, number> = {
 
 /**
  * Коэффициент возраста (КД)
- * Зависит от возраста ТС (лет от заводской даты)
+ * Зависит от возраста ТС и типа двигателя
  *
- * Легковые, мотоциклы:
+ * Легковые, мотоциклы, автобусы, прицепы:
  *   ≤ 3 лет → 0.20
  *   3-5 лет → 0.38
  *   5-7 лет → 0.50
@@ -137,10 +140,14 @@ const TYPE_COEFFICIENTS: Record<VehicleCategory, number> = {
  *   ≤ 3 лет → 0.20
  *   3-5 лет → 0.38
  *   5-7 лет → 0.50
- *   7+ лет → 0.60 (отдельное правило!)
+ *   7+ лет (дизель) → 0.60  ← отдельное правило!
+ *   7+ лет (бензин) → 1.00  ← как общее правило 10+
  */
-function getAgeCoefficient(ageYears: number, category: VehicleCategory): number {
-  if (category === 'truck' && ageYears >= 7) return 0.60;
+function getAgeCoefficient(ageYears: number, category: VehicleCategory, engineType: EngineType): number {
+  /* Грузовые 7+ лет: дизель → 0.60, бензин → 1.00 */
+  if (category === 'truck' && ageYears >= 7) {
+    return engineType === 'diesel' ? 0.60 : 1.00;
+  }
   if (ageYears <= 3) return 0.20;
   if (ageYears <= 5) return 0.38;
   if (ageYears <= 7) return 0.50;
@@ -165,6 +172,9 @@ function formatCurrency(value: number): string {
 export default function UtilFeeCalculator() {
   /* Тип ТС */
   const [vehicleType, setVehicleType] = useState<VehicleCategory>('car');
+
+  /* Тип двигателя (только для грузовых, влияет на КД 7+ лет) */
+  const [engineType, setEngineType] = useState<EngineType>('diesel');
 
   /* Мощность / объём / грузоподъёмность (ед. измерения зависят от типа) */
   const [specValue, setSpecValue] = useState('');
@@ -224,7 +234,7 @@ export default function UtilFeeCalculator() {
     const now = new Date();
     const ageMs = now.getTime() - manufDate.getTime();
     const ageYears = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
-    const ageCoeff = getAgeCoefficient(ageYears, vehicleType);
+    const ageCoeff = getAgeCoefficient(ageYears, vehicleType, engineType);
 
     /* Коэффициент территории — 1.0 (большинство регионов) */
     const regionCoeff = 1.0;
@@ -241,7 +251,7 @@ export default function UtilFeeCalculator() {
       totalFee,
       vehicleAge: ageYears,
     };
-  }, [specValue, manufactureDate, vehicleType, currentType]);
+  }, [specValue, manufactureDate, vehicleType, engineType, currentType]);
 
   const handleCalculate = () => {
     setResult(calculate());
@@ -250,6 +260,7 @@ export default function UtilFeeCalculator() {
 
   const handleReset = () => {
     setVehicleType('car');
+    setEngineType('diesel');
     setSpecValue('');
     setManufactureDate('');
     setIsFirstReg(false);
@@ -310,6 +321,37 @@ export default function UtilFeeCalculator() {
             ))}
           </select>
         </div>
+
+        {/* Тип двигателя — только для грузовых ТС */}
+        {vehicleType === 'truck' && (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+            <label className="text-sm font-medium text-slate-600 sm:w-52 shrink-0">
+              {lang === 'ru' ? 'Тип двигателя' : 'Engine type'}
+            </label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEngineType('diesel')}
+                className={`flex-1 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                  engineType === 'diesel'
+                    ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/25'
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                }`}
+              >
+                {lang === 'ru' ? 'Дизель' : 'Diesel'}
+              </button>
+              <button
+                onClick={() => setEngineType('gasoline')}
+                className={`flex-1 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                  engineType === 'gasoline'
+                    ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/25'
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                }`}
+              >
+                {lang === 'ru' ? 'Бензин' : 'Gasoline'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Мощность / объём */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
