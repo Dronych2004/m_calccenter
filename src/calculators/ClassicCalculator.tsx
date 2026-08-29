@@ -12,6 +12,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { safeEval } from '../lib/safeEval';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -114,9 +115,8 @@ export default function ClassicCalculator() {
 
       if (!expr) return;
 
-      /* Безопасное вычисление через Function (для базовых операций) */
-      /* eslint-disable-next-line no-eval */
-      const evalResult = Function(`"use strict"; return (${expr})`)();
+      /* Безопасное вычисление через рекурсивный парсер (без eval/Function) */
+      const evalResult = safeEval(expr);
       const resultStr = String(evalResult);
 
       /* Добавляем в историю */

@@ -14,6 +14,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { safeEval } from '../lib/safeEval';
 
 /* Тип режима углов */
 type AngleMode = 'deg' | 'rad';
@@ -271,9 +272,14 @@ export default function EngineeringCalculator() {
       /* 1/x */
       expr = expr.replace(/1\/\(([^)]+)\)/g, '(1/($1))');
 
-      /* mod (остаток от деления) */
-      expr = expr.replace(/%/g, '**(1/100)*'); /* Процент */
+      /* mod (остаток от деления) → оператор % */
       expr = expr.replace(/mod/g, '%');
+
+      /* Убираем префикс Math. для безопасного парсера
+       * (парсер поддерживает sin, cos, log, sqrt и т.д. напрямую) */
+      expr = expr.replace(/Math\.(sin|cos|tan|asin|acos|atan|log10|log|sqrt|cbrt|abs|pow|PI|E|PI)/g, '$1');
+      /* log10 → log (парсер использует log для log₁₀) */
+      expr = expr.replace(/\blog\b/g, 'log');
 
       /* Замена операторов на JS */
       expr = expr
@@ -287,8 +293,8 @@ export default function EngineeringCalculator() {
 
       if (!expr) return;
 
-      /* eslint-disable-next-line no-eval */
-      const evalResult = Function(`"use strict"; return (${expr})`)();
+      /* Безопасное вычисление через рекурсивный парсер (без eval/Function) */
+      const evalResult = safeEval(expr);
 
       if (typeof evalResult !== 'number' || !isFinite(evalResult)) {
         throw new Error('Invalid result');
