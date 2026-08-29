@@ -162,11 +162,7 @@ function getAgeCoefficient(ageYears: number, category: VehicleCategory, engineTy
  */
 const RATE_CHANGE_COEFF = 1.42;
 
-/* ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==================== */
-
-function formatCurrency(value: number): string {
-  return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-}
+import { formatCurrency } from '../lib/format';
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function UtilFeeCalculator() {

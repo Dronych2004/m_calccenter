@@ -40,12 +40,7 @@ interface InterestResult {
 
 /* ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==================== */
 
-/**
- * Форматирует число как валюту (₽) с пробелами-разделителями
- */
-function formatCurrency(value: number): string {
-  return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-}
+import { formatCurrency } from '../lib/format';
 
 /**
  * Форматирует число с двумя знаками после запятой

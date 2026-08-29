@@ -53,7 +53,6 @@ const countryCodes: CountryCode[] = [
   { country: 'Словения', countryEn: 'Slovenia', code: '+386', region: 'Европа', regionEn: 'Europe' },
   { country: 'Северная Македония', countryEn: 'North Macedonia', code: '+389', region: 'Европа', regionEn: 'Europe' },
   { country: 'Албания', countryEn: 'Albania', code: '+355', region: 'Европа', regionEn: 'Europe' },
-  { country: 'Черногория', countryEn: 'Montenegro', code: '+382', region: 'Европа', regionEn: 'Europe' },
   { country: 'Косово', countryEn: 'Kosovo', code: '+383', region: 'Европа', regionEn: 'Europe' },
   { country: 'Исландия', countryEn: 'Iceland', code: '+354', region: 'Европа', regionEn: 'Europe' },
   { country: 'Люксембург', countryEn: 'Luxembourg', code: '+352', region: 'Европа', regionEn: 'Europe' },

@@ -91,18 +91,7 @@ const EXCISE_RATES = {
   },
 };
 
-/* ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==================== */
-
-function formatCurrency(value: number): string {
-  return Math.round(value).toLocaleString('ru-RU') + ' ₽';
-}
-
-function formatNumber(value: number, decimals = 0): string {
-  return value.toLocaleString('ru-RU', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
+import { formatCurrency, formatNumber } from '../lib/format';
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function CustomsCalculator() {
