@@ -11,7 +11,8 @@
  * - Выходные = общее минус рабочие
  */
 import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* Структура результата подсчёта */
 interface DateResult {
@@ -75,13 +76,7 @@ export default function DateCalculator() {
   const [endDate, setEndDate] = useState('');
   const [result, setResult] = useState<DateResult | null>(null);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /**
    * Автоматически ставит сегодняшнюю дату как начальную при загрузке.
@@ -188,7 +183,7 @@ export default function DateCalculator() {
             onClick={handleCalculate}
             className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
           >
-            {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+            {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
           </button>
           <button
             onClick={() => {
@@ -198,7 +193,7 @@ export default function DateCalculator() {
             }}
             className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
           >
-            {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+            {lang === 'ru' ? 'Сбросить' : 'Reset'}
           </button>
         </div>
       </div>
@@ -304,7 +299,7 @@ export default function DateCalculator() {
             </svg>
           </div>
           <p className="text-sm text-slate-300">
-            {getLanguage() === 'ru'
+            {lang === 'ru'
               ? 'Выберите две даты для расчёта'
               : 'Select two dates to calculate'}
           </p>

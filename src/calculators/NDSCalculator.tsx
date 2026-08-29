@@ -20,8 +20,9 @@
  *   0%  — экспорт, международные перевозки
  *   Без НДС — некоторые категории (МСП на УСН до лимита)
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -65,16 +66,7 @@ export default function NDSCalculator() {
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<NDSResult | null>(null);
 
-  /* Тик для перерисовки при смене языка */
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 

@@ -15,8 +15,9 @@
  *   Основной долг / n + Остаток × P
  *   Платёж уменьшается каждый месяц
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* Тип платежа */
 type PaymentType = 'annuity' | 'differentiated';
@@ -41,13 +42,7 @@ export default function MortgageCalculator() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /**
    * Сбрасывает все введённые данные к начальным значениям.
@@ -229,7 +224,7 @@ export default function MortgageCalculator() {
                 {/* Тултип — определение аннуитетного платежа */}
                 <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20 pointer-events-none">
                   <div className="bg-slate-800 text-white text-xs leading-relaxed rounded-xl px-4 py-3 shadow-xl">
-                    {getLanguage() === 'ru'
+                    {lang === 'ru'
                       ? 'Одинаковый платёж каждый месяц на весь срок кредита. В начале больше процентов, в конце больше основного долга.'
                       : 'Equal payment every month for the entire loan term. More interest at the start, more principal at the end.'}
                     <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-slate-800" />
@@ -252,7 +247,7 @@ export default function MortgageCalculator() {
                 {/* Тултип — определение дифференцированного платежа */}
                 <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20 pointer-events-none">
                   <div className="bg-slate-800 text-white text-xs leading-relaxed rounded-xl px-4 py-3 shadow-xl">
-                    {getLanguage() === 'ru'
+                    {lang === 'ru'
                       ? 'Платёж уменьшается каждый месяц. Основной долг фиксированный, проценты начисляются на остаток.'
                       : 'Payment decreases every month. Fixed principal, interest calculated on remaining balance.'}
                     <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-slate-800" />
@@ -267,13 +262,13 @@ export default function MortgageCalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+                {lang === 'ru' ? 'Сбросить' : 'Reset'}
               </button>
             </div>
           </div>
@@ -293,7 +288,7 @@ export default function MortgageCalculator() {
                 </p>
                 {paymentType === 'differentiated' && (
                   <p className="text-sm text-white/60 mt-2">
-                    {getLanguage() === 'ru'
+                    {lang === 'ru'
                       ? `от ${formatCurrency(result.lastPaymentDiff)} до ${formatCurrency(result.firstPaymentDiff)}`
                       : `from ${formatCurrency(result.lastPaymentDiff)} to ${formatCurrency(result.firstPaymentDiff)}`}
                   </p>
@@ -336,19 +331,19 @@ export default function MortgageCalculator() {
                         <tr className="border-b border-slate-100">
                           <th className="px-3 py-3 text-center font-semibold text-slate-400 w-10">№</th>
                           <th className="px-3 py-3 text-left font-semibold text-slate-400">
-                            {getLanguage() === 'ru' ? 'Период' : 'Period'}
+                            {lang === 'ru' ? 'Период' : 'Period'}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {getLanguage() === 'ru' ? 'Платёж, ₽' : 'Payment, ₽'}
+                            {lang === 'ru' ? 'Платёж, ₽' : 'Payment, ₽'}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {getLanguage() === 'ru' ? 'Долг, ₽' : 'Principal, ₽'}
+                            {lang === 'ru' ? 'Долг, ₽' : 'Principal, ₽'}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {getLanguage() === 'ru' ? 'Проценты, ₽' : 'Interest, ₽'}
+                            {lang === 'ru' ? 'Проценты, ₽' : 'Interest, ₽'}
                           </th>
                           <th className="px-3 py-3 text-right font-semibold text-slate-400">
-                            {getLanguage() === 'ru' ? 'Остаток, ₽' : 'Balance, ₽'}
+                            {lang === 'ru' ? 'Остаток, ₽' : 'Balance, ₽'}
                           </th>
                         </tr>
                       </thead>
@@ -381,7 +376,7 @@ export default function MortgageCalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {getLanguage() === 'ru'
+                {lang === 'ru'
                   ? 'Заполните параметры и нажмите «Рассчитать»'
                   : 'Fill in parameters and press «Calculate»'}
               </p>

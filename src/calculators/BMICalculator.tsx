@@ -16,8 +16,9 @@
  *   25–29.9 — Избыточный вес
  *   ≥ 30 — Ожирение
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* Тип пола */
 type Gender = 'male' | 'female';
@@ -76,13 +77,7 @@ export default function BMICalculator() {
   const [targetWeight, setTargetWeight] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 
@@ -118,7 +113,7 @@ export default function BMICalculator() {
     const dailyHarris = bmrHarris * activity.factor;
 
     /* Категория ИМТ */
-    const category = getBMICategory(bmi, getLanguage());
+    const category = getBMICategory(bmi, lang);
 
     /* Анализ целевого веса */
     let targetAnalysis: {
@@ -142,7 +137,7 @@ export default function BMICalculator() {
       const weeksToGoal = Math.ceil(totalDeficitCal / (deficit * 7));
 
       targetAnalysis = {
-        goal: diffKg < 0 ? (getLanguage() === 'ru' ? 'Снизить вес' : 'Lose weight') : (getLanguage() === 'ru' ? 'Набрать вес' : 'Gain weight'),
+        goal: diffKg < 0 ? (lang === 'ru' ? 'Снизить вес' : 'Lose weight') : (lang === 'ru' ? 'Набрать вес' : 'Gain weight'),
         diffKg: Math.abs(diffKg),
         currentCalories: Math.round(dailyMifflin),
         recommendedCalories: Math.max(1200, recommendedCalories),
@@ -240,7 +235,7 @@ export default function BMICalculator() {
             {/* Целевой вес (необязательно) */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-slate-600 mb-2">
-                {getLanguage() === 'ru' ? 'Целевой вес (кг) — необязательно' : 'Target weight (kg) — optional'}
+                {lang === 'ru' ? 'Целевой вес (кг) — необязательно' : 'Target weight (kg) — optional'}
               </label>
               <input
                 type="text"
@@ -279,7 +274,7 @@ export default function BMICalculator() {
                         : 'bg-slate-50 text-slate-500 border border-transparent hover:bg-slate-100'
                     }`}
                   >
-                    {getLanguage() === 'ru' ? level.labelRu : level.labelEn}
+                    {lang === 'ru' ? level.labelRu : level.labelEn}
                   </button>
                 ))}
               </div>
@@ -291,13 +286,13 @@ export default function BMICalculator() {
                 onClick={handleCalculate}
                 className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:bg-indigo-600 active:scale-[0.98] transition-all"
               >
-                {getLanguage() === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
+                {lang === 'ru' ? 'РАССЧИТАТЬ' : 'CALCULATE'}
               </button>
               <button
                 onClick={handleReset}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-300 transition-all"
               >
-                {getLanguage() === 'ru' ? 'Сбросить' : 'Reset'}
+                {lang === 'ru' ? 'Сбросить' : 'Reset'}
               </button>
             </div>
           </div>
@@ -328,11 +323,11 @@ export default function BMICalculator() {
                       <span className="text-xs font-bold text-indigo-500">1</span>
                     </div>
                     <p className="text-xs font-semibold text-slate-600">
-                      {getLanguage() === 'ru' ? 'Миффлин-Сан Жеор' : 'Mifflin-St Jeor'}
+                      {lang === 'ru' ? 'Миффлин-Сан Жеор' : 'Mifflin-St Jeor'}
                     </p>
                   </div>
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {getLanguage() === 'ru' ? 'Базовый обмен' : 'BMR'}
+                    {lang === 'ru' ? 'Базовый обмен' : 'BMR'}
                   </p>
                   <p className="text-lg font-bold text-slate-800 mb-2">
                     {Math.round(result.bmrMifflin).toLocaleString('ru-RU')}
@@ -340,7 +335,7 @@ export default function BMICalculator() {
                   </p>
                   <div className="border-t border-slate-100 pt-2">
                     <p className="text-[11px] text-slate-400 mb-0.5">
-                      {getLanguage() === 'ru' ? 'С учётом активности' : 'With activity'}
+                      {lang === 'ru' ? 'С учётом активности' : 'With activity'}
                     </p>
                     <p className="text-base font-bold text-indigo-600">
                       {Math.round(result.dailyMifflin).toLocaleString('ru-RU')}
@@ -356,11 +351,11 @@ export default function BMICalculator() {
                       <span className="text-xs font-bold text-violet-500">2</span>
                     </div>
                     <p className="text-xs font-semibold text-slate-600">
-                      {getLanguage() === 'ru' ? 'Харрис-Бенедикт' : 'Harris-Benedict'}
+                      {lang === 'ru' ? 'Харрис-Бенедикт' : 'Harris-Benedict'}
                     </p>
                   </div>
                   <p className="text-[11px] text-slate-400 mb-1">
-                    {getLanguage() === 'ru' ? 'Базовый обмен' : 'BMR'}
+                    {lang === 'ru' ? 'Базовый обмен' : 'BMR'}
                   </p>
                   <p className="text-lg font-bold text-slate-800 mb-2">
                     {Math.round(result.bmrHarris).toLocaleString('ru-RU')}
@@ -368,7 +363,7 @@ export default function BMICalculator() {
                   </p>
                   <div className="border-t border-slate-100 pt-2">
                     <p className="text-[11px] text-slate-400 mb-0.5">
-                      {getLanguage() === 'ru' ? 'С учётом активности' : 'With activity'}
+                      {lang === 'ru' ? 'С учётом активности' : 'With activity'}
                     </p>
                     <p className="text-base font-bold text-violet-600">
                       {Math.round(result.dailyHarris).toLocaleString('ru-RU')}
@@ -394,7 +389,7 @@ export default function BMICalculator() {
                     <div>
                       <p className="text-sm font-semibold text-slate-700">{result.targetAnalysis.goal}</p>
                       <p className="text-xs text-slate-400">
-                        {getLanguage() === 'ru' ? `на ${result.targetAnalysis.diffKg.toFixed(1)} кг` : `by ${result.targetAnalysis.diffKg.toFixed(1)} kg`}
+                        {lang === 'ru' ? `на ${result.targetAnalysis.diffKg.toFixed(1)} кг` : `by ${result.targetAnalysis.diffKg.toFixed(1)} kg`}
                       </p>
                     </div>
                   </div>
@@ -402,7 +397,7 @@ export default function BMICalculator() {
                   {/* Рекомендуемые калории — главная карточка */}
                   <div className="bg-linear-to-br from-emerald-500 to-teal-500 rounded-xl p-4 text-white text-center mb-3">
                     <p className="text-xs font-medium text-white/70 mb-1">
-                      {getLanguage() === 'ru'
+                      {lang === 'ru'
                         ? 'Рекомендуется в день для похудения'
                         : 'Recommended daily intake for weight loss'}
                     </p>
@@ -415,7 +410,7 @@ export default function BMICalculator() {
                   {/* Текущая норма */}
                   <div className="flex items-center justify-between mb-3 px-1 bg-slate-50 rounded-xl p-3">
                     <p className="text-[11px] text-slate-400">
-                      {getLanguage() === 'ru' ? 'Сейчас нужно для поддержания' : 'Current maintenance'}
+                      {lang === 'ru' ? 'Сейчас нужно для поддержания' : 'Current maintenance'}
                     </p>
                     <p className="text-sm font-bold text-slate-600">
                       {result.targetAnalysis.currentCalories.toLocaleString('ru-RU')} ккал
@@ -426,7 +421,7 @@ export default function BMICalculator() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="bg-slate-50 rounded-xl p-3 text-center">
                       <p className="text-[11px] text-slate-400 mb-1">
-                        {getLanguage() === 'ru' ? 'Дефицит в день' : 'Daily deficit'}
+                        {lang === 'ru' ? 'Дефицит в день' : 'Daily deficit'}
                       </p>
                       <p className="text-base font-bold text-emerald-600">
                         −{result.targetAnalysis.deficit.toLocaleString('ru-RU')} ккал
@@ -434,18 +429,18 @@ export default function BMICalculator() {
                     </div>
                     <div className="bg-slate-50 rounded-xl p-3 text-center">
                       <p className="text-[11px] text-slate-400 mb-1">
-                        {getLanguage() === 'ru' ? 'Примерный срок' : 'Estimated time'}
+                        {lang === 'ru' ? 'Примерный срок' : 'Estimated time'}
                       </p>
                       <p className="text-base font-bold text-slate-800">
                         {result.targetAnalysis.weeksToGoal >= 4
-                          ? `${Math.round(result.targetAnalysis.weeksToGoal / 4)} ${getLanguage() === 'ru' ? 'мес.' : 'mo.'}`
-                          : `${result.targetAnalysis.weeksToGoal} ${getLanguage() === 'ru' ? 'нед.' : 'wk'}`}
+                          ? `${Math.round(result.targetAnalysis.weeksToGoal / 4)} ${lang === 'ru' ? 'мес.' : 'mo.'}`
+                          : `${result.targetAnalysis.weeksToGoal} ${lang === 'ru' ? 'нед.' : 'wk'}`}
                       </p>
                     </div>
                   </div>
 
                   <p className="text-[11px] text-slate-300 mt-3 text-center">
-                    {getLanguage() === 'ru'
+                    {lang === 'ru'
                       ? 'Безопасный темп: ~0.5 кг/нед. Минимум: 1 200 ккал/день'
                       : 'Safe pace: ~0.5 kg/week. Minimum: 1,200 kcal/day'}
                   </p>
@@ -461,7 +456,7 @@ export default function BMICalculator() {
                 </svg>
               </div>
               <p className="text-sm text-slate-300">
-                {getLanguage() === 'ru'
+                {lang === 'ru'
                   ? 'Заполните данные и нажмите «Рассчитать»'
                   : 'Fill in your data and press «Calculate»'}
               </p>

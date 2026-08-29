@@ -11,8 +11,8 @@
  * - Возможность задать первый взнос (в % или ₽)
  * - Поддержка аннуитетного и дифференцированного платежа
  */
-import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 type PaymentType = 'annuity' | 'differentiated';
 type DownPaymentMode = 'percent' | 'fixed';
@@ -37,15 +37,7 @@ export default function AutoCreditCalculator() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const handleReset = () => {
     setCarPrice('');

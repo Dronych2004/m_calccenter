@@ -23,8 +23,9 @@
  *   Вычеты на детей и инвалидность применяются только к основной ставке (13%/15%),
  *   не к 35%. Для 35% вычеты не предусмотрены.
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -209,16 +210,7 @@ export default function NDFLCalculator() {
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<NDFLResult | null>(null);
 
-  /* Тик для перерисовки при смене языка */
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* Текущая информация о виде дохода */
   const currentType = INCOME_TYPES[incomeType];

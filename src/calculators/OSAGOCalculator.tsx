@@ -14,8 +14,9 @@
  * - КБМ (класс)
  * - Кнопка «Рассчитать»
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 type OwnerType = 'individual' | 'legal';
 type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer' | 'B_legal' | 'C_legal' | 'D_legal';
@@ -223,15 +224,7 @@ export default function OSAGOCalculator() {
   const [kbmIndex, setKbmIndex] = useState(6);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const addDriver = () => {
     setDrivers([...drivers, { age: '', experience: '' }]);

@@ -7,8 +7,8 @@
  * - Экономию
  * - Поддержка нескольких последовательных скидок (10% + 5%)
  */
-import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');
@@ -16,13 +16,7 @@ export default function DiscountCalculator() {
   const [extraDiscount, setExtraDiscount] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const calculate = useCallback(() => {
     const p = parseFloat(price);
@@ -68,8 +62,6 @@ export default function DiscountCalculator() {
     setCalculated(false);
     setResult(null);
   };
-
-  const lang = getLanguage();
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">

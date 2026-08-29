@@ -14,6 +14,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import { safeEval } from '../lib/safeEval';
 
 /* Тип режима углов */
@@ -49,14 +50,7 @@ export default function EngineeringCalculator() {
   /* Флаг: только что нажали "=" */
   const [justCalculated, setJustCalculated] = useState(false);
 
-  /* Тик для перерисовки при смене языка */
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==================== */
 

@@ -35,8 +35,8 @@
  * НВ (коэффициент изменения ставки):
  *   2024: 1.42 (актуальное значение)
  */
-import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -189,20 +189,9 @@ export default function UtilFeeCalculator() {
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<UtilFeeResult | null>(null);
 
-  const [lang, setLang] = useState<'ru' | 'en'>('ru');
-  const [, setLangTick] = useState(0);
+  const lang = useLanguage();
 
-  useEffect(() => {
-    const handler = () => {
-      setLang(getLanguage());
-      setLangTick((v) => v + 1);
-    };
-    setLang(getLanguage());
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
-
-  /* Текущая информация о типе ТС */
+  /* Текущая информации о типе ТС */
   const currentType = BASE_RATES[vehicleType];
 
   /**

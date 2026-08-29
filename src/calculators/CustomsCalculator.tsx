@@ -46,8 +46,8 @@
  * Курс евро (актуальное значение):
  *   Условное: 1 € = 100 ₽ (пользователь может задать своё)
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -131,18 +131,7 @@ export default function CustomsCalculator() {
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<CustomsResult | null>(null);
 
-  const [lang, setLang] = useState<'ru' | 'en'>('ru');
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => {
-      setLang(getLanguage());
-      setLangTick((v) => v + 1);
-    };
-    setLang(getLanguage());
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 

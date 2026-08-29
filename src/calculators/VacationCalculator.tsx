@@ -14,7 +14,7 @@
  *   Компенсация = Неиспользованные × Средний дневной заработок
  */
 import { useState, useEffect, useCallback } from 'react';
-import { getLanguage } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface ExcludedPeriod {
   id: string;
@@ -42,15 +42,7 @@ export default function VacationCalculator() {
   const [excludedPeriods, setExcludedPeriods] = useState<ExcludedPeriod[]>([]);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   useEffect(() => {
     if (!calcDate) {

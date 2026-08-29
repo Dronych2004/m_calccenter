@@ -12,6 +12,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import { safeEval } from '../lib/safeEval';
 
 /* ==================== ТИПЫ ==================== */
@@ -40,14 +41,7 @@ export default function ClassicCalculator() {
   /* Флаг: последний введённый символ — оператор */
   const [lastWasOperator, setLastWasOperator] = useState(false);
 
-  /* Тик для принудительного обновления при смене языка */
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ОБРАБОТКА ВВОДА ==================== */
 

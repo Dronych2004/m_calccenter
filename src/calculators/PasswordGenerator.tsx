@@ -15,7 +15,7 @@
  * - Отличный (≥ 7 баллов)
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getLanguage } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -84,7 +84,7 @@ function calculateStrength(password: string): number {
   return score;
 }
 
-function estimateCrackTime(password: string): string {
+function estimateCrackTime(password: string, lang: string): string {
   const len = password.length;
   let charsetSize = 0;
   if (/[a-z]/.test(password)) charsetSize += 26;
@@ -98,8 +98,6 @@ function estimateCrackTime(password: string): string {
   // При 1 млрд попыток/сек
   const combinations = Math.pow(charsetSize, len);
   const seconds = combinations / 1e9;
-
-  const lang = getLanguage();
 
   if (seconds < 1) return lang === 'ru' ? 'Мгновенно' : 'Instantly';
   if (seconds < 60) return lang === 'ru' ? `${Math.round(seconds)} сек.` : `${Math.round(seconds)} sec.`;
@@ -123,16 +121,9 @@ export default function PasswordGenerator() {
   const [password, setPassword] = useState('');
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
-  const [, setLangTick] = useState(0);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const generate = useCallback(() => {
     const newPassword = generatePassword(length, options);
@@ -170,7 +161,7 @@ export default function PasswordGenerator() {
 
   const strength = calculateStrength(password);
   const strengthLevel = getStrength(strength, lang);
-  const crackTime = estimateCrackTime(password);
+  const crackTime = estimateCrackTime(password, lang);
   const strengthPercent = Math.min((strength / 8) * 100, 100);
 
   const toggleOption = (key: keyof typeof options) => {

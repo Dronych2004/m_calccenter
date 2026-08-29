@@ -1,8 +1,8 @@
 /**
  * Главная страница — карточки категорий со списками калькуляторов
  */
-import { useState, useEffect } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import {
   CalcIcon, MoneyIcon, FileTextIcon, CarIcon, AppleIcon,
   PaintIcon, WrenchIcon, BookIcon,
@@ -163,13 +163,7 @@ const features = [
 ];
 
 export default function HomePage() {
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">

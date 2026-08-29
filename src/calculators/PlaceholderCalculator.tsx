@@ -1,8 +1,9 @@
 /**
  * Заглушка калькулятора — светлая тема
  */
-import { useState, useEffect, type ReactNode } from 'react';
-import { t, getLanguage } from '../i18n';
+import { type ReactNode } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface PlaceholderProps {
   titleKey: string;
@@ -11,13 +12,7 @@ interface PlaceholderProps {
 }
 
 export default function PlaceholderCalculator({ titleKey, descKey, icon }: PlaceholderProps) {
-  const [, setLangTick] = useState(0);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:py-24 text-center animate-fade-in overflow-hidden">
@@ -35,7 +30,7 @@ export default function PlaceholderCalculator({ titleKey, descKey, icon }: Place
           <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
         <span className="text-[13px] font-medium text-indigo-400">
-          {getLanguage() === 'ru'
+          {lang === 'ru'
             ? 'Этот калькулятор будет добавлен скоро'
             : 'This calculator will be added soon'}
         </span>

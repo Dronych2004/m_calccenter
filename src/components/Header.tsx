@@ -3,7 +3,8 @@
  */
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { t, getLanguage } from '../i18n';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import LanguageSwitcher from './LanguageSwitcher';
 import { CalcIcon } from './Icons';
 
@@ -106,15 +107,9 @@ const categories: Category[] = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const [, setLangTick] = useState(0);
+  const lang = useLanguage();
   const location = useLocation();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
@@ -131,8 +126,6 @@ export default function Header() {
       setOpenCategory(null);
     }, 150);
   };
-
-  const lang = getLanguage();
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-[0_1px_20px_rgba(99,102,241,0.08)]">

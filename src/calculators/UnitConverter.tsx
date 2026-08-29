@@ -7,8 +7,8 @@
  * Температура: Цельсий, Фаренгейт, Кельвин
  * Площадь: кв. метры, кв. футы, гектары, акры
  */
-import { useState, useEffect, useMemo } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useMemo } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* Категории единиц */
 type Category = 'length' | 'weight' | 'volume' | 'temperature' | 'area';
@@ -128,14 +128,7 @@ export default function UnitConverter() {
   const [fromUnit, setFromUnit] = useState('m');
   const [toUnit, setToUnit] = useState('ft');
   const [inputValue, setInputValue] = useState('1');
-  const [, setLangTick] = useState(0);
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const cat = categories[category];
 

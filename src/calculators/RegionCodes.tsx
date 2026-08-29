@@ -3,8 +3,8 @@
  *
  * Поиск по названию региона, коду или федеральному округу.
  */
-import { useState, useEffect, useMemo } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useMemo } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface RegionCode {
   code: string;
@@ -119,14 +119,7 @@ const regionCodes: RegionCode[] = [
 
 export default function RegionCodes() {
   const [search, setSearch] = useState('');
-  const [, setLangTick] = useState(0);
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const filtered = useMemo(() => {
     const query = search.toLowerCase();

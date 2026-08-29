@@ -19,8 +19,9 @@
  *   где: n — частота капитализации в год
  *        (12 — ежемесячно, 4 — ежеквартально, 1 — ежегодно)
  */
-import { useState, useEffect, useCallback } from 'react';
-import { t, getLanguage } from '../i18n';
+import { useState, useCallback } from 'react';
+import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -74,16 +75,7 @@ export default function InterestCalculator() {
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<InterestResult | null>(null);
 
-  /* Тик для перерисовки при смене языка */
-  const [, setLangTick] = useState(0);
-
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   /* ==================== ВЫЧИСЛЕНИЯ ==================== */
 

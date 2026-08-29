@@ -3,8 +3,8 @@
  *
  * Поиск по названию страны, коду или региону.
  */
-import { useState, useEffect, useMemo } from 'react';
-import { getLanguage } from '../i18n';
+import { useState, useMemo } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface CountryCode {
   country: string;
@@ -169,14 +169,7 @@ const countryCodes: CountryCode[] = [
 
 export default function CountryCodes() {
   const [search, setSearch] = useState('');
-  const [, setLangTick] = useState(0);
-  const lang = getLanguage();
-
-  useEffect(() => {
-    const handler = () => setLangTick((v) => v + 1);
-    window.addEventListener('languageChange', handler);
-    return () => window.removeEventListener('languageChange', handler);
-  }, []);
+  const lang = useLanguage();
 
   const grouped = useMemo(() => {
     const filtered = countryCodes.filter((item) => {
