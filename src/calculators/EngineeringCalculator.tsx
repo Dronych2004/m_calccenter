@@ -200,6 +200,21 @@ export default function EngineeringCalculator() {
   }, [justCalculated, handleClear]);
 
   /**
+   * Конвертирует текущее число в процент (делит на 100).
+   * Например: 200 → 2 (процент от 200)
+   */
+  const handlePercent = useCallback(() => {
+    try {
+      const current = parseFloat(expression);
+      if (isNaN(current)) return;
+      const percentValue = current / 100;
+      setExpression(String(percentValue));
+    } catch {
+      /* Игнорируем ошибки */
+    }
+  }, [expression]);
+
+  /**
    * Вычисляет результат выражения.
    * Поддерживает математические функции и операции.
    */
@@ -348,12 +363,15 @@ export default function EngineeringCalculator() {
       } else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') {
         e.preventDefault();
         handleClear();
+      } else if (e.key === '%') {
+        e.preventDefault();
+        handlePercent();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleNumber, handleOperator, calculate, handleBackspace, handleClear]);
+  }, [handleNumber, handleOperator, calculate, handleBackspace, handleClear, handlePercent]);
 
   /* ==================== РЕНДЕР ==================== */
 
@@ -451,7 +469,7 @@ export default function EngineeringCalculator() {
                   <line x1="12" y1="9" x2="18" y2="15" />
                 </svg>
               </button>
-              <button className="calc-btn calc-btn-operator text-sm !py-2.5" title="Процент — x%" onClick={() => handleOperator('%')}>%</button>
+              <button className="calc-btn calc-btn-operator text-sm !py-2.5" title="Процент — x%" onClick={handlePercent}>%</button>
               <button className="calc-btn calc-btn-operator" title="Деление" onClick={() => handleOperator('÷')}>÷</button>
             </div>
 
