@@ -23,7 +23,7 @@ import { getLanguage } from '../i18n';
 type PenaltyType = 'tax' | 'salary' | 'utilities';
 type TaxpayerType = 'individual' | 'legal';
 
-/* Ставка ЦБ РФ (%) — обновляйте при изменении */
+/* Ставка ЦБ РФ (%) — по состоянию на 2024 г., проверяйте актуальность на cbr.ru */
 const CBR_RATE = 21;
 
 interface PenaltyResult {
@@ -241,17 +241,24 @@ export default function PenaltyCalculator() {
         </div>
 
         {/* Ставка ЦБ */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
-          <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
-            {lang === 'ru' ? 'Ставка ЦБ РФ (%)' : 'CBR rate (%)'}
-          </label>
-          <input
-            type="text"
-            inputMode="decimal"
-            value={cbrRate}
-            onChange={(e) => setCbrRate(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))}
-            className="w-24 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
-          />
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <label className="text-sm font-medium text-slate-600 sm:w-40 shrink-0">
+              {lang === 'ru' ? 'Ставка ЦБ РФ (%)' : 'CBR rate (%)'}
+            </label>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={cbrRate}
+              onChange={(e) => setCbrRate(e.target.value.replace(',', '.').replace(/[^0-9.]/g, ''))}
+              className="w-24 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+            />
+          </div>
+          <p className="text-[11px] text-slate-300 mt-1.5 sm:ml-40">
+            {lang === 'ru'
+              ? 'По умолчанию 21% (2024). Проверьте актуальную ставку на cbr.ru'
+              : 'Default 21% (2024). Verify current rate at cbr.ru'}
+          </p>
         </div>
 
         {/* Кнопки */}

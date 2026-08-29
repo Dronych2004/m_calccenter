@@ -143,7 +143,7 @@ export default function Header() {
             <CalcIcon size={18} className="text-white" />
             <div className="absolute inset-0 rounded-xl bg-linear-to-br from-indigo-400 to-violet-400 opacity-0 group-hover:opacity-30 blur-md transition-opacity" />
           </div>
-          <span className="text-base font-bold text-slate-800 hidden sm:inline tracking-tight leading-tight">
+          <span className="text-base font-bold text-slate-800 hidden sm:inline tracking-tight leading-tight whitespace-pre-line">
             {lang === 'ru' ? 'Центр\nкалькуляторов' : 'Calculator\nCenter'}
           </span>
         </Link>

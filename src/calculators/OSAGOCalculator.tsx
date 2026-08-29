@@ -134,9 +134,9 @@ const REGIONS: Region[] = [
   { id: '75', nameRu: 'Забайкальский край', nameEn: 'Zabaykalsky Krai', kt: 1.16 },
   { id: '76', nameRu: 'Ярославская область', nameEn: 'Yaroslavl Oblast', kt: 1.36 },
   /* Автономная область */
-  { id: '77', nameRu: 'Еврейская автономная область', nameEn: 'Jewish Autonomous Oblast', kt: 1.16 },
+  { id: '79', nameRu: 'Еврейская автономная область', nameEn: 'Jewish Autonomous Oblast', kt: 1.16 },
   /* Автономные округа */
-  { id: '78', nameRu: 'Ненецкий автономный округ', nameEn: 'Nenets AO', kt: 1.12 },
+  { id: '83', nameRu: 'Ненецкий автономный округ', nameEn: 'Nenets AO', kt: 1.12 },
   { id: '79', nameRu: 'Ханты-Мансийский автономный округ — Югра', nameEn: 'Khanty-Mansi AO', kt: 1.28 },
   { id: '80', nameRu: 'Чукотский автономный округ', nameEn: 'Chukotka AO', kt: 1.12 },
   { id: '81', nameRu: 'Ямало-Ненецкий автономный округ', nameEn: 'Yamalo-Nenets AO', kt: 1.28 },
