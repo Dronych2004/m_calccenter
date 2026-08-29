@@ -25,6 +25,7 @@ import Footer from './components/Footer';
 import AdBanner from './components/AdBanner';
 import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 /* Lazy-загрузка: каждый калькулятор — отдельный чанк.
  * Код загружается только при переходе на нужный маршрут,
@@ -107,6 +108,7 @@ export default function App() {
                   <Route path="/interest" element={<InterestCalculator />} />
                   <Route path="/util-fee" element={<UtilFeeCalculator />} />
                   <Route path="/customs" element={<CustomsCalculator />} />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>

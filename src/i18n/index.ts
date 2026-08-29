@@ -484,6 +484,13 @@ const translations: Record<Language, TranslationKeys> = {
       termsTitle: 'Пользовательское соглашение',
       close: 'Закрыть',
     },
+
+    /* Страница 404 */
+    notFound: {
+      title: 'Страница не найдена',
+      description: 'Такой страницы не существует. Возможно, она была перемещена или удалена.',
+      backToHome: 'Вернуться на главную',
+    },
   },
 
   /* ---------- ENGLISH ---------- */
@@ -870,6 +877,11 @@ const translations: Record<Language, TranslationKeys> = {
       privacyTitle: 'Privacy Policy',
       termsTitle: 'Terms of Service',
       close: 'Close',
+    },
+    notFound: {
+      title: 'Page Not Found',
+      description: 'This page does not exist. It may have been moved or deleted.',
+      backToHome: 'Back to Home',
     },
   },
 };

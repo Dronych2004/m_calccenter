@@ -103,17 +103,17 @@ function tokenize(expr: string): Token[] {
       continue;
     }
 
+    /* Возведение в степень ** (проверяем ДО одинарного оператора *) */
+    if (ch === '*' && i + 1 < expr.length && expr[i + 1] === '*') {
+      tokens.push({ type: 'operator', value: '**' });
+      i += 2;
+      continue;
+    }
+
     /* Операторы */
     if ('+-*/%'.includes(ch)) {
       tokens.push({ type: 'operator', value: ch });
       i++;
-      continue;
-    }
-
-    /* Возведение в степень ** */
-    if (ch === '*' && i + 1 < expr.length && expr[i + 1] === '*') {
-      tokens.push({ type: 'operator', value: '**' });
-      i += 2;
       continue;
     }
 
