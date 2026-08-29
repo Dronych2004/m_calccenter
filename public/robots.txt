@@ -1,0 +1,12 @@
+# Robots.txt for calccenter.ru
+# Разрешаем индексацию всем поисковикам
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://calccenter.ru/sitemap.xml
+
+# Запрещаем служебные директории
+Disallow: /node_modules/
+Disallow: /.git/
