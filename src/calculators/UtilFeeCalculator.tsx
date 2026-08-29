@@ -406,13 +406,31 @@ export default function UtilFeeCalculator() {
           </label>
         </div>
 
-        {/* Инфо: физлицо / юрлицо */}
+        {/* Инфо: физлицо / юрлицо + расшифровка формулы */}
         <div className="bg-slate-50 rounded-xl px-4 py-3 mb-8">
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 mb-2">
             {lang === 'ru'
-              ? 'ℹ️ Стоимость утильсбора одинакова для физических и юридических лиц. Формула: УС = БТ × КТ × НВ × КЦ × КД'
-              : 'ℹ️ Utilization fee is the same for individuals and legal entities. Formula: UF = BT × KT × NV × KC × KD'}
+              ? 'ℹ️ Стоимость утильсбора одинакова для физических и юридических лиц.'
+              : 'ℹ️ Utilization fee is the same for individuals and legal entities.'}
           </p>
+          <p className="text-xs text-slate-500 font-medium">
+            {lang === 'ru'
+              ? 'Формула: УС = БТ × КТ × НВ × КЦ × КД'
+              : 'Formula: UF = BT × KT × NV × KC × KD'}
+          </p>
+          <div className="mt-1.5 space-y-0.5">
+            {[
+              { abbr: 'БТ', descRu: 'Базовая ставка', descEn: 'Base rate' },
+              { abbr: 'КТ', descRu: 'Коэффициент территории', descEn: 'Region coefficient' },
+              { abbr: 'НВ', descRu: 'Коэффициент изменения ставки', descEn: 'Rate change coefficient' },
+              { abbr: 'КЦ', descRu: 'Коэффициент типа ТС', descEn: 'Vehicle type coefficient' },
+              { abbr: 'КД', descRu: 'Коэффициент возраста ТС', descEn: 'Vehicle age coefficient' },
+            ].map((item) => (
+              <p key={item.abbr} className="text-[11px] text-slate-400">
+                <span className="font-medium text-slate-500">{item.abbr}</span> — {lang === 'ru' ? item.descRu : item.descEn}
+              </p>
+            ))}
+          </div>
         </div>
 
         {/* Кнопки */}
