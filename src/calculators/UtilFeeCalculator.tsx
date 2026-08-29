@@ -406,6 +406,15 @@ export default function UtilFeeCalculator() {
           </label>
         </div>
 
+        {/* Инфо: физлицо / юрлицо */}
+        <div className="bg-slate-50 rounded-xl px-4 py-3 mb-8">
+          <p className="text-xs text-slate-400">
+            {lang === 'ru'
+              ? 'ℹ️ Стоимость утильсбора одинакова для физических и юридических лиц. Формула: УС = БТ × КТ × НВ × КЦ × КД'
+              : 'ℹ️ Utilization fee is the same for individuals and legal entities. Formula: UF = BT × KT × NV × KC × KD'}
+          </p>
+        </div>
+
         {/* Кнопки */}
         <div className="flex gap-3">
           <button
