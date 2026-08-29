@@ -1,0 +1,21 @@
+{
+  "name": "Центр калькуляторов",
+  "short_name": "Калькуляторы",
+  "description": "Бесплатные онлайн-калькуляторы для повседневных расчётов",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "finance"],
+  "scope": "/"
+}
