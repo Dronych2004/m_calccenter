@@ -246,6 +246,12 @@ const translations: Record<Language, TranslationKeys> = {
       description: 'Рассчитайте прибыль по вкладу или переплату по кредиту с простыми и сложными процентами',
     },
 
+    /* Калькулятор утильсбора */
+    utilFee: {
+      title: 'Калькулятор утильсбора',
+      description: 'Рассчитайте стоимость утилизационного сбора при ввозе ТС в РФ',
+    },
+
     /* Футер */
     footer: {
       copyright: '© {year} Центр калькуляторов. Все права защищены.',
@@ -431,6 +437,11 @@ const translations: Record<Language, TranslationKeys> = {
     interest: {
       title: 'Interest Calculator',
       description: 'Calculate deposit income or loan overpayment with simple and compound interest',
+    },
+    /* Utilization Fee Calculator */
+    utilFee: {
+      title: 'Utilization Fee Calculator',
+      description: 'Calculate vehicle utilization fee for import to Russia',
     },
     footer: {
       copyright: '© {year} Calculator Center. All rights reserved.',
