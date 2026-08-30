@@ -74,7 +74,7 @@ export default function CategoryCard({
             </span>
 
             {/* Название инструмента */}
-            <span className="text-sm font-medium transition-all duration-200">
+            <span className="text-[17px] font-medium transition-all duration-200">
               {lang === 'ru' ? calc.titleRu : calc.titleEn}
             </span>
           </Link>
