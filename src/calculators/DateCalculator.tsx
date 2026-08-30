@@ -203,7 +203,6 @@ export default function DateCalculator() {
               <p className="text-5xl sm:text-6xl font-extrabold tracking-tight">
                 {result.calendarDays.toLocaleString()}
               </p>
-              </p>
             </div>
           </div>
 
