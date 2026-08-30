@@ -23,6 +23,7 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -141,6 +142,13 @@ export default function InterestCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Процентный калькулятор онлайн — бесплатно | CalcCenter' : 'Interest Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн процентный калькулятор. Рассчитайте простые и сложные проценты с учётом капитализации.'
+          : 'Free online interest calculator. Calculate simple and compound interest with capitalization.'}
+        canonical="https://calccenter.ru/interest"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

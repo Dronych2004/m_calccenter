@@ -20,6 +20,7 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* Тип пола */
 type Gender = 'male' | 'female';
@@ -160,6 +161,13 @@ export default function BMICalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'ИМТ калькулятор — индекс массы тела и калории | CalcCenter' : 'BMI Calculator — Body Mass Index & Calories | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный калькулятор ИМТ (индекса массы тела) и суточной нормы калорий. Узнайте свой идеальный вес и норму калорий.'
+          : 'Free BMI (Body Mass Index) and daily calorie calculator. Find your ideal weight and calorie needs.'}
+        canonical="https://calccenter.ru/bmi"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">{t('bmi.title')}</h1>

@@ -23,6 +23,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { useCBRRate } from '../hooks/useCBRRate';
 import { formatCurrency } from '../lib/format';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 type PenaltyType = 'tax' | 'salary' | 'utilities';
 type TaxpayerType = 'individual' | 'legal';
@@ -136,6 +137,13 @@ export default function PenaltyCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор пеней онлайн — бесплатно | CalcCenter' : 'Penalty Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор пеней. Рассчитайте сумму пени по налогам, зарплате или ЖКХ.'
+          : 'Free online penalty calculator. Calculate penalty amounts for taxes, salary or utilities.'}
+        canonical="https://calccenter.ru/penalty"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

@@ -14,6 +14,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* Структура результата подсчёта */
 interface DateResult {
@@ -114,6 +115,13 @@ export default function DateCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор дней между датами — бесплатно | CalcCenter' : 'Date Calculator — Days Between Dates | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор дат. Узнайте количество дней между двумя датами, включая рабочие и выходные дни.'
+          : 'Free online date calculator. Find the number of days between two dates, including working days and weekends.'}
+        canonical="https://calccenter.ru/days"
+      />
       {/* Заголовок */}
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

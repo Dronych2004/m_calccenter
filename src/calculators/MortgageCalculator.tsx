@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
@@ -57,6 +58,13 @@ export default function MortgageCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Ипотечный калькулятор онлайн — бесплатно | CalcCenter' : 'Mortgage Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн ипотечный калькулятор. Рассчитайте ежемесячный платёж, переплату и график платежей по ипотеке.'
+          : 'Free online mortgage calculator. Calculate monthly payment, overpayment and payment schedule.'}
+        canonical="https://calccenter.ru/mortgage"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">{t('mortgage.title')}</h1>

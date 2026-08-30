@@ -10,6 +10,7 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');
@@ -66,6 +67,13 @@ export default function DiscountCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор скидок онлайн — бесплатно | CalcCenter' : 'Discount Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор скидок. Рассчитайте итоговую цену и экономию при скидке. Поддержка叠加 скидок.'
+          : 'Free online discount calculator. Calculate final price and savings with discounts. Stacked discount support.'}
+        canonical="https://calccenter.ru/discount"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

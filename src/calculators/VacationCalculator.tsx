@@ -18,6 +18,7 @@ import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 interface ExcludedPeriod {
   id: string;
@@ -159,6 +160,13 @@ export default function VacationCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор отпускных онлайн — бесплатно | CalcCenter' : 'Vacation Pay Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор отпускных. Рассчитайте компенсацию за неиспользованный отпуск по ТК РФ.'
+          : 'Free online vacation pay calculator. Calculate compensation for unused vacation days.'}
+        canonical="https://calccenter.ru/vacation"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

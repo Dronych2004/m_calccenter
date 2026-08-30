@@ -19,6 +19,7 @@ import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 type OwnerType = 'individual' | 'legal';
 type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer' | 'B_legal' | 'C_legal' | 'D_legal';
@@ -305,6 +306,13 @@ export default function OSAGOCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор ОСАГО онлайн — бесплатно | CalcCenter' : 'OSAGO Insurance Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор ОСАГО. Рассчитайте стоимость автостраховки по формуле ЦБ РФ с учётом КБМ, стажа и региона.'
+          : 'Free online OSAGO insurance calculator. Calculate car insurance cost using CBR formula with KMB, experience and region.'}
+        canonical="https://calccenter.ru/osago"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

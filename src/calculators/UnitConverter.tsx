@@ -10,6 +10,7 @@
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* Категории единиц */
 type Category = 'length' | 'weight' | 'volume' | 'temperature' | 'area';
@@ -152,6 +153,13 @@ export default function UnitConverter() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Конвертер единиц измерений онлайн — бесплатно | CalcCenter' : 'Unit Converter Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн конвертер единиц измерений. Длина, вес, объём, температура, площадь — мгновенный перевод.'
+          : 'Free online unit converter. Length, weight, volume, temperature, area — instant conversion.'}
+        canonical="https://calccenter.ru/unit-converter"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

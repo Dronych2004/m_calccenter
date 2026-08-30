@@ -18,6 +18,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -169,6 +170,13 @@ export default function PasswordGenerator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Генератор паролей онлайн — бесплатно | CalcCenter' : 'Password Generator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн генератор надёжных паролей. Настраиваемая длина, заглавные буквы, цифры и спецсимвы.' 
+          : 'Free online strong password generator. Customizable length, uppercase, digits and special characters.'}
+        canonical="https://calccenter.ru/password"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

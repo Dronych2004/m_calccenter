@@ -17,6 +17,7 @@ import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 type DownPaymentMode = 'percent' | 'fixed';
 
@@ -66,6 +67,13 @@ export default function AutoCreditCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор автокредита онлайн — бесплатно | CalcCenter' : 'Auto Loan Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор автокредита. Рассчитайте платёж, первый взнос и переплату по кредиту на автомобиль.'
+          : 'Free online auto loan calculator. Calculate payment, down payment and overpayment on a car loan.'}
+        canonical="https://calccenter.ru/auto-credit"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">

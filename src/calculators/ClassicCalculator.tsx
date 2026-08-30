@@ -14,6 +14,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 import { safeEval } from '../lib/safeEval';
 
 /* ==================== ТИПЫ ==================== */
@@ -230,6 +231,13 @@ export default function ClassicCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Классический калькулятор онлайн — бесплатно | CalcCenter' : 'Classic Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн классический калькулятор для повседневных вычислений. Сложение, вычитание, умножение, деление и проценты. Быстро и удобно.'
+          : 'Free online classic calculator for everyday calculations. Addition, subtraction, multiplication, division and percentages. Fast and convenient.'}
+        canonical="https://calccenter.ru/classic"
+      />
       {/* Заголовок */}
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">{t('classic.title')}</h1>
