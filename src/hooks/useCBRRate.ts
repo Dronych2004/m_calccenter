@@ -50,7 +50,7 @@ function todayStr(): string {
  *   </KeyRate>
  * </KeyRecord>
  */
-function parseKeyRateXML(xmlText: string): { rate: number; date: string } | null {
+export function parseKeyRateXML(xmlText: string): { rate: number; date: string } | null {
   try {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlText, 'text/xml');

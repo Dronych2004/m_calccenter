@@ -24,7 +24,6 @@
  *   не к 35%. Для 35% вычеты не предусмотрены.
  */
 import { useState, useCallback } from 'react';
-import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
 import SeoContent from '../components/SeoContent';

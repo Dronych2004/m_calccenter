@@ -20,7 +20,6 @@
  *        (12 — ежемесячно, 4 — ежеквартально, 1 — ежегодно)
  */
 import { useState, useCallback } from 'react';
-import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import SeoContent from '../components/SeoContent';
 import SeoHead from '../components/SeoHead';

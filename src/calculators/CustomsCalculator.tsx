@@ -93,7 +93,7 @@ const EXCISE_RATES = {
   },
 };
 
-import { formatCurrency, formatNumber } from '../lib/format';
+import { formatCurrency } from '../lib/format';
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function CustomsCalculator() {

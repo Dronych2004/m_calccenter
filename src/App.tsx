@@ -18,7 +18,7 @@
  * BREAKPOINT xl (1280px) вместо lg (1024px),
  * чтобы iPad Pro (1024px) оставался в мобильной версии.
  */
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -66,6 +66,11 @@ function LoadingFallback() {
 }
 
 export default function App() {
+  // Сигнал для prerenderer: страница готова к захвату
+  useEffect(() => {
+    document.dispatchEvent(new Event('custom-render-trigger'))
+  }, [])
+
   return (
     <BrowserRouter>
       <div className="flex min-h-screen flex-col bg-[var(--color-bg)] overflow-x-hidden">

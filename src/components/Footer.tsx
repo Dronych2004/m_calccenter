@@ -9,7 +9,7 @@ import { CalcIcon } from './Icons';
 export default function Footer() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const lang = useLanguage();
+  useLanguage();
 
   return (
     <>
