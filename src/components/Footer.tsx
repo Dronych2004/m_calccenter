@@ -29,6 +29,9 @@ export default function Footer() {
               <button onClick={() => setShowTerms(true)} className="text-xs text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer bg-transparent border-none font-medium">
                 {t('footer.terms')}
               </button>
+              <a href="mailto:info@calccenter.ru" className="text-xs text-slate-500 hover:text-indigo-600 transition-colors font-medium no-underline">
+                ✉ info@calccenter.ru
+              </a>
             </div>
             <p className="text-[11px] text-slate-400 font-medium">{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           </div>
