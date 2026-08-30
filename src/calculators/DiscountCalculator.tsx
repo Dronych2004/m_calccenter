@@ -9,6 +9,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');
@@ -294,6 +295,8 @@ export default function DiscountCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О калькуляторе скидок' : 'About the Discount Calculator'} description={lang === 'ru' ? 'Калькулятор скидок мгновенно рассчитывает итоговую цену и экономию при скидке. Поддерживает несколько последовательных скидок.\n\nВведите начальную цену и размер скидки в процентах. Калькулятор покажет сумму скидки, итоговую цену и процент экономии.\n\nОбратите внимание: две скидки по 50% — это не 100%. Каждая скидка применяется к уже уценённой сумме.' : 'The discount calculator instantly calculates the final price and savings with a discount. It supports multiple consecutive discounts.'} faq={[{ q: lang === 'ru' ? 'Как рассчитать скидку вручную?' : 'How to calculate a discount manually?', a: 'Скидка = Цена × (Процент / 100). Итоговая цена = Цена − Скидка.' }]} />
     </div>
   );
 }

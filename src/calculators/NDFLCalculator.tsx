@@ -27,6 +27,7 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -691,6 +692,8 @@ export default function NDFLCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О НДФЛ' : 'About Income Tax Calculator'} description={lang === 'ru' ? 'Калькулятор НДФЛ (налога на доходы физических лиц) рассчитывает сумму подоходного налога и вычетов. В России стандартная ставка НДФЛ — 13%, для доходов свыше 5 млн ₽ в год — 15%.\n\nКалькулятор учитывает налоговые вычеты: стандартный (на детей), социальный (на обучение, лечение) и имущественный (на покупку жилья).\n\nВведите ваш ежемесячный доход и выберите applicable вычеты.' : 'The NDFL calculator calculates personal income tax and deductions. In Russia, the standard rate is 13%, over 5 million ₽ — 15%.'} formula={{ title: 'Формула НДФЛ', text: 'НДФЛ = (Доход − Вычеты) × 13%' }} faq={[{ q: lang === 'ru' ? 'Кто имеет право на вычет по НДФЛ?' : 'Who is entitled to NDFL deductions?', a: 'Родители несовершеннолетних детей, лица на обучение/лечение, покупатели жилья.' }]} />
     </div>
   );
 }

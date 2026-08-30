@@ -18,6 +18,7 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
 
 type OwnerType = 'individual' | 'legal';
 type VehicleType = 'B' | 'BE' | 'C' | 'CE' | 'D' | 'DE' | 'M' | 'trailer' | 'B_legal' | 'C_legal' | 'D_legal';
@@ -615,6 +616,8 @@ export default function OSAGOCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'Об ОСАГО' : 'About OSAGO Calculator'} description={lang === 'ru' ? 'Калькулятор ОСАГО рассчитывает стоимость обязательного страхования автогражданской ответственности по формуле Центрального банка РФ. Расчёт учитывает базовую ставку, КБМ водителя, территориальный коэффициент, возраст и стаж, мощность двигателя.\n\nОСАГО — это обязательный полис для всех владельцев транспортных средств в России.\n\nВведите данные автомобиля и водителя, и калькулятор рассчитает примерную стоимость полиса.' : 'The OSAGO calculator calculates the mandatory car insurance cost using the Central Bank of Russia formula.'} formula={{ title: lang === 'ru' ? 'Формула расчёта ОСАГО' : 'OSAGO Calculation Formula', text: 'Цена = Базовая ставка × КТ × КБМ × КВС × КО × КМ × КС' }} faq={[{ q: lang === 'ru' ? 'Как снизить стоимость ОСАГО?' : 'How to reduce OSAGO cost?', a: 'Безаварийная езда повышает КБМ (скидка до 50%). Сравните предложения разных страховщиков.' }]} />
     </div>
   );
 }

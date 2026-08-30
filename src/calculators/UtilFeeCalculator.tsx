@@ -37,6 +37,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -548,6 +549,8 @@ export default function UtilFeeCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'Об утильсборе' : 'About the Utilization Fee'} description={lang === 'ru' ? 'Калькулятор утилизационного сбора рассчитывает стоимость утилизации при ввозе ТС в Россию. Сбор зависит от типа ТС, возраста, объёма двигателя и категории.\n\nВведите тип транспортного средства, категорию, возраст, объём двигателя и тип топлива. Калькулятор рассчитает сумму сбора.' : 'The utilization fee calculates the cost of vehicle disposal when importing a vehicle into Russia.'} formula={{ title: 'Формула утильсбора', text: 'Утильсбор = Базовая ставка × Коэффициент × Объём двигателя (л)' }} faq={[{ q: lang === 'ru' ? 'Кто платит утильсбор?' : 'Who pays the utilization fee?', a: 'Импортёры ТС: юридические лица при ввозе для продажи. Физлица освобождены.' }]} />
     </div>
   );
 }

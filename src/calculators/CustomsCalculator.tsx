@@ -48,6 +48,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -565,6 +566,8 @@ export default function CustomsCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О растаможке автомобилей' : 'About Customs Clearance Calculator'} description={lang === 'ru' ? 'Калькулятор растаможки рассчитывает полную стоимость таможенного оформления автомобиля при ввозе в Россию. Расчёт включает пошлину, НДС, акциз и утильсбор.\n\nДля расчёта введите страну, год выпуска, объём двигателя, стоимость автомобиля и тип топлива.' : 'The customs clearance calculator calculates the total cost of customs registration when importing a car into Russia.'} formula={{ title: 'Что входит в растаможку', text: 'Пошлина = Таможенная стоимость × Ставка. НДС = (Таможенная стоимость + Пошлина + Акциз) × 20%.' }} faq={[{ q: lang === 'ru' ? 'Можно ли ввезти автомобиль без уплаты пошлины?' : 'Can I import a car without paying duty?', a: 'Физлица могут ввезти без пошлины при владении не менее 6 месяцев, не более 1 авто, для личного пользования.' }]} />
     </div>
   );
 }

@@ -24,6 +24,7 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -396,6 +397,8 @@ export default function NDSCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О НДС' : 'About VAT Calculator'} description={lang === 'ru' ? 'Калькулятор НДС рассчитывает сумму налога на добавленную стоимость прибавлением или извлечением. Основные ставки: 20% (общая), 10% (продовольствие, детские товары, медицина), 0% (экспорт).\n\nВыберите операцию: «Прибавить НДС» или «Извлечь НДС». Укажите ставку и сумму.' : 'The VAT calculator calculates value-added tax by adding or extracting. Main rates: 20%, 10%, 0%.'} formula={{ title: 'Формулы НДС', text: 'Прибавить: Сумма с НДС = Сумма × (1 + Ставка/100). Извлечь: Сумма без НДС = Сумма / (1 + Ставка/100).' }} faq={[{ q: lang === 'ru' ? 'Когда нужна ставка 10%?' : 'When is the 10% rate applicable?', a: 'К продовольственным товарам, детским товарам, медицинским препаратам, книжной продукции.' }]} />
     </div>
   );
 }

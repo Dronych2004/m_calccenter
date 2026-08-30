@@ -22,6 +22,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -400,6 +401,8 @@ export default function InterestCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О процентном калькуляторе' : 'About the Interest Calculator'} description={lang === 'ru' ? 'Процентный калькулятор рассчитывает простые и сложные проценты с учётом капитализации. Полезный инструмент для вкладов, накоплений и инвестиций.\n\nПростые проценты: начисляются только на первоначальную сумму. Сложные проценты: начисляются на сумму с учётом уже начисленных процентов.\n\nВведите сумму вклада, процентную ставку и срок.' : 'The interest calculator calculates simple and compound interest with capitalization.'} formula={{ title: 'Формулы процентов', text: 'Простые: S = P × (1 + r × n). Сложные: S = P × (1 + r)^n' }} faq={[{ q: lang === 'ru' ? 'Простые или сложные проценты выгоднее?' : 'Are simple or compound interest better?', a: 'Сложные проценты выгоднее: при капитализации доход растёт экспоненциально.' }]} />
     </div>
   );
 }

@@ -16,6 +16,8 @@
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -103,6 +105,7 @@ function estimateCrackTime(password: string): string {
 }
 
 export default function PasswordGenerator() {
+  const lang = useLanguage();
   const [length, setLength] = useState(16);
   const [options, setOptions] = useState({
     uppercase: true,
@@ -348,6 +351,8 @@ export default function PasswordGenerator() {
           </div>
         </div>
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О генераторе паролей' : 'About the Password Generator'} description={lang === 'ru' ? 'Генератор паролей создаёт надёжные случайные пароли указанной длины. Вы можете выбрать, включать ли заглавные буквы, цифры и спецсимволы.\n\nНадёжный пароль должен содержать минимум 12 символов и включать буквы верхнего и нижнего регистра, цифры и спецсимволы.\n\nИндикатор сложности показывает, насколько защищён ваш пароль.' : 'The password generator creates strong random passwords of specified length.'} faq={[{ q: lang === 'ru' ? 'Какой длины должен быть пароль?' : 'How long should a password be?', a: 'Минимум 12 символов, рекомендуется 16+.' }]} />
     </div>
   );
 }

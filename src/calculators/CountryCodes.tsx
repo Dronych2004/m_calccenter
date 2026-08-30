@@ -5,6 +5,7 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 interface CountryCode {
   country: string;
@@ -267,6 +268,8 @@ export default function CountryCodes() {
           </div>
         )}
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'Телефонные коды стран мира' : 'World Country Phone Codes'} description={lang === 'ru' ? 'Справочник телефонных кодов стран мира. Каждая страна имеет уникальный международный код, который добавляется перед номером при звонке из-за рубежа.\n\nКод начинается с символа «+» или «00». Например, код России — +7, Украины — +380, Беларуси — +375.' : 'Reference directory of world country phone codes.'} faq={[{ q: lang === 'ru' ? 'Как звонить из России за рубеж?' : 'How to call internationally from Russia?', a: 'Наберите 8, затем 10, код страны и номер. Или используйте символ +.' }]} />
     </div>
   );
 }

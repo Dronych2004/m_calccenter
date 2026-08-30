@@ -5,6 +5,7 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 interface RegionCode {
   code: string;
@@ -211,6 +212,8 @@ export default function RegionCodes() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'Коды регионов России' : 'Russia Region Codes'} description={lang === 'ru' ? 'Справочник кодов регионов Российской Федерации. Каждый субъект РФ имеет уникальный номер, который используется в автомобильных номерах, документах и статистике.\n\nКод региона указывается на номерных знаках автомобиля справа. Например, код 77 — Москва, 78 — Санкт-Петербург.' : 'Reference directory of Russian Federation region codes.'} faq={[{ q: lang === 'ru' ? 'Как определить регион по коду?' : 'How to identify a region by code?', a: 'Посмотрите последние две цифры номерного знака или воспользуйтесь нашим справочником.' }]} />
     </div>
   );
 }

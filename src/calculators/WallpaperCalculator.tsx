@@ -21,11 +21,14 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* Режим калькулятора */
 type CalcMode = 'wallpaper' | 'paint';
 
 export default function WallpaperCalculator() {
+  const lang = useLanguage();
   const [mode, setMode] = useState<CalcMode>('wallpaper');
 
   /* Параметры комнаты */
@@ -356,6 +359,8 @@ export default function WallpaperCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'Обои и краска: как рассчитать' : 'Wallpaper and Paint Calculator'} description={lang === 'ru' ? 'Калькулятор обоев и краски помогает рассчитать точное количество рулонов обоев или банок краски для ремонта.\n\nДля обоев введите размеры комнаты, размеры окон и дверей, а также размер рулона. Калькулятор рассчитает количество рулонов с учётом раппорта рисунка.\n\nДля краски введите площадь стен, расход краски на м² и размер банки.' : 'The wallpaper and paint calculator helps you calculate the exact number of wallpaper rolls or paint cans for renovation.'} faq={[{ q: lang === 'ru' ? 'Как рассчитать площадь стен?' : 'How to calculate wall area?', a: lang === 'ru' ? 'Площадь стен = (Длина + Ширина) × 2 × Высота. Вычтите площадь окон и дверей.' : 'Wall area = (Length + Width) × 2 × Height. Subtract window and door areas.' }]} />
     </div>
   );
 }

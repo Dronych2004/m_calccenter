@@ -18,6 +18,7 @@
 import { useState } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
 
@@ -282,6 +283,47 @@ export default function MortgageCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'Об ипотечном калькуляторе' : 'About the Mortgage Calculator'}
+        description={lang === 'ru'
+          ? `Ипотечный калькулятор помогает рассчитать ежемесячный платёж по ипотеке, общую переплату и составить график платежей. Вы можете сравнить аннуитетный и дифференцированный типы платежей и выбрать оптимальный вариант.
+
+Аннуитетный платёж — фиксированный ежемесячный взнос на протяжении всего срока. Дифференцированный — уменьшающийся платёж: сначала больше, потом меньше. При дифференцированном типе переплата по процентам ниже.
+
+Для расчёта введите сумму кредита, процентную ставку и срок в годах. Калькулятор мгновенно покажет размер платежа, общую сумму выплат и сумму переплаты. График платежей покажет распределение долга и процентов по годам.`
+          : `The mortgage calculator helps you calculate your monthly mortgage payment, total overpayment, and create a payment schedule. You can compare annuity and differentiated payment types.
+
+An annuity payment is a fixed monthly installment throughout the entire loan term. A differentiated payment decreases over time: higher at first, then lower.
+
+To calculate, enter the loan amount, interest rate, and term in years. The calculator instantly shows the payment amount, total payments, and overpayment amount.`}
+        formula={{
+          title: lang === 'ru' ? 'Формула аннуитетного платежа' : 'Annuity Payment Formula',
+          text: lang === 'ru'
+            ? 'Месячный платёж = С × (П × (1 + П)^Срок) / ((1 + П)^Срок − 1), где С — сумма кредита, П — месячная процентная ставка (годовая / 12 / 100), Срок — количество месяцев.'
+            : 'Monthly Payment = P × (r × (1 + r)^n) / ((1 + r)^n − 1), where P is the loan amount, r is the monthly interest rate, n is the number of months.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Какая ставка по ипотеке в 2025 году?' : 'What is the mortgage rate in 2025?',
+            a: lang === 'ru'
+              ? 'Ставки зависят от банка, программы и условий. Средняя ставка по ипотеке в России варьируется от 20% до 30% годовых. Субсидированные программы могут быть ниже.'
+              : 'Rates depend on the bank, program, and conditions. Average mortgage rates range from 20% to 30% per annum.'
+          },
+          {
+            q: lang === 'ru' ? 'Что выгоднее — аннуитет или дифференциация?' : 'Which is better — annuity or differentiated?',
+            a: lang === 'ru'
+              ? 'При аннуитете платёж фиксированный — удобно планировать бюджет. При дифференциации переплата меньше, но первые платежи выше.'
+              : 'With annuity, the payment is fixed — easier to budget. With differentiated payments, overpayment is lower, but initial payments are higher.'
+          },
+          {
+            q: lang === 'ru' ? 'Можно ли досрочно погасить ипотеку?' : 'Can I prepay my mortgage?',
+            a: lang === 'ru'
+              ? 'Да, вы можете вносить досрочные платежи. Это уменьшает сумму долга и снижает переплату по процентам.'
+              : 'Yes, you can make early payments. This reduces the outstanding balance and lowers interest overpayment.'
+          },
+        ]}
+      />
     </div>
   );
 }

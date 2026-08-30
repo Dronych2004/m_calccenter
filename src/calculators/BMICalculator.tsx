@@ -18,6 +18,8 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* Тип пола */
 type Gender = 'male' | 'female';
@@ -58,6 +60,7 @@ function getBMICategory(bmi: number): BMICategory {
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function BMICalculator() {
+  const lang = useLanguage();
   const [gender, setGender] = useState<Gender>('male');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -446,6 +449,41 @@ export default function BMICalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'Об ИМТ и расчёте калорий' : 'About BMI and Calorie Calculator'}
+        description={lang === 'ru'
+          ? `Калькулятор ИМТ (индекса массы тела) определяет, соответствует ли ваш вес норме. ИМТ рассчитывается по формуле: вес (кг) / рост² (м).
+
+Помимо ИМТ, калькулятор рассчитывает суточную норму калорий по двум формулам: Миффлина-Сан Жеора и Харриса-Бенедикта.
+
+Калькулятор также определит целевой вес для вашего роста и поможет составить план по достижению нормального ИМТ.`
+          : `The BMI calculator determines whether your weight is normal. BMI is calculated as: weight (kg) / height² (m).
+
+In addition to BMI, the calculator calculates daily calorie needs using two formulas: Mifflin-St Jeor and Harris-Benedict.
+
+The calculator also determines your target weight and helps create a plan to achieve a normal BMI.`}
+        formula={{
+          title: lang === 'ru' ? 'Формулы расчёта' : 'Calculation Formulas',
+          text: lang === 'ru'
+            ? 'ИМТ = Вес (кг) / Рост² (м). Норма ИМТ: 18.5–24.9.'
+            : 'BMI = Weight (kg) / Height² (m). Normal BMI: 18.5–24.9.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Какой ИМТ считается нормой?' : 'What BMI is considered normal?',
+            a: lang === 'ru'
+              ? 'Нормальный ИМТ — от 18.5 до 24.9. Ниже 18.5 — недостаточный вес, выше 25 — избыточный, выше 30 — ожирение.'
+              : 'Normal BMI is 18.5 to 24.9. Below 18.5 is underweight, above 25 is overweight, above 30 is obese.'
+          },
+          {
+            q: lang === 'ru' ? 'Сколько калорий нужно в день?' : 'How many calories do I need per day?',
+            a: lang === 'ru'
+              ? 'Для средней женщины — 1800–2200 ккал/день, для мужчины — 2200–2800 ккал/день.'
+              : 'For an average woman — 1800–2200 kcal/day, for a man — 2200–2800 kcal/day.'
+          },
+        ]}
+      />
     </div>
   );
 }

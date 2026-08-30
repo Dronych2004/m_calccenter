@@ -15,6 +15,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 import { safeEval } from '../lib/safeEval';
 
 /* Тип режима углов */
@@ -524,6 +525,39 @@ export default function EngineeringCalculator() {
           </div>
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'Об инженерном калькуляторе' : 'About the Engineering Calculator'}
+        description={lang === 'ru'
+          ? `Инженерный калькулятор — это расширенный инструмент для выполнения сложных математических вычислений. Он поддерживает тригонометрические функции (sin, cos, tan и их обратные), логарифмы, степени, корни и другие операции, необходимые студентам, инженерам и научным работникам.\n\nКалькулятор работает в двух режимах: градусы и радианы. Переключение между режимами доступно одной кнопкой. Все функции доступны через панель дополнительных операций.\n\nКак и классический калькулятор, инженерный сохраняет историю вычислений. Вы можете вернуться к любому предыдущему результату и продолжить вычисления. Все операции выполняются локально в браузере.`
+          : `The engineering calculator is an advanced tool for complex mathematical calculations. It supports trigonometric functions (sin, cos, tan and their inverses), logarithms, powers, roots, and other operations needed by students, engineers, and scientists.\n\nThe calculator works in two modes: degrees and radians. Switching between modes is done with a single button. All functions are accessible through the additional operations panel.\n\nLike the classic calculator, the engineering calculator saves calculation history. You can return to any previous result and continue calculating. All operations are performed locally in your browser.`}
+        formula={{
+          title: lang === 'ru' ? 'Основные формулы' : 'Key Formulas',
+          text: lang === 'ru'
+            ? 'Тригонометрия: sin(30°) = 0.5, cos(60°) = 0.5, tan(45°) = 1. Логарифмы: ln(e) = 1, lg(100) = 2. Степени: 2^10 = 1024. Корни: √144 = 12. Факториал: 5! = 120.'
+            : 'Trigonometry: sin(30°) = 0.5, cos(60°) = 0.5, tan(45°) = 1. Logarithms: ln(e) = 1, lg(100) = 2. Powers: 2^10 = 1024. Roots: √144 = 12. Factorial: 5! = 120.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'В чём разница между градусами и радианами?' : 'What is the difference between degrees and radians?',
+            a: lang === 'ru'
+              ? 'Градусы и радианы — это две единицы измерения углов. 360° = 2π радиан ≈ 6.28 рад. В градусах угол окружности — 360°, в радианах — 2π. Большинство задач в школе решается в градусах, в университетах и инженерных расчётах чаще используются радианы.'
+              : 'Degrees and radians are two units for measuring angles. 360° = 2π radians ≈ 6.28 rad. In degrees, a full circle is 360°, in radians it is 2π. Most school problems use degrees, while university and engineering calculations typically use radians.'
+          },
+          {
+            q: lang === 'ru' ? 'Что такое логарифм?' : 'What is a logarithm?',
+            a: lang === 'ru'
+              ? 'Логарифм — это степень, в которую нужно возвести основание, чтобы получить заданное число. Например, lg(1000) = 3, потому что 10³ = 1000. Натуральный логарифм (ln) использует основание e ≈ 2.718.'
+              : 'A logarithm is the power to which a base must be raised to produce a given number. For example, lg(1000) = 3, because 10³ = 1000. The natural logarithm (ln) uses base e ≈ 2.718.'
+          },
+          {
+            q: lang === 'ru' ? 'Как ввести число в формате科学记数法?' : 'How to enter a number in scientific notation?',
+            a: lang === 'ru'
+              ? 'Используйте кнопку EXP или введите число как коэффициент × 10^степень. Например, 6.02 × 10²³ — это число Авогадро.'
+              : 'Use the EXP button or enter the number as coefficient × 10^power. For example, 6.02 × 10²³ is Avogadro\'s number.'
+          },
+        ]}
+      />
     </div>
   );
 }

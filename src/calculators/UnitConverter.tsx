@@ -9,6 +9,7 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 /* Категории единиц */
 type Category = 'length' | 'weight' | 'volume' | 'temperature' | 'area';
@@ -260,6 +261,8 @@ export default function UnitConverter() {
           </div>
         )}
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О конвертере единиц измерений' : 'About the Unit Converter'} description={lang === 'ru' ? 'Конвертер единиц измерений позволяет быстро переводить значения между различными единицами: длина, вес, объём, температура и площадь.\n\nВыберите категорию, введите значение и единицы. Конвертер мгновенно покажет результат. Все коэффициенты перевода актуальны и соответствуют международным стандартам.' : 'The unit converter allows you to quickly convert values between different units: length, weight, volume, temperature, and area.'} faq={[{ q: lang === 'ru' ? 'Как перевести метры в футы?' : 'How to convert meters to feet?', a: '1 метр = 3.28084 фута.' }]} />
     </div>
   );
 }

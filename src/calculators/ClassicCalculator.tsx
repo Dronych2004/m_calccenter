@@ -13,6 +13,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 import { safeEval } from '../lib/safeEval';
 
 /* ==================== ТИПЫ ==================== */
@@ -313,6 +314,39 @@ export default function ClassicCalculator() {
           </div>
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'О классическом калькуляторе' : 'About the Classic Calculator'}
+        description={lang === 'ru'
+          ? `Классический калькулятор — это простой и удобный инструмент для выполнения базовых арифметических действий: сложения, вычитания, умножения и деления. Он идеально подходит для повседневных расчётов: от вычисления суммы покупки до распределения бюджета.\n\nКалькулятор поддерживает работу с дробными числами, процентами и последовательные вычисления. Вы можете вводить длинные выражения, и калькулятор рассчитает результат с учётом приоритета операций.\n\nИстория вычислений сохраняется на странице, поэтому вы можете вернуться к любому предыдущему результату одним кликом. Все вычисления выполняются локально в браузере — данные не передаются на сервер.`
+          : `The classic calculator is a simple and convenient tool for basic arithmetic operations: addition, subtraction, multiplication, and division. It's perfect for everyday calculations — from figuring out a shopping total to splitting a budget.\n\nThe calculator supports decimal numbers, percentages, and sequential calculations. You can enter long expressions, and the calculator will compute the result following the order of operations.\n\nCalculation history is saved on the page, so you can return to any previous result with a single click. All calculations are performed locally in your browser — no data is sent to any server.`}
+        formula={{
+          title: lang === 'ru' ? 'Как работают операции' : 'How Operations Work',
+          text: lang === 'ru'
+            ? 'Калькулятор использует стандартный приоритет математических операций: сначала выполняются умножение и деление, затем сложение и вычитание. Процент (%) вычисляется от текущего результата. Например, 100 + 50% = 100 + (100 × 0.5) = 150.'
+            : 'The calculator follows the standard order of mathematical operations: multiplication and division are performed first, then addition and subtraction. The percent (%) is calculated from the current result. For example, 100 + 50% = 100 + (100 × 0.5) = 150.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Как сохранить результат вычисления?' : 'How to save a calculation result?',
+            a: lang === 'ru'
+              ? 'Результат автоматически появляется в блоке «История» справа. Нажмите на любой результат в истории, чтобы подставить его в калькулятор для дальнейших вычислений.'
+              : 'The result automatically appears in the "History" block on the right. Click any result in the history to use it in the calculator for further calculations.'
+          },
+          {
+            q: lang === 'ru' ? 'Как ввести дробное число?' : 'How to enter a decimal number?',
+            a: lang === 'ru'
+              ? 'Используйте точку (.) как разделитель дробной части. Например: 3.14 + 2.86 = 6.00.'
+              : 'Use a dot (.) as the decimal separator. For example: 3.14 + 2.86 = 6.00.'
+          },
+          {
+            q: lang === 'ru' ? 'Как рассчитать процент скидки?' : 'How to calculate a discount percentage?',
+            a: lang === 'ru'
+              ? 'Введите сумму, нажмите ×, затем введите процент скидки и нажмите %. Например: 5000 × 15% = 750 (скидка). Чтобы узнать итоговую цену: 5000 − 750 = 4250.'
+              : 'Enter the amount, press ×, then enter the discount percentage and press %. For example: 5000 × 15% = 750 (discount). To find the final price: 5000 − 750 = 4250.'
+          },
+        ]}
+      />
     </div>
   );
 }

@@ -15,8 +15,11 @@ import { useState } from 'react';
 import { t } from '../i18n';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
 
 export default function CreditCalculator() {
+  const lang = useLanguage();
   const [loanAmount, setLoanAmount] = useState('');
   const [interestRate, setInterestRate] = useState('');
   const [loanTerm, setLoanTerm] = useState('');
@@ -344,6 +347,37 @@ export default function CreditCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'О кредитном калькуляторе' : 'About the Credit Calculator'}
+        description={lang === 'ru'
+          ? `Кредитный калькулятор помогает рассчитать ежемесячный платёж по кредиту с учётом дополнительных расходов: страхования, комиссий и услуг банка. Это важно для понимания реальной стоимости кредита.
+
+Помимо основного платежа, кредит может включать обязательное страхование, комиссии за обслуживание счёта, плату за выпуск карты и другие расходы. Наш калькулятор суммирует все затраты и покажет полную стоимость кредита.
+
+Введите сумму кредита, процентную ставку, срок и дополнительные расходы. Калькулятор рассчитает ежемесячный платёж, общую сумму выплат и переплату по процентам.`
+          : `The credit calculator helps you calculate your monthly loan payment including additional expenses: insurance, fees, and bank services.
+
+Enter the loan amount, interest rate, term, and additional expenses. The calculator will compute the monthly payment, total payments, and interest overpayment.`}
+        formula={{
+          title: lang === 'ru' ? 'Формула ежемесячного платежа' : 'Monthly Payment Formula',
+          text: 'Payment = P × (r × (1 + r)^n) / ((1 + r)^n − 1)'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Что такое полная стоимость кредита?' : 'What is the total cost of credit?',
+            a: lang === 'ru'
+              ? 'Полная стоимость кредита — это сумма всех платежей по кредиту за весь срок, включая проценты и дополнительные комиссии.'
+              : 'The total cost of credit is the sum of all loan payments over the entire term, including interest and additional fees.'
+          },
+          {
+            q: lang === 'ru' ? 'Как уменьшить переплату по кредиту?' : 'How to reduce credit overpayment?',
+            a: lang === 'ru'
+              ? 'Способы: уменьшить срок кредита, увеличить первый взнос, выбрать банк с меньшей ставкой, вносить досрочные платежи.'
+              : 'Ways: reduce the loan term, increase the down payment, choose a bank with a lower rate, make early payments.'
+          },
+        ]}
+      />
     </div>
   );
 }
