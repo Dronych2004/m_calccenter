@@ -5,7 +5,7 @@
  * При офлайне — отдаёт кэшированные страницы.
  */
 
-const CACHE_NAME = 'calccenter-v1';
+const CACHE_NAME = 'calccenter-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -34,6 +34,9 @@ self.addEventListener('activate', (event) => {
 /* Запросы: Network First для навигации, Cache First для статики */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+
+  /* Кэшируем только GET-запросы */
+  if (request.method !== 'GET') return;
 
   /* Для навигации (HTML) — Network First */
   if (request.mode === 'navigate') {
