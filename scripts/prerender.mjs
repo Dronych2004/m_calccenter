@@ -63,7 +63,10 @@ async function prerender() {
     for (const rendered of renderedRoutes) {
       const route = rendered.route
       if (route === '/') {
-        console.log(`  Skipped: / (already index.html)`)
+        // Записываем пререндеренный HTML поверх index.html
+        const outputPath = resolve(distDir, 'index.html')
+        writeFileSync(outputPath, rendered.html)
+        console.log(`  Written: /index.html (root)`)
         continue
       }
       const dirPath = resolve(distDir, `.${route}`)
