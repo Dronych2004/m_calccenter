@@ -1,16 +1,20 @@
 /**
  * Генерация sitemap.xml для calccenter.ru
  * Запускается при каждой сборке (npm run build).
+ *
+ * Canonical URL — без trailing slash (совпадает с .htaccess и SeoHead).
  */
-import { writeFileSync } from 'fs'
+import { writeFileSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const hostname = 'https://calccenter.ru'
+
+// Дата последнего изменения — при каждой сборке
 const today = new Date().toISOString().split('T')[0]
 
-// Маршруты с приоритетами
+// Маршруты с приоритетами (все без trailing slash)
 const pages = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   { path: '/classic', priority: 0.8, changefreq: 'monthly' },
@@ -56,4 +60,4 @@ ${entries.join('\n')}
 
 const outputPath = resolve(__dirname, '../dist/sitemap.xml')
 writeFileSync(outputPath, sitemap)
-console.log(`Sitemap generated: ${entries.length} URLs`)
+console.log(`Sitemap generated: ${entries.length} URLs (lastmod: ${today})`)
