@@ -76,14 +76,18 @@ async function prerender() {
       console.log(`  Written: ${route}/index.html`)
     }
 
-    // Копируем .htaccess в dist
-    const htaccessSrc = resolve(__dirname, '../public/.htaccess')
-    const htaccessDest = resolve(distDir, '.htaccess')
-    try {
-      copyFileSync(htaccessSrc, htaccessDest)
-      console.log('Copied .htaccess to dist/')
-    } catch {
-      console.log('No .htaccess to copy')
+    // Копируем конфиги сервера в dist
+    const filesToCopy = [
+      { src: '../public/.htaccess', dest: '.htaccess', name: '.htaccess' },
+      { src: '../nginx.conf', dest: 'nginx.conf', name: 'nginx.conf' },
+    ]
+    for (const { src, dest, name } of filesToCopy) {
+      try {
+        copyFileSync(resolve(__dirname, src), resolve(distDir, dest))
+        console.log(`Copied ${name} to dist/`)
+      } catch {
+        console.log(`No ${name} to copy`)
+      }
     }
 
     console.log(`\nSuccessfully prerendered ${renderedRoutes.length} routes`)

@@ -1,27 +1,18 @@
+# .htaccess для Apache (если хостинг на Apache)
+# Для nginx — см. nginx.conf в корне проекта
+
 # Enable Rewrite Engine
 RewriteEngine On
 
-# HTTP → HTTPS (crucial for SEO — Google indexed http://calccenter.ru/)
+# HTTP → HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-# www → non-www redirect
+# www → non-www
 RewriteCond %{HTTP_HOST} ^www\.calccenter\.ru$ [NC]
 RewriteRule ^(.*)$ https://calccenter.ru/$1 [R=301,L]
 
-# Убираем trailing slash (canonical URL без слэша)
-# /mortgage/ → /mortgage (301)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/$
-RewriteRule ^(.*)/$ /$1 [R=301,L]
-
-# Handle clean URLs for prerendered pages
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z-]+)$ /$1/index.html [L]
-
-# Fallback to index.html for SPA routing
+# SPA fallback: все несуществующие файлы → index.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ /index.html [L]
@@ -46,25 +37,7 @@ RewriteRule ^ /index.html [L]
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set X-XSS-Protection "1; mode=block"
-
-  # HSTS — принудительный HTTPS (1 год + поддомены)
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-
-  # Referrer — передаёт только origin при переходах на другие сайты
   Header set Referrer-Policy "strict-origin-when-cross-origin"
-
-  # Permissions — запрещаем камеру, микрофон, геолокацию
   Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-
-  # Content-Security-Policy
-  Header set Content-Security-Policy "\
-    default-src 'self'; \
-    script-src 'self' 'unsafe-inline'; \
-    style-src 'self' 'unsafe-inline'; \
-    img-src 'self' data: blob:; \
-    font-src 'self'; \
-    connect-src 'self' https://www.cbr-xml-daily.ru; \
-    frame-ancestors 'self'; \
-    base-uri 'self'; \
-    form-action 'self'"
 </IfModule>
