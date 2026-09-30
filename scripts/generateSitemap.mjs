@@ -50,6 +50,7 @@ function urlEntry(loc, changefreq, priority) {
   </url>`
 }
 
+// Canonical URL — без trailing slash: корень со слэшем, подстраницы без
 const entries = pages.map(p => urlEntry(`${hostname}${p.path}`, p.changefreq, p.priority))
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

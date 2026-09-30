@@ -9,16 +9,12 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- SEO: Основные мета-теги -->
-    <title>Центр калькуляторов — Онлайн калькуляторы бесплатно | CalcCenter</title>
-    <meta name="description" content="Бесплатные онлайн-калькуляторы: классический, инженерный, ипотечный, ИМТ, расход топлива, калькулятор дней и другие полезные инструменты." />
+    <!-- SEO: title, description, canonical, og:title, og:description, og:url
+         управляются через SeoHead + React Helmet на каждой странице -->
     <meta name="keywords" content="калькулятор онлайн, онлайн калькулятор бесплатно, инженерный калькулятор, ипотечный калькулятор, калькулятор калорий, ИМТ калькулятор, расход топлива, калькулятор дней, calculator online" />
 
-    <!-- Open Graph для соцсетей -->
-    <meta property="og:title" content="Центр калькуляторов — Бесплатные онлайн-калькуляторы" />
-    <meta property="og:description" content="Набор полезных онлайн-калькуляторов: от классического до ипотечного. Быстро, удобно, бесплатно." />
+    <!-- Open Graph (статичные — Helmet не управляет) -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://calccenter.ru/" />
     <meta property="og:image" content="https://calccenter.ru/og-image.svg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -26,16 +22,11 @@
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:site_name" content="Центр калькуляторов" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter Card (статичные) -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Центр калькуляторов — Бесплатные онлайн-калькуляторы" />
-    <meta name="twitter:description" content="Набор полезных онлайн-калькуляторов: от классического до ипотечного. Быстро, удобно, бесплатно." />
     <meta name="twitter:image" content="https://calccenter.ru/og-image.svg" />
 
-    <!-- Canonical URL (consistency: no trailing slash on subpages, / on root) -->
-    <link rel="canonical" href="https://calccenter.ru/" />
-
-    <!-- Alternate language versions (SPA — один URL, язык определяется клиентом) -->
+    <!-- Alternate language versions -->
     <link rel="alternate" hreflang="x-default" href="https://calccenter.ru/" />
 
     <!-- JSON-LD: Structured Data -->

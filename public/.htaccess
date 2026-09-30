@@ -1,43 +1,31 @@
-# .htaccess для Apache (если хостинг на Apache)
-# Для nginx — см. nginx.conf в корне проекта
+# .htaccess — Apache (в т.ч. за nginx-прокси на хостинге).
+# Каноническая форма URL — БЕЗ trailing slash (как в sitemap.xml и <link rel="canonical">).
 
-# Enable Rewrite Engine
+# ── 1) www → non-www (301) ──────────────────────────────────
 RewriteEngine On
+RewriteBase /
 
-# HTTP → HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-
-# www → non-www
 RewriteCond %{HTTP_HOST} ^www\.calccenter\.ru$ [NC]
 RewriteRule ^(.*)$ https://calccenter.ru/$1 [R=301,L]
 
-# SPA fallback: все несуществующие файлы → index.html
+# ── 2) Trailing slash → без слэша (301): /classic/ → /classic ──
+# Условие по REQUEST_URI: правило срабатывает в контексте любого каталога,
+# а не только корня. Корень (/) не матчится — нужен минимум 1 символ до слэша.
+RewriteCond %{REQUEST_URI} ^/(.+)/$
+RewriteRule ^ /%1 [R=301,L]
+
+# ── 3) /index.html → чистый URL (301) ───────────────────────
+RewriteCond %{REQUEST_URI} ^/index\.html$
+RewriteRule ^ / [R=301,L]
+
+RewriteCond %{REQUEST_URI} ^/(.+)/index\.html$
+RewriteRule ^ /%1 [R=301,L]
+
+# ── 4) Clean URLs: /classic → index.php (отдаст prerendered /classic/index.html) ──
+# Условие !-d намеренно убрано: иначе mod_dir сам перенаправит /classic → /classic/
+# и канонический URL без слэша сломается.
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ /index.html [L]
+RewriteRule ^ /index.php [L]
 
-# Enable compression
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
-</IfModule>
-
-# Enable browser caching
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType text/html "access plus 1 hour"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-</IfModule>
-
-# Security headers
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set X-XSS-Protection "1; mode=block"
-  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-</IfModule>
+# ── Служебный архив деплоя не отдаём ────────────────────────
+RedirectMatch 404 ^/dist\.zip$

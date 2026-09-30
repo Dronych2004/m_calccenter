@@ -5,7 +5,7 @@
  * При офлайне — отдаёт кэшированные страницы.
  */
 
-const CACHE_NAME = 'calccenter-v2';
+const CACHE_NAME = 'calccenter-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

@@ -9,6 +9,7 @@ import {
   SparkleIcon, BoltIcon, LockIcon, PhoneIcon,
 } from '../components/Icons';
 import CategoryCard from '../components/CategoryCard';
+import SeoHead from '../components/SeoHead';
 
 /* Тип иконки — любая функция из Icons.tsx */
 type IconComponent = React.FC<{ size?: number; className?: string }>;
@@ -166,6 +167,13 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
+      <SeoHead
+        title={lang === 'ru' ? 'Центр калькуляторов — Онлайн калькуляторы бесплатно | CalcCenter' : 'Calculator Center — Free Online Calculators | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатные онлайн-калькуляторы: классический, инженерный, ипотечный, ИМТ, расход топлива и другие полезные инструменты.'
+          : 'Free online calculators: classic, engineering, mortgage, BMI, fuel consumption, and other useful tools.'}
+        canonical="https://calccenter.ru/"
+      />
       {/* HERO */}
       <section className="text-center mb-14 animate-fade-in">
         <div className="relative inline-block mb-6">

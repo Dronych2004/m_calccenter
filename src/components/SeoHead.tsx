@@ -1,7 +1,12 @@
 /**
  * Уникальные meta-теги для каждой страницы через react-helmet-async.
- * Canonical URL генерируется автоматически из текущего пути (без trailing slash).
+ * Canonical URL — без trailing slash (корень — "/"), как в sitemap.xml
+ * и в редиректах сервера (.htaccess / nginx.conf).
+ *
+ * После обновления <head> диспатчит custom-render-trigger для prerenderer —
+ * это гарантирует что HTML захватывается с правильными мета-тегами.
  */
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
@@ -15,8 +20,22 @@ interface SeoHeadProps {
 
 export default function SeoHead({ title, description, canonical }: SeoHeadProps) {
   const location = useLocation();
-  // Генерируем canonical из текущего пути без trailing slash
-  const canonicalUrl = canonical || `${SITE_URL}${location.pathname.replace(/\/+$/, '') || '/'}`;
+  // Canonical — всегда без trailing slash (корень — "/").
+  // Нормализуем и явный prop, и путь из URL, защищаясь от случайного слэша в коде.
+  const raw = canonical || location.pathname;
+  const canonicalUrl =
+    raw === '/' || raw === SITE_URL || raw === `${SITE_URL}/`
+      ? `${SITE_URL}/`
+      : raw.replace(/\/+$/, '');
+
+  // Сообщаем prerenderer что <head> обновлён и HTML можно захватывать.
+  // Даём 50мс на_commit Helmet'а в DOM (react-helmet-async батчит обновления в useEffect).
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.dispatchEvent(new Event('custom-render-trigger'));
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [title, canonicalUrl]);
 
   return (
     <Helmet>

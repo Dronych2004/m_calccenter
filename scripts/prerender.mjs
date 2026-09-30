@@ -2,6 +2,12 @@
  * Пререндеринг всех маршрутов через Puppeteer.
  * Запускает headless Chrome, рендерит каждый маршрут и сохраняет
  * статический HTML-файл. Поисковики получают готовый контент.
+ *
+ * Примечание: renderAfterDocumentEvent не работает в новых версиях
+ * Puppeteer — evaluateOnNewDocument выполняется в изолированном мире,
+ * который не видит window.__PRERENDER_STATUS из page.evaluate.
+ * Вместо этого используем pageHandler + page.exposeFunction для
+ * надёжного отслеживания готовности страницы.
  */
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -46,10 +52,28 @@ async function prerender() {
   const prerenderer = new Prerenderer({
     staticDir: distDir,
     renderer: new PuppeteerRenderer({
-      renderAfterDocumentEvent: 'custom-render-trigger',
+      // renderAfterDocumentEvent отключён — слушаем событие в pageHandler
       maxConcurrentRoutes: 4,
       headless: true,
       skipThirdPartyRequests: true,
+      timeout: 60000,
+      pageHandler: async (page, route) => {
+        // Ждём custom-render-trigger из SeoHead:
+        // 1. Expose функцию чтобы страница могла вызвать её из main world
+        // 2. Регистрируем document listener через page.evaluate (main world!)
+        // 3. Ждём пока событие придёт (или timeout)
+        await page.exposeFunction('__onRenderReady', () => {})
+
+        await page.evaluate(() => {
+          return new Promise((resolve) => {
+            const timeout = setTimeout(resolve, 15000)
+            document.addEventListener('custom-render-trigger', () => {
+              clearTimeout(timeout)
+              resolve()
+            }, { once: true })
+          })
+        })
+      },
     }),
   })
 
@@ -63,7 +87,6 @@ async function prerender() {
     for (const rendered of renderedRoutes) {
       const route = rendered.route
       if (route === '/') {
-        // Записываем пререндеренный HTML поверх index.html
         const outputPath = resolve(distDir, 'index.html')
         writeFileSync(outputPath, rendered.html)
         console.log(`  Written: /index.html (root)`)
@@ -79,6 +102,7 @@ async function prerender() {
     // Копируем конфиги сервера в dist
     const filesToCopy = [
       { src: '../public/.htaccess', dest: '.htaccess', name: '.htaccess' },
+      { src: '../public/index.php', dest: 'index.php', name: 'index.php' },
       { src: '../nginx.conf', dest: 'nginx.conf', name: 'nginx.conf' },
     ]
     for (const { src, dest, name } of filesToCopy) {
