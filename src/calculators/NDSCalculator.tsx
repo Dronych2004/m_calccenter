@@ -24,6 +24,8 @@ import { useState, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -153,6 +155,13 @@ export default function NDSCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор НДС онлайн — бесплатно | CalcCenter' : 'VAT Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор НДС. Прибавление и извлечение НДС по ставкам 20%, 10%, 5%, 0%.'
+          : 'Free online VAT calculator. Add and extract VAT at rates of 20%, 10%, 5%, 0%.'}
+        canonical="https://calccenter.ru/nds"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -396,6 +405,8 @@ export default function NDSCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О НДС' : 'About VAT Calculator'} description={lang === 'ru' ? 'Калькулятор НДС рассчитывает сумму налога на добавленную стоимость прибавлением или извлечением. Основные ставки: 20% (общая), 10% (продовольствие, детские товары, медицина), 0% (экспорт).\n\nВыберите операцию: «Прибавить НДС» или «Извлечь НДС». Укажите ставку и сумму.' : 'The VAT calculator calculates value-added tax by adding or extracting. Main rates: 20%, 10%, 0%.'} formula={{ title: 'Формулы НДС', text: 'Прибавить: Сумма с НДС = Сумма × (1 + Ставка/100). Извлечь: Сумма без НДС = Сумма / (1 + Ставка/100).' }} faq={[{ q: lang === 'ru' ? 'Когда нужна ставка 10%?' : 'When is the 10% rate applicable?', a: 'К продовольственным товарам, детским товарам, медицинским препаратам, книжной продукции.' }]} />
     </div>
   );
 }

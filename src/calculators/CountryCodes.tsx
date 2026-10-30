@@ -5,6 +5,8 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 interface CountryCode {
   country: string;
@@ -196,6 +198,13 @@ export default function CountryCodes() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Телефонные коды стран мира — справочник | CalcCenter' : 'World Country Phone Codes — Directory | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Справочник телефонных кодов стран мира. Полный список международных кодов для звонков из-за рубежа.'
+          : 'Directory of world country phone codes. Complete list of international codes for calls from abroad.'}
+        canonical="https://calccenter.ru/country-codes"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -267,6 +276,8 @@ export default function CountryCodes() {
           </div>
         )}
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'Телефонные коды стран мира' : 'World Country Phone Codes'} description={lang === 'ru' ? 'Справочник телефонных кодов стран мира. Каждая страна имеет уникальный международный код, который добавляется перед номером при звонке из-за рубежа.\n\nКод начинается с символа «+» или «00». Например, код России — +7, Украины — +380, Беларуси — +375.' : 'Reference directory of world country phone codes.'} faq={[{ q: lang === 'ru' ? 'Как звонить из России за рубеж?' : 'How to call internationally from Russia?', a: 'Наберите 8, затем 10, код страны и номер. Или используйте символ +.' }]} />
     </div>
   );
 }

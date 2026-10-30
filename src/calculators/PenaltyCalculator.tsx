@@ -19,8 +19,11 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import { useCBRRate } from '../hooks/useCBRRate';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 type PenaltyType = 'tax' | 'salary' | 'utilities';
 type TaxpayerType = 'individual' | 'legal';
@@ -41,6 +44,8 @@ export default function PenaltyCalculator() {
   const [cbrRate, setCbrRate] = useState('');
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<PenaltyResult | null>(null);
+
+  const lang = useLanguage();
 
   /* Загружаем актуальную ставку ЦБ из API (кэш 24ч) */
   const { rate: cbrRateFromAPI, date: cbrRateDate, loading: cbrLoading } = useCBRRate();
@@ -132,6 +137,13 @@ export default function PenaltyCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор пеней онлайн — бесплатно | CalcCenter' : 'Penalty Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор пеней. Рассчитайте сумму пени по налогам, зарплате или ЖКХ.'
+          : 'Free online penalty calculator. Calculate penalty amounts for taxes, salary or utilities.'}
+        canonical="https://calccenter.ru/penalty"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -355,6 +367,8 @@ export default function PenaltyCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О калькуляторе пеней' : 'About the Penalty Calculator'} description={lang === 'ru' ? 'Калькулятор пеней рассчитывает сумму пени по налогам, зарплате или ЖКХ. Пени — это штраф за нарушение сроков оплаты, который начисляется ежедневно.\n\nФормула: пени = долг × ставка рефинансирования × 1/300 × дни просрочки.\n\nEnter сумму задолженности, дату начала и окончания просрочки.' : 'The penalty calculator calculates penalty amounts for taxes, salary, or utilities.'} formula={{ title: 'Формула расчёта пеней', text: 'Пени = Задолженность × Ставка ЦБ × Дни / 300' }} faq={[{ q: lang === 'ru' ? 'Когда начинают начислять пени?' : 'When do penalties start accruing?', a: 'Со следующего дня после истечения срока оплаты.' }]} />
     </div>
   );
 }

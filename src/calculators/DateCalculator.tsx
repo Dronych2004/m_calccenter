@@ -13,6 +13,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* Структура результата подсчёта */
 interface DateResult {
@@ -113,6 +115,13 @@ export default function DateCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор дней между датами — бесплатно | CalcCenter' : 'Date Calculator — Days Between Dates | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор дат. Узнайте количество дней между двумя датами, включая рабочие и выходные дни.'
+          : 'Free online date calculator. Find the number of days between two dates, including working days and weekends.'}
+        canonical="https://calccenter.ru/days"
+      />
       {/* Заголовок */}
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -202,7 +211,6 @@ export default function DateCalculator() {
               </p>
               <p className="text-5xl sm:text-6xl font-extrabold tracking-tight">
                 {result.calendarDays.toLocaleString()}
-              </p>
               </p>
             </div>
           </div>
@@ -296,6 +304,8 @@ export default function DateCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О калькуляторе дат' : 'About the Date Calculator'} description={lang === 'ru' ? 'Калькулятор дат определяет количество дней между двумя датами. Он различает календарные и рабочие дни, учитывая государственные праздники и выходные.\n\nВыберите начальную и конечную даты, и калькулятор покажет разницу в днях, неделях и месяцах. Отдельно будет показано количество рабочих и выходных дней.\n\nЭто полезно для расчёта отпуска, дедлайнов, сроков договоров и других задач, где важно знать точное количество рабочих дней.' : 'The date calculator determines the number of days between two dates. It distinguishes between calendar and working days, accounting for public holidays and weekends.'} faq={[{ q: lang === 'ru' ? 'Как считаются рабочие дни?' : 'How are working days counted?', a: lang === 'ru' ? 'Рабочие дни — это будние дни (пн–пт), за вычетом государственных праздников.' : 'Working days are weekdays (Mon–Fri), minus public holidays.' }]} />
     </div>
   );
 }

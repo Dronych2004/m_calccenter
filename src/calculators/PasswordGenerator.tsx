@@ -16,6 +16,9 @@
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -103,6 +106,7 @@ function estimateCrackTime(password: string): string {
 }
 
 export default function PasswordGenerator() {
+  const lang = useLanguage();
   const [length, setLength] = useState(16);
   const [options, setOptions] = useState({
     uppercase: true,
@@ -166,6 +170,13 @@ export default function PasswordGenerator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Генератор паролей онлайн — бесплатно | CalcCenter' : 'Password Generator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн генератор надёжных паролей. Настраиваемая длина, заглавные буквы, цифры и спецсимвы.' 
+          : 'Free online strong password generator. Customizable length, uppercase, digits and special characters.'}
+        canonical="https://calccenter.ru/password"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -348,6 +359,8 @@ export default function PasswordGenerator() {
           </div>
         </div>
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О генераторе паролей' : 'About the Password Generator'} description={lang === 'ru' ? 'Генератор паролей создаёт надёжные случайные пароли указанной длины. Вы можете выбрать, включать ли заглавные буквы, цифры и спецсимволы.\n\nНадёжный пароль должен содержать минимум 12 символов и включать буквы верхнего и нижнего регистра, цифры и спецсимволы.\n\nИндикатор сложности показывает, насколько защищён ваш пароль.' : 'The password generator creates strong random passwords of specified length.'} faq={[{ q: lang === 'ru' ? 'Какой длины должен быть пароль?' : 'How long should a password be?', a: 'Минимум 12 символов, рекомендуется 16+.' }]} />
     </div>
   );
 }

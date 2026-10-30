@@ -9,6 +9,8 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 export default function DiscountCalculator() {
   const [price, setPrice] = useState('');
@@ -65,6 +67,13 @@ export default function DiscountCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор скидок онлайн — бесплатно | CalcCenter' : 'Discount Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор скидок. Рассчитайте итоговую цену и экономию при скидке. Поддержка叠加 скидок.'
+          : 'Free online discount calculator. Calculate final price and savings with discounts. Stacked discount support.'}
+        canonical="https://calccenter.ru/discount"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -294,6 +303,8 @@ export default function DiscountCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О калькуляторе скидок' : 'About the Discount Calculator'} description={lang === 'ru' ? 'Калькулятор скидок мгновенно рассчитывает итоговую цену и экономию при скидке. Поддерживает несколько последовательных скидок.\n\nВведите начальную цену и размер скидки в процентах. Калькулятор покажет сумму скидки, итоговую цену и процент экономии.\n\nОбратите внимание: две скидки по 50% — это не 100%. Каждая скидка применяется к уже уценённой сумме.' : 'The discount calculator instantly calculates the final price and savings with a discount. It supports multiple consecutive discounts.'} faq={[{ q: lang === 'ru' ? 'Как рассчитать скидку вручную?' : 'How to calculate a discount manually?', a: 'Скидка = Цена × (Процент / 100). Итоговая цена = Цена − Скидка.' }]} />
     </div>
   );
 }

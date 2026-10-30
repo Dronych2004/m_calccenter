@@ -15,10 +15,14 @@ import { useState } from 'react';
 import { t } from '../i18n';
 import { formatCurrency, formatNumber } from '../lib/format';
 import { useLoanCalculator, type PaymentType, type LoanResult } from '../hooks/useLoanCalculator';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 type DownPaymentMode = 'percent' | 'fixed';
 
 export default function AutoCreditCalculator() {
+  const lang = useLanguage();
   const [carPrice, setCarPrice] = useState('');
   const [downPayment, setDownPayment] = useState('');
   const [downPaymentMode, setDownPaymentMode] = useState<DownPaymentMode>('percent');
@@ -63,6 +67,13 @@ export default function AutoCreditCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор автокредита онлайн — бесплатно | CalcCenter' : 'Auto Loan Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор автокредита. Рассчитайте платёж, первый взнос и переплату по кредиту на автомобиль.'
+          : 'Free online auto loan calculator. Calculate payment, down payment and overpayment on a car loan.'}
+        canonical="https://calccenter.ru/auto-credit"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -381,6 +392,31 @@ export default function AutoCreditCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'Об автокредите' : 'About Auto Loan Calculator'}
+        description={lang === 'ru'
+          ? `Автокредит — это кредит на покупку автомобиля. Наш калькулятор помогает рассчитать ежемесячный платёж, первоначальный взнос и общую стоимость кредита.
+
+Первоначальный взнос может быть выражен в процентах от стоимости автомобиля или в фиксированной сумме. Чем больше первый взнос — тем меньше ежемесячный платёж и переплата.
+
+Введите стоимость автомобиля, процентную ставку, срок кредита и размер первоначального взноса.`
+          : `An auto loan is a loan for purchasing a car. Our calculator helps you calculate the monthly payment, down payment, and total cost of the loan.
+
+Enter the car price, interest rate, loan term, and down payment amount.`}
+        formula={{
+          title: lang === 'ru' ? 'Расчёт первоначального взноса' : 'Down Payment Calculation',
+          text: 'Down Payment = Car Price × Percentage. Loan Amount = Price − Down Payment.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Какой минимальный первый взнос?' : 'What is the minimum down payment?',
+            a: lang === 'ru'
+              ? 'Минимальный первоначальный взнос зависит от банка и программы. Обычно это от 10% до 30% стоимости автомобиля.'
+              : 'The minimum down payment depends on the bank and program. Usually 10% to 30% of the car price.'
+          },
+        ]}
+      />
     </div>
   );
 }

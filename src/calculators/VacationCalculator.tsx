@@ -15,7 +15,10 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
 import { formatCurrency } from '../lib/format';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 interface ExcludedPeriod {
   id: string;
@@ -43,6 +46,8 @@ export default function VacationCalculator() {
   const [excludedPeriods, setExcludedPeriods] = useState<ExcludedPeriod[]>([]);
   const [calculated, setCalculated] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof calculate> | null>(null);
+
+  const lang = useLanguage();
 
   useEffect(() => {
     if (!calcDate) {
@@ -155,6 +160,13 @@ export default function VacationCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор отпускных онлайн — бесплатно | CalcCenter' : 'Vacation Pay Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор отпускных. Рассчитайте компенсацию за неиспользованный отпуск по ТК РФ.'
+          : 'Free online vacation pay calculator. Calculate compensation for unused vacation days.'}
+        canonical="https://calccenter.ru/vacation"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -420,6 +432,8 @@ export default function VacationCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'Об отпускных' : 'About Vacation Pay Calculator'} description={lang === 'ru' ? 'Калькулятор отпускных рассчитывает сумму компенсации за неиспользованный отпуск при увольнении и средний заработок для оплаты отпуска. Расчёт основан на Трудовом кодексе РФ.\n\nСредний дневной заработок = Сумма заработной платы за 12 месяцев / 12 / 29.3.\n\nДля расчёта компенсации при увольнении введите дату приёма на работу и дату увольнения.' : 'The vacation pay calculator calculates compensation for unused vacation upon dismissal.'} formula={{ title: 'Формула отпускных', text: 'Отпускные = (Зарплата за 12 мес. / 12 / 29.3) × Дни отпуска' }} faq={[{ q: lang === 'ru' ? 'Сколько дней отпуска положено в год?' : 'How many vacation days per year?', a: 'По Трудовому кодексу РФ — 28 календарных дней в год.' }]} />
     </div>
   );
 }

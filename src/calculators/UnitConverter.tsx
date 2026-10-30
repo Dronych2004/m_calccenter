@@ -9,6 +9,8 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* Категории единиц */
 type Category = 'length' | 'weight' | 'volume' | 'temperature' | 'area';
@@ -151,6 +153,13 @@ export default function UnitConverter() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Конвертер единиц измерений онлайн — бесплатно | CalcCenter' : 'Unit Converter Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн конвертер единиц измерений. Длина, вес, объём, температура, площадь — мгновенный перевод.'
+          : 'Free online unit converter. Length, weight, volume, temperature, area — instant conversion.'}
+        canonical="https://calccenter.ru/unit-converter"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -260,6 +269,8 @@ export default function UnitConverter() {
           </div>
         )}
       </div>
+
+      <SeoContent title={lang === 'ru' ? 'О конвертере единиц измерений' : 'About the Unit Converter'} description={lang === 'ru' ? 'Конвертер единиц измерений позволяет быстро переводить значения между различными единицами: длина, вес, объём, температура и площадь.\n\nВыберите категорию, введите значение и единицы. Конвертер мгновенно покажет результат. Все коэффициенты перевода актуальны и соответствуют международным стандартам.' : 'The unit converter allows you to quickly convert values between different units: length, weight, volume, temperature, and area.'} faq={[{ q: lang === 'ru' ? 'Как перевести метры в футы?' : 'How to convert meters to feet?', a: '1 метр = 3.28084 фута.' }]} />
     </div>
   );
 }

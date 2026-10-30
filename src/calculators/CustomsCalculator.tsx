@@ -48,6 +48,8 @@
  */
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -91,7 +93,7 @@ const EXCISE_RATES = {
   },
 };
 
-import { formatCurrency, formatNumber } from '../lib/format';
+import { formatCurrency } from '../lib/format';
 
 /* ==================== ГЛАВНЫЙ КОМПОНЕНТ ==================== */
 export default function CustomsCalculator() {
@@ -266,6 +268,13 @@ export default function CustomsCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор растаможки автомобилей — бесплатно | CalcCenter' : 'Customs Clearance Calculator — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор растаможки авто. Рассчитайте пошлину, НДС, акциз и утильсбор при ввозе автомобиля.'
+          : 'Free online customs clearance calculator. Calculate duty, VAT, excise and utilization fee for car import.'}
+        canonical="https://calccenter.ru/customs"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -565,6 +574,8 @@ export default function CustomsCalculator() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'О растаможке автомобилей' : 'About Customs Clearance Calculator'} description={lang === 'ru' ? 'Калькулятор растаможки рассчитывает полную стоимость таможенного оформления автомобиля при ввозе в Россию. Расчёт включает пошлину, НДС, акциз и утильсбор.\n\nДля расчёта введите страну, год выпуска, объём двигателя, стоимость автомобиля и тип топлива.' : 'The customs clearance calculator calculates the total cost of customs registration when importing a car into Russia.'} formula={{ title: 'Что входит в растаможку', text: 'Пошлина = Таможенная стоимость × Ставка. НДС = (Таможенная стоимость + Пошлина + Акциз) × 20%.' }} faq={[{ q: lang === 'ru' ? 'Можно ли ввезти автомобиль без уплаты пошлины?' : 'Can I import a car without paying duty?', a: 'Физлица могут ввезти без пошлины при владении не менее 6 месяцев, не более 1 авто, для личного пользования.' }]} />
     </div>
   );
 }

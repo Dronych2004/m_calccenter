@@ -1,14 +1,11 @@
 /**
  * Service Worker для PWA
  *
- * Стратегия: Network First для HTML/API, Cache First для статики.
- * При офлайне — отдаёт кэшированные страницы.
+ * HTML uses the network directly; only versioned/static assets are cached.
  */
 
-const CACHE_NAME = 'calccenter-v1';
+const CACHE_NAME = 'calccenter-v4';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
   '/favicon.svg',
   '/manifest.json',
 ];
@@ -31,23 +28,18 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-/* Запросы: Network First для навигации, Cache First для статики */
+/* Cache static assets only; navigation is handled by the browser. */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  /* Для навигации (HTML) — Network First */
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match('/index.html'))
-    );
-    return;
-  }
+  /* Кэшируем только GET-запросы */
+  if (request.method !== 'GET') return;
+
+  // Let the browser handle HTML and redirects directly. Never hide a
+  // redirect loop behind a cached home page or persist HTML from an old build.
+  if (request.mode === 'navigate') return;
+  if (new URL(request.url).origin !== self.location.origin) return;
+  if (!/\.(?:js|css|png|jpe?g|gif|svg|ico|woff2?)$/i.test(new URL(request.url).pathname)) return;
 
   /* Для статики (JS, CSS, изображения) — Cache First */
   event.respondWith(

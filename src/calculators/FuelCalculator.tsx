@@ -15,6 +15,9 @@
  */
 import { useState, useCallback } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 import { formatCurrency, formatNumber } from '../lib/format';
 
 interface FuelResult {
@@ -25,6 +28,7 @@ interface FuelResult {
 }
 
 export default function FuelCalculator() {
+  const lang = useLanguage();
   const [distance, setDistance] = useState('');
   const [consumption, setConsumption] = useState('');
   const [fuelPrice, setFuelPrice] = useState('');
@@ -63,6 +67,13 @@ export default function FuelCalculator() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Калькулятор расхода топлива онлайн — бесплатно | CalcCenter' : 'Fuel Cost Calculator Online — Free | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Бесплатный онлайн калькулятор расхода топлива. Рассчитайте стоимость поездки и расход бензина на 100 км.'
+          : 'Free online fuel cost calculator. Calculate trip cost and fuel consumption per 100 km.'}
+        canonical="https://calccenter.ru/fuel"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">{t('fuel.title')}</h1>
@@ -214,6 +225,33 @@ export default function FuelCalculator() {
           )}
         </div>
       </div>
+
+      <SeoContent
+        title={lang === 'ru' ? 'О калькуляторе расхода топлива' : 'About the Fuel Cost Calculator'}
+        description={lang === 'ru'
+          ? `Калькулятор расхода топлива помогает рассчитать стоимость поездки, расход бензина на 100 км и потребление топлива за определённое расстояние.
+
+Введите расход вашего автомобиля (литров на 100 км), расстояние поездки (в км) и стоимость топлива (за литр). Калькулятор покажет общее количество литров и их стоимость.
+
+Вы также можете узнать реальный расход топлива, указав начальный и конечный уровень бака, количество заправленного топлива и пройденное расстояние.`
+          : `The fuel cost calculator helps you calculate the cost of a trip, fuel consumption per 100 km, and fuel usage for a given distance.
+
+Enter your car's fuel consumption (liters per 100 km), trip distance (in km), and fuel price (per liter). The calculator will show the total liters needed and their cost.`}
+        formula={{
+          title: lang === 'ru' ? 'Формула расхода топлива' : 'Fuel Consumption Formula',
+          text: lang === 'ru'
+            ? 'Расход на 100 км = (Заправлено / Пройдено) × 100. Стоимость поездки = (Расход × Расстояние / 100) × Цена за литр.'
+            : 'Consumption per 100 km = (Fuel refueled / Distance) × 100. Trip cost = (Consumption × Distance / 100) × Price per liter.'
+        }}
+        faq={[
+          {
+            q: lang === 'ru' ? 'Как снизить расход топлива?' : 'How to reduce fuel consumption?',
+            a: lang === 'ru'
+              ? 'Плавное ускорение и торможение, поддержание давления в шинах, удаление лишнего груза, плановое ТО.'
+              : 'Smooth acceleration and braking, maintaining tire pressure, removing excess cargo, regular maintenance.'
+          },
+        ]}
+      />
     </div>
   );
 }

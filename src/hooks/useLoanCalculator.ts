@@ -16,7 +16,7 @@
  *   Дифференцированный: D_i = S/n + (S - S×(i-1)/n) × P
  *   где S — сумма кредита, P — месячная ставка, n — кол-во месяцев
  */
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
 /* ==================== ТИПЫ ==================== */
 
@@ -63,7 +63,7 @@ interface UseLoanCalculatorParams {
 /* ==================== ХУК ==================== */
 
 export function useLoanCalculator(params: UseLoanCalculatorParams) {
-  const { loanAmount, interestRate, loanTerm, paymentType, downPayment = 0 } = params;
+  const { loanAmount, interestRate, loanTerm, downPayment = 0 } = params;
 
   const calculate = useCallback((): LoanResult | null => {
     const S_raw = parseFloat(loanAmount);

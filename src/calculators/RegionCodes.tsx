@@ -5,6 +5,8 @@
  */
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoContent from '../components/SeoContent';
+import SeoHead from '../components/SeoHead';
 
 interface RegionCode {
   code: string;
@@ -137,6 +139,13 @@ export default function RegionCodes() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 animate-fade-in overflow-hidden">
+      <SeoHead
+        title={lang === 'ru' ? 'Коды регионов России — справочник | CalcCenter' : 'Russia Region Codes — Directory | CalcCenter'}
+        description={lang === 'ru'
+          ? 'Справочник кодов регионов Российской Федерации. Коды для автомобильных номеров и документов.'
+          : 'Directory of Russian Federation region codes. Codes for vehicle license plates and documents.'}
+        canonical="https://calccenter.ru/region-codes"
+      />
       {/* Заголовок */}
       <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 tracking-tight">
@@ -211,6 +220,8 @@ export default function RegionCodes() {
           </p>
         </div>
       )}
+
+      <SeoContent title={lang === 'ru' ? 'Коды регионов России' : 'Russia Region Codes'} description={lang === 'ru' ? 'Справочник кодов регионов Российской Федерации. Каждый субъект РФ имеет уникальный номер, который используется в автомобильных номерах, документах и статистике.\n\nКод региона указывается на номерных знаках автомобиля справа. Например, код 77 — Москва, 78 — Санкт-Петербург.' : 'Reference directory of Russian Federation region codes.'} faq={[{ q: lang === 'ru' ? 'Как определить регион по коду?' : 'How to identify a region by code?', a: 'Посмотрите последние две цифры номерного знака или воспользуйтесь нашим справочником.' }]} />
     </div>
   );
 }

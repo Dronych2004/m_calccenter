@@ -3,7 +3,6 @@
  */
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { t } from '../i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import LanguageSwitcher from './LanguageSwitcher';
 import { CalcIcon } from './Icons';
