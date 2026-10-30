@@ -1,28 +1,23 @@
 <?php
-/**
- * Entry-point для SPA на любом хостинге.
- *
- * Логика:
- * 1. Если запрошен prerendered файл (/mortgage/index.html) — отдаём его.
- * 2. Иначе — SPA fallback (index.html).
- *
- * Trailing slash редиректит .htaccess (/classic/ → /classic, 301).
- * Canonical URL задаётся через <link rel="canonical"> в HTML.
- */
-
+// Serve flat prerendered pages without triggering directory redirects.
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+header('Content-Type: text/html; charset=utf-8');
+header('Cache-Control: no-cache');
 
-// Пытаемся отдать prerendered HTML для clean URLs
-// /mortgage → /mortgage/index.html
-if ($uri !== '/') {
-    $prerendered = __DIR__ . $uri . '/index.html';
-    if (is_file($prerendered)) {
-        header('Content-Type: text/html; charset=utf-8');
-        readfile($prerendered);
+if ($uri === '/') {
+    readfile(__DIR__ . '/index.html');
+    exit;
+}
+
+// Restrict lookup to a single safe route segment; never read arbitrary paths.
+if (is_string($uri) && preg_match('~^/[a-z0-9-]+$~D', $uri)) {
+    $page = __DIR__ . $uri . '.html';
+    if (is_file($page)) {
+        readfile($page);
         exit;
     }
 }
 
-// SPA fallback — отдаём главный index.html
-header('Content-Type: text/html; charset=utf-8');
+// React displays the not-found page; the HTTP status must also be 404.
+http_response_code(404);
 readfile(__DIR__ . '/index.html');
